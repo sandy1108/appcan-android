@@ -26,6 +26,7 @@ import org.zywx.wbpalmstar.engine.ELinkedList;
 import org.zywx.wbpalmstar.widgetone.WidgetOneApplication;
 
 import java.lang.reflect.Constructor;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -33,38 +34,18 @@ public class EUExManager {
 
 	private Context mContext;
 	private ELinkedList<EUExBase> mThirdPlugins;
+	private HashMap<String,EUExBase> pluginEUExBaseMap;
 
 	public EUExManager(Context context) {
 		mContext = context;
 		mThirdPlugins = new ELinkedList<EUExBase>();
+		pluginEUExBaseMap = new HashMap<String, EUExBase>();
 	}
 
 	public void addJavascriptInterface(EBrowserView brwView) {
-		EUExWidgetOne widgetOne = new EUExWidgetOne(mContext, brwView);
-		widgetOne.setUexName(EUExWidgetOne.tag);
-		EUExWindow window = new EUExWindow(mContext, brwView);
-		window.setUexName(EUExWindow.tag);
-		EUExWidget widget = new EUExWidget(mContext, brwView);
-		widget.setUexName(EUExWidget.tag);
-		EUExAppCenter appCenter = new EUExAppCenter(mContext, brwView);
-		appCenter.setUexName(EUExAppCenter.tag);
-//		EUExDataAnalysis dataAnalysis = new EUExDataAnalysis(mContext, brwView);
-//		dataAnalysis.setUexName(EUExDataAnalysis.tag);
-		brwView.addJavascriptInterface(widgetOne, EUExWidgetOne.tag);
-		brwView.addJavascriptInterface(window, EUExWindow.tag);
-		brwView.addJavascriptInterface(widget, EUExWidget.tag);
-		brwView.addJavascriptInterface(appCenter, EUExAppCenter.tag);
-//		brwView.addJavascriptInterface(dataAnalysis, EUExDataAnalysis.tag);
-		mThirdPlugins.add(widgetOne);
-		mThirdPlugins.add(window);
-		mThirdPlugins.add(widget);
-		mThirdPlugins.add(appCenter);
-//		mThirdPlugins.add(dataAnalysis);
-		// third-party plugin
 		WidgetOneApplication app = (WidgetOneApplication)mContext.getApplicationContext();
 		ThirdPluginMgr tpm = app.getThirdPlugins();
 		Map<String, ThirdPluginObject> thirdPlugins = tpm.getPlugins();
-		String symbol = "_";
 		Set<Map.Entry<String, ThirdPluginObject>> pluginSet = thirdPlugins.entrySet();
 		for (Map.Entry<String, ThirdPluginObject> entry : pluginSet) {
 			String uName = entry.getKey();
@@ -86,18 +67,20 @@ public class EUExManager {
 				e.printStackTrace();
 			}
 			if (null != objectIntance) {
-				String uexName = uName + symbol;
-				objectIntance.setUexName(uexName);
-				brwView.addJavascriptInterface(objectIntance, uexName);
+				objectIntance.setUexName(uName);
 				
 				if (scriptObj.isGlobal == true) {
 					scriptObj.pluginObj = objectIntance;
 				} else {
 					mThirdPlugins.add(objectIntance);
+					pluginEUExBaseMap.put(uName, objectIntance);
 				}
-				
 			}
 		}
+	}
+
+	public EUExBase getPluginEUExBase(String uexName) {
+		return pluginEUExBaseMap.get(uexName);
 	}
 	
 	public void notifyReset() {

@@ -21,10 +21,15 @@ package org.zywx.wbpalmstar.engine.universalex;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.XmlResourceParser;
+import android.util.Log;
+import android.util.Xml;
+
+import org.xmlpull.v1.XmlPullParser;
 import org.zywx.wbpalmstar.engine.EBrowserView;
 import org.zywx.wbpalmstar.engine.ELinkedList;
 import org.zywx.wbpalmstar.engine.EngineEventListener;
 
+import java.io.ByteArrayInputStream;
 import java.lang.reflect.Constructor;
 import java.util.Hashtable;
 import java.util.Map;
@@ -44,6 +49,7 @@ public class ThirdPluginMgr {
 		script = new StringBuffer();
 		mThirdClass = new Hashtable<String, ThirdPluginObject>();
 		cachePath = context.getCacheDir().getAbsolutePath();
+		initEngineClass(mustInitObj, context);
 		initClass(plugins, mustInitObj, context);
 
 	}
@@ -59,8 +65,24 @@ public class ThirdPluginMgr {
 		script = null;
 	}
 
-	private void initClass(XmlResourceParser plugins,
+	private void initEngineClass(
 			ELinkedList<EngineEventListener> listenerQueue, Context context) {
+		try {
+			XmlPullParser parser = Xml.newPullParser();
+			ByteArrayInputStream stream = new ByteArrayInputStream(
+					EUExScript.F_UEX_SCRIPT_ENGINE_XML.getBytes());
+			parser.setInput(stream, "UTF-8");
+			initClass(parser, listenerQueue, context);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException(
+					"uex对象加载发生异常,请检查EUExScript的F_UEX_SCRIPT_ENGINE!");
+		}
+	}
+	
+	private void initClass(XmlPullParser plugins,
+			ELinkedList<EngineEventListener> listenerQueue, Context context) {
+		Log.i("jiangpingping","EnginePluginMgr initClass begin");
 		String pluginNode = "plugin";
 		String methodNode = "method";
 		String propertyNode = "property";
@@ -120,6 +142,7 @@ public class ThirdPluginMgr {
 								nameAttr);
 						if (null != scriptObj) {
 							scriptObj.addMethod(methodValue);
+							scriptObj.jmethod.put(methodValue, methodValue);
 						}
 					} else if (strNode.equals(propertyNode)) {
 						String propertyValue = plugins.getAttributeValue(null,
@@ -145,6 +168,7 @@ public class ThirdPluginMgr {
 			e.printStackTrace();
 			throw new RuntimeException("uex对象加载发生异常,请检查XML文件!");
 		}
+		Log.i("jiangpingping","EnginePluginMgr initClass end");
 	}
 
 	private void handlerStartupAttr(Constructor<?> object,

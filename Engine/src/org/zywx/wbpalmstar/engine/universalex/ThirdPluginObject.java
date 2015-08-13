@@ -19,25 +19,32 @@
 package org.zywx.wbpalmstar.engine.universalex;
 
 import java.lang.reflect.Constructor;
+import java.util.HashMap;
+
+import android.os.Build;
+import android.util.Log;
 
 public class ThirdPluginObject {
 	
 	public static final String js_object_begin = "window.";
-	public static final String js_arg_low = "jo(arguments)";
+	public static final String js_arg_low = "arguments";
 	public static final String js_staves = "_.";
 	public static final String js_function_begin = ":function(){";
 	public static final String js_symbol = "=";
-	public static final String js_l_brackets = "(";
-	public static final String js_function_end = ");},";
+	public static final String js_function_fo_begin = "jo(";
+	public static final String js_function_fo_end = ");";
+	public static final String js_function_end = "},";
 	public static final String js_property_end = ",";
 	public static final String js_l_braces = "{";
 	public static final String js_object_end = "};";
+	public static final String js_quotation = "\"";
 	public static final String js_method_transaction = "transaction:function(){var b=jo(arguments);" +
 			"uexDataBaseMgr_.beginTransaction(b);arguments[2]();uexDataBaseMgr_.endTransaction(b);},";
 
 	public String uexName;
 	public StringBuffer uexScript;
 	public String jclass;
+	public HashMap<String, String> jmethod = new HashMap<String, String>();
 	public Constructor<?> jobject;
 	public boolean isGlobal = false;
 	public EUExBase pluginObj = null;
@@ -51,6 +58,10 @@ public class ThirdPluginObject {
 		String begin = js_object_begin + jsName + js_symbol + js_l_braces;
 		uexScript.append(begin);
 		uexName = jsName;
+		if ("uexWidgetOne".equals(jsName)) {
+			uexScript.append("platformName:'android',");
+			uexScript.append("platformVersion:'" + Build.VERSION.RELEASE + "',");
+		}
 	}
 	
 	public void addMethod(String method){
@@ -60,17 +71,14 @@ public class ThirdPluginObject {
 		}
 		uexScript.append(method);
 		uexScript.append(js_function_begin);
-		
-		uexScript.append("if(");
+		uexScript.append(js_function_fo_begin);
+		uexScript.append(js_quotation);
 		uexScript.append(uexName);
-		uexScript.append(js_staves);
-		uexScript.append("termination()){return;}");
-		
-		uexScript.append(uexName);
-		uexScript.append(js_staves);
+		uexScript.append(js_quotation + js_property_end + js_quotation);
 		uexScript.append(method);
-		uexScript.append(js_l_brackets);
+		uexScript.append(js_quotation + js_property_end);
 		uexScript.append(js_arg_low);
+		uexScript.append(js_function_fo_end);
 		uexScript.append(js_function_end);
 	}
 	
