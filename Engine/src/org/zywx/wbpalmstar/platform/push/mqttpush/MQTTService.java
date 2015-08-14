@@ -143,7 +143,7 @@ public class MQTTService implements MqttSimpleCallback {
 	// long running, idle connections. Ideally, to keep a connection open
 	// you want to use a keep alive value that is less than the period of
 	// time after which a network operator will kill an idle connection
-	private short keepAliveSeconds = 20 * 60;
+	private short keepAliveSeconds = 1 * 60;
 
 	// This is how the Android client app will identify itself to the
 	// message broker.
