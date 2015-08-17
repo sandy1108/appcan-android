@@ -19,6 +19,8 @@
 package org.zywx.wbpalmstar.platform.push;
 
 import java.lang.reflect.Field;
+import java.util.HashMap;
+
 import org.json.JSONObject;
 import org.zywx.wbpalmstar.engine.EBrowserActivity;
 import org.zywx.wbpalmstar.platform.push.report.PushReportUtility;
@@ -39,6 +41,7 @@ public class PushRecieveMsgReceiver extends BroadcastReceiver {
     private static Context mContext;
     public static final int F_TYPE_PUSH = 10;
     private static int notificationNB = 0;
+	private static HashMap<String, Integer> msgGroupIds = new HashMap<String, Integer>();
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -100,14 +103,24 @@ public class PushRecieveMsgReceiver extends BroadcastReceiver {
 						PushReportUtility.oe("onReceive", e);
 					}
 				}
+				String groupId = intent.getStringExtra("gId");
+				Integer notificationId = notificationNB;
+				if (!TextUtils.isEmpty(groupId)) {
+					if (msgGroupIds.get(groupId) != null) {
+						notificationId = msgGroupIds.get(groupId);
+					} else {
+						notificationId = notificationNB;
+						msgGroupIds.put(groupId, notificationId);
+					}
+				}
 				PendingIntent contentIntent = PendingIntent.getActivity(
 						context,
-                        notificationNB, notificationIntent,
+						notificationId, notificationIntent,
                         PendingIntent.FLAG_UPDATE_CURRENT);
                 notification.setLatestEventInfo(context, contentTitle, tickerText,
                         contentIntent);
                 // 把Notification传递给NotificationManager
-                mNotificationManager.notify(notificationNB, notification);
+                mNotificationManager.notify(notificationId, notification);
                 notificationNB++;
             }
         }        

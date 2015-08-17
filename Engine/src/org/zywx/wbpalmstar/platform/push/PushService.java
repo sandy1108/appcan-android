@@ -18,17 +18,9 @@
 
 package org.zywx.wbpalmstar.platform.push;
 
-import android.app.Service;
-import android.content.*;
-import android.content.SharedPreferences.Editor;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.os.AsyncTask;
-import android.os.IBinder;
-import android.text.TextUtils;
-import android.util.Log;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -42,8 +34,21 @@ import org.zywx.wbpalmstar.platform.push.report.PushReportConstants;
 import org.zywx.wbpalmstar.platform.push.report.PushReportHttpClient;
 import org.zywx.wbpalmstar.platform.push.report.PushReportUtility;
 
-import java.util.Timer;
-import java.util.TimerTask;
+import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.AsyncTask;
+import android.os.IBinder;
+import android.text.TextUtils;
+import android.util.Log;
 
 /**
  * 为确保推送及时性，PushService 运行在单独进程中（在Manifest文件中配置），而非应用的进程，应注意数据的传递方式。
@@ -298,6 +303,7 @@ public class PushService extends Service implements PushDataCallback {
 	    String value = text.getString("body");
         String packg = getPackageName();
         String widgetName = null;
+		String gId = text.optString("gId");// 分组Id，用于推送消息分组
         PackageManager pm = getPackageManager();
         PackageInfo pinfo = null;
         try {
@@ -316,6 +322,7 @@ public class PushService extends Service implements PushDataCallback {
         }
         
 		Intent intent = new Intent(PushRecieveMsgReceiver.ACTION_PUSH);
+		intent.putExtra("gId", gId);
 		intent.putExtra("data", value);
 		intent.putExtra("title", tickerText);
 		intent.putExtra("packg", packg);
