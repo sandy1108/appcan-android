@@ -20,12 +20,18 @@ package org.zywx.wbpalmstar.engine.universalex;
 
 import android.content.Context;
 import android.os.Build;
+import android.util.Log;
 import android.webkit.WebView;
+
+import org.zywx.wbpalmstar.base.BDebug;
 import org.zywx.wbpalmstar.engine.EBrowserView;
 import org.zywx.wbpalmstar.engine.ELinkedList;
+import org.zywx.wbpalmstar.engine.callback.EUExDispatcherCallback;
 import org.zywx.wbpalmstar.widgetone.WidgetOneApplication;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.Set;
 
@@ -50,10 +56,31 @@ public class EUExManager {
 		appCenter.setUexName(EUExAppCenter.tag);
 //		EUExDataAnalysis dataAnalysis = new EUExDataAnalysis(mContext, brwView);
 //		dataAnalysis.setUexName(EUExDataAnalysis.tag);
-		brwView.addJavascriptInterface(widgetOne, EUExWidgetOne.tag);
-		brwView.addJavascriptInterface(window, EUExWindow.tag);
-		brwView.addJavascriptInterface(widget, EUExWidget.tag);
-		brwView.addJavascriptInterface(appCenter, EUExAppCenter.tag);
+//		brwView.addJavascriptInterface(widgetOne, EUExWidgetOne.tag);
+//		brwView.addJavascriptInterface(window, EUExWindow.tag);
+//		brwView.addJavascriptInterface(widget, EUExWidget.tag);
+//		brwView.addJavascriptInterface(appCenter, EUExAppCenter.tag);
+        brwView.addJavascriptInterface(new EUExDispatcher(new EUExDispatcherCallback() {
+            @Override
+            public Object onDispatch(String pluginName, String methodName, String[] params) {
+                ELinkedList<EUExBase> plugins=getThirdPlugins();
+                for (EUExBase plugin:plugins) {
+                    if (plugin.getUexName().equals(pluginName)){
+						return callMethod(plugin,methodName,params);
+                    }
+                }
+                //调用单实例插件
+                Map<String, ThirdPluginObject> thirdPlugins = getPlugins();
+                ThirdPluginObject thirdPluginObject=thirdPlugins.get(pluginName);
+                if (thirdPluginObject!=null&&thirdPluginObject.isGlobal&&
+                        thirdPluginObject.pluginObj!=null){
+					return callMethod(thirdPluginObject.pluginObj,methodName,params);
+
+                }
+                BDebug.e("plugin",pluginName,"not exist...");
+                return null;
+             }
+        }),EUExDispatcher.JS_OBJECT_NAME);
 //		brwView.addJavascriptInterface(dataAnalysis, EUExDataAnalysis.tag);
 		mThirdPlugins.add(widgetOne);
 		mThirdPlugins.add(window);
@@ -61,10 +88,8 @@ public class EUExManager {
 		mThirdPlugins.add(appCenter);
 //		mThirdPlugins.add(dataAnalysis);
 		// third-party plugin
-		WidgetOneApplication app = (WidgetOneApplication)mContext.getApplicationContext();
-		ThirdPluginMgr tpm = app.getThirdPlugins();
-		Map<String, ThirdPluginObject> thirdPlugins = tpm.getPlugins();
-		String symbol = "_";
+		Map<String, ThirdPluginObject> thirdPlugins = getPlugins();
+//		String symbol = "_";
 		Set<Map.Entry<String, ThirdPluginObject>> pluginSet = thirdPlugins.entrySet();
 		for (Map.Entry<String, ThirdPluginObject> entry : pluginSet) {
 			String uName = entry.getKey();
@@ -83,12 +108,12 @@ public class EUExManager {
 				}
 				
 			} catch (Exception e) {
-				e.printStackTrace();
+                BDebug.e(e.toString());
 			}
 			if (null != objectIntance) {
-				String uexName = uName + symbol;
-				objectIntance.setUexName(uexName);
-				brwView.addJavascriptInterface(objectIntance, uexName);
+//				String uexName = uName + symbol;
+				objectIntance.setUexName(uName);
+//				brwView.addJavascriptInterface(objectIntance, uexName);
 				
 				if (scriptObj.isGlobal == true) {
 					scriptObj.pluginObj = objectIntance;
@@ -99,8 +124,38 @@ public class EUExManager {
 			}
 		}
 	}
-	
-	public void notifyReset() {
+
+    private Map<String, ThirdPluginObject> getPlugins(){
+        WidgetOneApplication app = (WidgetOneApplication)mContext.getApplicationContext();
+        ThirdPluginMgr tpm = app.getThirdPlugins();
+        return tpm.getPlugins();
+    }
+
+
+
+    private Object callMethod(EUExBase plugin, String methodName, String[] params) {
+        if (plugin.mDestroyed) {
+            BDebug.e("plugin", plugin.getUexName(), " has been destroyed");
+            return null;
+        }
+        try {
+            Method targetMethod = plugin.getClass().getMethod(methodName,
+					String[].class);
+            return targetMethod.invoke(plugin, (Object) params);
+        } catch (NoSuchMethodException e) {
+            BDebug.e(methodName, " NoSuchMethodException");
+        } catch (IllegalAccessException e) {
+            BDebug.e(plugin.getUexName(),methodName,e.toString());
+        } catch (InvocationTargetException e) {
+            if (BDebug.DEBUG){
+                e.printStackTrace();
+            }
+        }
+        BDebug.e("return null......");
+        return null;
+    }
+
+    public void notifyReset() {
 		for (EUExBase uex : mThirdPlugins) {
 			uex.reset();
 		}
@@ -132,4 +187,8 @@ public class EUExManager {
 		mThirdPlugins = null;
 		mContext = null;
 	}
+
+    public ELinkedList<EUExBase> getThirdPlugins() {
+        return mThirdPlugins;
+    }
 }

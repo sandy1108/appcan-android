@@ -473,18 +473,21 @@ public final class EBrowserActivity extends ActivityGroup {
 			exitBrowser();
 			return;
 		}
-		AlertDialog.Builder tDialog = new AlertDialog.Builder(this);
-		tDialog.setTitle(EResources.display_exitdialog_msg);
-		tDialog.setNegativeButton(EResources.display_cancel, null);
-		tDialog.setMessage(EResources.display_exitdialog_app_text);
-		tDialog.setPositiveButton(EResources.display_confirm,
-				new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						exitBrowser();
-					}
-				});
-		tDialog.show();
+		try {
+			AlertDialog.Builder tDialog = new AlertDialog.Builder(this);
+			tDialog.setTitle(EResources.display_exitdialog_msg);
+			tDialog.setNegativeButton(EResources.display_cancel, null);
+			tDialog.setMessage(EResources.display_exitdialog_app_text);
+			tDialog.setPositiveButton(EResources.display_confirm,
+					new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							exitBrowser();
+						}
+					});
+			tDialog.show();
+		} catch (Exception e) {
+		}
 	}
 
 	public final void exitBrowser() {
@@ -586,6 +589,16 @@ public final class EBrowserActivity extends ActivityGroup {
 			super.startActivityForResult(intent, requestCode);
 		}
 	}
+
+    public final void registerActivityForResult(EUExBase callback){
+        if (mCallbackRuning) {
+            return;
+        }
+        if (null != callback) {
+            mActivityCallback = callback;
+            mCallbackRuning = true;
+        }
+    }
 
 	public final void registerAppEventListener(EUExEventListener listener) {
 		if (null != mBrowserAround) {

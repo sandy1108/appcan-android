@@ -257,6 +257,8 @@
     public void createProgressDialog(java.lang.String[]);
     public void destroyProgressDialog(java.lang.String[]);
     public void setSlidingWindowEnabled(java.lang.String[]);
+    public void getSlidingWindowState(java.lang.String[]);
+    public void dispatch(java.lang.String,java.lang.String,java.lang.String[]);
 
     public void getId(java.lang.String[]);
     public void getWidgetNumber(java.lang.String[]);
@@ -287,6 +289,8 @@
     public void setLogServerIp(java.lang.String[]);    
     public void setSpaceEnable(java.lang.String[]);
     public void delPushInfo(java.lang.String[]);    
+    public void reload(java.lang.String[]);
+    public void reloadWidgetByAppId(java.lang.String[]);
     
     public void setEvent(java.lang.String[]);
     public void beginEvent(java.lang.String[]);

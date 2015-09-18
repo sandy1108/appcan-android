@@ -65,7 +65,7 @@ import java.security.MessageDigest;
 import java.util.ArrayList;
 
 public class EUExWindow extends EUExBase {
-	public static final String tag = "uexWindow_";
+	public static final String tag = "uexWindow";
 
 	public static final String function_confirm = "uexWindow.cbConfirm";
 	public static final String function_prompt = "uexWindow.cbPrompt";
@@ -142,6 +142,7 @@ public class EUExWindow extends EUExBase {
     private static final int MSG_SUBSCRIBE_CHANNEL_NOTIFICATION = 47;
     private static final int MSG_FUNCTION_RELOAD= 48;
     private static final int MSG_FUNCTION_RELOAD_WIDGET_BY_APPID= 49;
+    private static final int MSG_FUNCTION_GET_SLIDING_WINDOW_STATE = 50;
 	private AlertDialog.Builder mAlert;
 	private AlertDialog.Builder mConfirm;
 	private PromptDialog mPrompt;
@@ -724,7 +725,24 @@ public class EUExWindow extends EUExBase {
         }
     }
 
+	public void getSlidingWindowState(String[] param) {
+		Message msg = new Message();
+		msg.obj = this;
+		msg.what = MSG_FUNCTION_GET_SLIDING_WINDOW_STATE;
+		mHandler.sendMessage(msg);
+	}
 
+	private void hanldeGetSlidingWindowState() {
+		EBrowserActivity activity = (EBrowserActivity) mContext;
+		SlidingMenu slidingMenu = activity.globalSlidingMenu;
+		if (slidingMenu != null) {
+			int state = slidingMenu.getCurrentItem();
+			String js = "javascript:if(uexWindow.cbSlidingWindowState){uexWindow.cbSlidingWindowState("
+					+ state + ");}";
+			mBrwView.addUriTask(js);
+		}
+	}
+    
     public void setSlidingWindowEnabled(String[] param) {
         if (param.length <= 0) {
             return;
@@ -2567,18 +2585,22 @@ public class EUExWindow extends EUExBase {
 		if (null != mAlert) {
 			return;
 		}
-		mAlert = new AlertDialog.Builder(mContext);
-		mAlert.setTitle(inTitle);
-		mAlert.setMessage(inMessage);
-		mAlert.setCancelable(false);
-		mAlert.setPositiveButton(inButtonLable, new OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				dialog.dismiss();
-				mAlert = null;
-			}
-		});
-		mAlert.show();
+		try {
+			mAlert = new AlertDialog.Builder(mContext);
+			mAlert.setTitle(inTitle);
+			mAlert.setMessage(inMessage);
+			mAlert.setCancelable(false);
+			mAlert.setPositiveButton(inButtonLable, new OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.dismiss();
+					mAlert = null;
+				}
+			});
+			mAlert.show();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void private_confirm(String inTitle, String inMessage, String[] inButtonLable) {
@@ -2588,88 +2610,93 @@ public class EUExWindow extends EUExBase {
 		if (inButtonLable == null) {
 			return;
 		}
-		if (null != mConfirm) {
-			return;
-		}
-		int length = inButtonLable.length;
-		if (length > 0 && length <= 3) {
-			mConfirm = new AlertDialog.Builder(mContext);
-			mConfirm.setTitle(inTitle);
-			mConfirm.setMessage(inMessage);
-			mConfirm.setCancelable(false);
-			switch (length) {
-			case 1:
-				mConfirm.setPositiveButton(inButtonLable[0], new OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-								jsCallback(function_confirm, 0,
-										EUExCallback.F_C_INT, 0);
-								dialog.dismiss();
-								mConfirm = null;
-							}
-						}).show();
-				break;
-			case 2:
-				mConfirm.setPositiveButton(inButtonLable[0],
-						new OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-								jsCallback(function_confirm, 0,
-										EUExCallback.F_C_INT, 0);
-								dialog.dismiss();
-								mConfirm = null;
-							}
-						})
-						.setNegativeButton(inButtonLable[1],
-								new OnClickListener() {
-									@Override
-									public void onClick(DialogInterface dialog,
-											int which) {
-										jsCallback(function_confirm, 0,
-												EUExCallback.F_C_INT, 1);
-										dialog.dismiss();
-										mConfirm = null;
-									}
-								}).show();
-				break;
-			case 3:
-				mConfirm.setPositiveButton(inButtonLable[0],
-						new OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-								jsCallback(function_confirm, 0,
-										EUExCallback.F_C_INT, 0);
-								dialog.dismiss();
-								mConfirm = null;
-							}
-						});
-				mConfirm.setNeutralButton(inButtonLable[1],
-						new OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-								jsCallback(function_confirm, 0,
-										EUExCallback.F_C_INT, 1);
-								dialog.dismiss();
-								mConfirm = null;
-							}
-						});
-				mConfirm.setNegativeButton(inButtonLable[2],
-						new OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-								jsCallback(function_confirm, 0,
-										EUExCallback.F_C_INT, 2);
-								dialog.dismiss();
-								mConfirm = null;
-							}
-						}).show();
-				break;
+        //修复：多个appcan.window.alert()同时执行时，只会弹出一次的问题
+//		if (null != mConfirm) {
+//			return;
+//		}
+		try {
+			int length = inButtonLable.length;
+			if (length > 0 && length <= 3) {
+				mConfirm = new AlertDialog.Builder(mContext);
+				mConfirm.setTitle(inTitle);
+				mConfirm.setMessage(inMessage);
+				mConfirm.setCancelable(false);
+				switch (length) {
+				case 1:
+					mConfirm.setPositiveButton(inButtonLable[0], new OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									jsCallback(function_confirm, 0,
+											EUExCallback.F_C_INT, 0);
+									dialog.dismiss();
+									mConfirm = null;
+								}
+							}).show();
+					break;
+				case 2:
+					mConfirm.setPositiveButton(inButtonLable[0],
+							new OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									jsCallback(function_confirm, 0,
+											EUExCallback.F_C_INT, 0);
+									dialog.dismiss();
+									mConfirm = null;
+								}
+							})
+							.setNegativeButton(inButtonLable[1],
+									new OnClickListener() {
+										@Override
+										public void onClick(DialogInterface dialog,
+												int which) {
+											jsCallback(function_confirm, 0,
+													EUExCallback.F_C_INT, 1);
+											dialog.dismiss();
+											mConfirm = null;
+										}
+									}).show();
+					break;
+				case 3:
+					mConfirm.setPositiveButton(inButtonLable[0],
+							new OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									jsCallback(function_confirm, 0,
+											EUExCallback.F_C_INT, 0);
+									dialog.dismiss();
+									mConfirm = null;
+								}
+							});
+					mConfirm.setNeutralButton(inButtonLable[1],
+							new OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									jsCallback(function_confirm, 0,
+											EUExCallback.F_C_INT, 1);
+									dialog.dismiss();
+									mConfirm = null;
+								}
+							});
+					mConfirm.setNegativeButton(inButtonLable[2],
+							new OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									jsCallback(function_confirm, 0,
+											EUExCallback.F_C_INT, 2);
+									dialog.dismiss();
+									mConfirm = null;
+								}
+							}).show();
+					break;
+				}
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -2687,12 +2714,12 @@ public class EUExWindow extends EUExBase {
 						public void onClick(DialogInterface dialog, int which) {
 							try {
 								final PromptDialog wPromptDialog = (PromptDialog) dialog;
-								dialog.dismiss();
+                                hideSoftKeyboard(wPromptDialog.getWindowToken());
+                                dialog.dismiss();
 								mPrompt = null;
 								jsonObject.put(EUExCallback.F_JK_NUM, 0);
-								jsonObject.put(EUExCallback.F_JK_VALUE, wPromptDialog.getInput());
-								jsCallback(function_prompt, 0, EUExCallback.F_C_JSON, jsonObject.toString());
-								hideSoftKeyboard(wPromptDialog.getWindowToken());
+                                jsonObject.put(EUExCallback.F_JK_VALUE, wPromptDialog.getInput());
+                                jsCallback(function_prompt, 0, EUExCallback.F_C_JSON, jsonObject.toString());
 							} catch (Exception e) {
 								errorCallback(0, 0, e.toString());
 								e.printStackTrace();
@@ -2702,13 +2729,13 @@ public class EUExWindow extends EUExBase {
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
 							final PromptDialog wPromptDialog = (PromptDialog) dialog;
-							dialog.dismiss();
+                            hideSoftKeyboard(wPromptDialog.getWindowToken());
+                            dialog.dismiss();
 							mPrompt = null;
 							try {
 								jsonObject.put(EUExCallback.F_JK_NUM, 1);
-								jsonObject.put(EUExCallback.F_JK_VALUE, wPromptDialog.getInput());
-								jsCallback(function_prompt, 0, EUExCallback.F_C_JSON, jsonObject.toString());
-								hideSoftKeyboard(wPromptDialog.getWindowToken());
+                                jsonObject.put(EUExCallback.F_JK_VALUE, wPromptDialog.getInput());
+                                jsCallback(function_prompt, 0, EUExCallback.F_C_JSON, jsonObject.toString());
 							} catch (Exception e) {
 								errorCallback(0, 0, e.toString());
 								e.printStackTrace();
@@ -2986,7 +3013,7 @@ public class EUExWindow extends EUExBase {
 		}
 		String channelId = params[0];
 		if (TextUtils.isEmpty(channelId)) {
-			Log.e("subscribeChannelNotification", "channelId is empty!!!");
+			Log.e("publishChannelNotificationMsg", "channelId is empty!!!");
 			return;
 		}
 		String des = params[1];
@@ -3130,6 +3157,9 @@ public class EUExWindow extends EUExBase {
             case MSG_FUNCTION_TOGGLE_SLIDINGWIN:
                 hanldeToggleSlidingWindow(param);
                 break;
+            case MSG_FUNCTION_GET_SLIDING_WINDOW_STATE:
+            	hanldeGetSlidingWindowState();
+            	break;
             case MSG_FUNCTION_REFRESH:
                 String url = mBrwView.getRelativeUrl();
                 mBrwView.loadUrl(url);
