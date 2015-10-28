@@ -33,6 +33,8 @@ import android.net.Uri;
 import android.os.Environment;
 import android.util.DisplayMetrics;
 
+import org.zywx.wbpalmstar.engine.EBrowserView;
+import org.zywx.wbpalmstar.engine.universalex.EUExUtil;
 import org.zywx.wbpalmstar.widgetone.dataservice.WDataManager;
 
 import java.io.BufferedReader;
@@ -44,6 +46,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.BreakIterator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -435,7 +438,6 @@ public class BUtility {
 	 * 根据file://res/协议的路径获得AssetFileDescriptor对象用于设置DataSource
 	 * 
 	 * @param context
-	 * @param totalPath
 	 * @return
 	 */
 	public static AssetFileDescriptor getFileDescriptorByResPath(
@@ -506,11 +508,10 @@ public class BUtility {
 	/**
 	 * 制造一个真实的路径
 	 * 
-	 * @param context
 	 * @param path
-	 * @param appID
 	 * @return
 	 */
+    @Deprecated
 	public static String makeRealPath(String path, String widgetPath,
 			int wgtType) {
 		// path = makeUrl(currentUrl, path);
@@ -548,6 +549,18 @@ public class BUtility {
 			return path;
 		}
 	}
+
+    /**
+     * 制造一个真实的路径
+     *
+     * @return
+     */
+    public static String makeRealPath(String path, EBrowserView browserView) {
+        path=makeUrl(browserView.getCurrentUrl(),path);
+        int wgtType=browserView.getCurrentWidget().m_wgtType;
+        String widgetPath=browserView.getCurrentWidget().getWidgetPath();
+        return makeRealPath(path,widgetPath,wgtType);
+    }
 
 	/**
 	 * 获得带协议的全路径
@@ -647,7 +660,7 @@ public class BUtility {
 			String message, final boolean exitOnClicked) {
 		new AlertDialog.Builder(activity).setTitle(title).setMessage(message)
 				.setCancelable(false)
-				.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+				.setPositiveButton(EUExUtil.getString("confirm"), new DialogInterface.OnClickListener() {
 
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
@@ -761,18 +774,19 @@ public class BUtility {
 			int reqWidth, int reqHeight) {
 		Bitmap bm = null;
 		if (inputStream != null) {
-			BitmapFactory.Options opts = new BitmapFactory.Options();
-			opts.inJustDecodeBounds = true;
-			BitmapFactory.decodeStream(inputStream, null, opts);
-			opts.inSampleSize = calculateInSampleSize(opts, reqWidth, reqHeight);
-			opts.inPurgeable = true;
-			opts.inInputShareable = true;
-			opts.inTempStorage = new byte[64 * 1024];
-			opts.inJustDecodeBounds = false;
-			bm = BitmapFactory.decodeStream(inputStream, null, opts);
+			bm =decodeSamplerBitmap(transStreamToBytes(inputStream,64*1024),reqWidth,reqHeight);
 		}
 		return bm;
 	}
+
+    public static Bitmap decodeSamplerBitmap(byte[] data, int reqWidth, int reqHeight) {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeByteArray(data, 0, data.length, options);
+        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
+        options.inJustDecodeBounds = false;
+        return BitmapFactory.decodeByteArray(data, 0, data.length, options);
+    }
 
 	public static int calculateInSampleSize(BitmapFactory.Options options,
 			int reqWidth, int reqHeight) {

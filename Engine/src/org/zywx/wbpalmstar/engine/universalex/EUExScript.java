@@ -92,7 +92,8 @@ public class EUExScript {
                 + "setLogServerIp:function(){uexDispatcher.dispatch('uexWidget','setLogServerIp',jo(arguments));},"
                 + "delPushInfo:function(){uexDispatcher.dispatch('uexWidget','delPushInfo',jo(arguments));},"
                 + "isAppInstalled:function(){uexDispatcher.dispatch('uexWidget','isAppInstalled',jo(arguments));},"
-                + "getPushInfo:function(){uexDispatcher.dispatch('uexWidget','getPushInfo',jo(arguments));}};"
+                + "getPushInfo:function(){uexDispatcher.dispatch('uexWidget','getPushInfo',jo(arguments));},"
+                + "setKeyboardMode:function(){uexDispatcher.dispatch('uexWidget','setKeyboardMode',jo(arguments));}};"
                 +
                 // Window
                 "window.uexWindow={"
@@ -101,6 +102,7 @@ public class EUExScript {
                 + "pageBack:function(){uexDispatcher.dispatch('uexWindow','pageBack',jo(arguments));},"
                 + "pageForward:function(){uexDispatcher.dispatch('uexWindow','pageForward',jo(arguments));},"
                 + "showSoftKeyboard:function(){uexDispatcher.dispatch('uexWindow','showSoftKeyboard',jo(arguments));},"
+                + "hideSoftKeyboard:function(){uexDispatcher.dispatch('uexWindow','hideSoftKeyboard',jo(arguments));},"
                 + "alert:function(){uexDispatcher.dispatch('uexWindow','alert',jo(arguments));},"
                 + "confirm:function(){uexDispatcher.dispatch('uexWindow','confirm',jo(arguments));},"
                 + "prompt:function(){uexDispatcher.dispatch('uexWindow','prompt',jo(arguments));},"
@@ -186,8 +188,8 @@ public class EUExScript {
                 + "refresh:function(){uexDispatcher.dispatch('uexWindow','refresh',jo(arguments));},"
                 + "reload:function(){uexDispatcher.dispatch('uexWindow','reload',jo(arguments));},"
                 + "reloadWidgetByAppId:function(){uexDispatcher.dispatch('uexWindow','reloadWidgetByAppId',jo(arguments));},"
+                + "setIsSupportSlideCallback:function(){uexDispatcher.dispatch('uexWindow','setIsSupportSlideCallback',jo(arguments));},"
                 + "getUrlQuery:function(){return uexDispatcher.dispatch('uexWindow','getUrlQuery',jo(arguments))}};"
-
                 +
 //				// DataAnalysis 
 //				"window.uexDataAnalysis={"

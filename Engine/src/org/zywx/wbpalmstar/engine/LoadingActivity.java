@@ -12,6 +12,7 @@ import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -76,7 +77,7 @@ public class LoadingActivity extends Activity {
         registerReceiver(mBroadcastReceiver, intentFilter);
         if (EBrowserActivity.develop) {
             TextView worn = new TextView(this);
-            worn.setText("测试版本仅用于开发测试");
+            worn.setText(EUExUtil.getString("platform_only_test"));
             worn.setTextColor(0xffff0000);
             worn.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
             FrameLayout.LayoutParams wornPa = new FrameLayout.LayoutParams(
@@ -87,6 +88,13 @@ public class LoadingActivity extends Activity {
             worn.setLayoutParams(wornPa);
             rootLayout.addView(worn);
         }
+		try {
+			getWindow().clearFlags(
+					WindowManager.LayoutParams.class.getField(
+							"FLAG_NEEDS_MENU_KEY").getInt(null));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
     }
 
     @Override

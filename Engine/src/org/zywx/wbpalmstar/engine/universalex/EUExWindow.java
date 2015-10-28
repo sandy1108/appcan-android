@@ -18,6 +18,7 @@
 
 package org.zywx.wbpalmstar.engine.universalex;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -143,6 +144,7 @@ public class EUExWindow extends EUExBase {
     private static final int MSG_FUNCTION_RELOAD= 48;
     private static final int MSG_FUNCTION_RELOAD_WIDGET_BY_APPID= 49;
     private static final int MSG_FUNCTION_GET_SLIDING_WINDOW_STATE = 50;
+    private static final int MSG_SET_IS_SUPPORT_SLIDE_CALLBACK = 51;
 	private AlertDialog.Builder mAlert;
 	private AlertDialog.Builder mConfirm;
 	private PromptDialog mPrompt;
@@ -312,17 +314,17 @@ public class EUExWindow extends EUExBase {
 
 	private void showPermissionDialog(final String windName) {
 		EBrowserActivity activity = (EBrowserActivity) mContext;
-		if (!activity.isVisable()) {
+		/*if (!activity.isVisable()) {
 			return;
-		}
+		}*/
 		Runnable ui = new Runnable() {
 			@Override
 			public void run() {
 				AlertDialog.Builder dia = new AlertDialog.Builder(mContext);
-				dia.setTitle("警告");
-				dia.setMessage("没有打开" + windName + "窗口的权限");
+				dia.setTitle(EUExUtil.getString("warning"));
+				dia.setMessage(String.format(EUExUtil.getString("no_permission_to_open_window"),windName));
 				dia.setCancelable(false);
-				dia.setPositiveButton("确定", null);
+				dia.setPositiveButton(EUExUtil.getString("confirm"), null);
 				dia.show();
 			}
 		};
@@ -785,11 +787,8 @@ public class EUExWindow extends EUExBase {
 	public void handleSetSlidingWin(String[] param) {
         String jsonStr = param[0];
         EBrowserActivity activity = (EBrowserActivity) mContext;
-
-
         try {
             JSONObject jsonObject = new JSONObject(jsonStr);
-
             int with = 0;
             String url;
             int slidingMode = SlidingMenu.LEFT;
@@ -797,80 +796,46 @@ public class EUExWindow extends EUExBase {
             JSONObject leftJsonObj = null;
             JSONObject rightJsonObj = null;
             View menuView;
-            
             if (activity.globalSlidingMenu.getParent() != null) {
             	return;
             }
 
             String animationId=jsonObject.optString("animationId");
-
             if (jsonObject.has("leftSliding"))  {
-
                 leftJsonObj = new JSONObject(jsonObject.getString("leftSliding"));
-
-
                 if(leftJsonObj != null) {
-
                     slidingMode = SlidingMenu.LEFT;
-
                     with = leftJsonObj.getInt("width");
                     url = leftJsonObj.getString("url");
-
                     if (with > 0) {
                         activity.globalSlidingMenu.setBehindWidth(with);
                     }
-
                     menuView = LayoutInflater.from(mContext).inflate(finder.getLayoutId("menu_frame"), null);
                     activity.globalSlidingMenu.setMenu(menuView);
-                    
-//                    activity.globalSlidingMenu.setMenu(R.layout.menu_frame);
-
                     addBrowserWindowToSldingWin(url, EBrowserWindow.rootLeftSlidingWinName);
-
                     isAttach = true;
-
                 }
-
             }
 
             if (jsonObject.has("rightSliding")) {
-
                 rightJsonObj = new JSONObject(jsonObject.getString("rightSliding"));
-
-
                 if(rightJsonObj != null) {
-
                     slidingMode = SlidingMenu.RIGHT;
-
                     with = rightJsonObj.getInt("width");
                     url = rightJsonObj.getString("url");
-
-
                     if (with > 0) {
                         activity.globalSlidingMenu.setBehindWidth(with);
                     }
-
-                    
                     menuView = LayoutInflater.from(mContext).inflate(finder.getLayoutId("menu_frame_two"), null);
                     activity.globalSlidingMenu.setSecondaryMenu(menuView);
                     activity.globalSlidingMenu.setSecondaryShadowDrawable(finder.getDrawable("shadowright"));
-
-//                    activity.globalSlidingMenu.setSecondaryMenu(R.layout.menu_frame_two);
-//                    activity.globalSlidingMenu.setSecondaryShadowDrawable(R.drawable.shadowright);
-
                     addBrowserWindowToSldingWin(url, EBrowserWindow.rootRightSlidingWinName);
-
-
                     isAttach = true;
-
                 }
-
             }
 
             if ("1".equals(animationId)) {
-
                 String bg = jsonObject.optString("bg");
-
                 //仿QQ侧边栏动画
                 activity.globalSlidingMenu.setBehindCanvasTransformer(new SlidingMenu.CanvasTransformer() {
                     @Override
@@ -892,7 +857,11 @@ public class EUExWindow extends EUExBase {
                 activity.globalSlidingMenu.setFadeEnabled(false);
             }else{
                 activity.globalSlidingMenu.setShadowWidthRes(EUExUtil.getResDimenID("shadow_width"));
-                activity.globalSlidingMenu.setShadowDrawable(EUExUtil.getResDrawableID("shadow"));
+                if (!jsonObject.has("leftSliding") && jsonObject.has("rightSliding"))  {
+                	activity.globalSlidingMenu.setShadowDrawable(EUExUtil.getResDrawableID("shadowright"));
+                } else {
+                	activity.globalSlidingMenu.setShadowDrawable(EUExUtil.getResDrawableID("shadow"));
+                }
                 activity.globalSlidingMenu.setFadeDegree(0.35f);
             }
 
@@ -906,12 +875,8 @@ public class EUExWindow extends EUExBase {
                 mBrwView.setBackgroundColor(Color.TRANSPARENT);
             }
          } catch (JSONException e) {
-
         }
-
-
     }
-
 
     public void setViewBackground(View view, String bgColor, String baseUrl) {
 
@@ -1422,6 +1387,8 @@ public class EUExWindow extends EUExBase {
                 childUrl[i] = jsonContent.getJSONObject(i).getString("inUrl");
                 popEntry.mData = jsonContent.getJSONObject(i).getString(
                         "inData");
+                popEntry.mFlag = jsonContent.getJSONObject(i).optInt(
+                		"flag");
 
                 if (null == popEntry.mViewName
                         || popEntry.mViewName.length() == 0) {
@@ -2579,9 +2546,9 @@ public class EUExWindow extends EUExBase {
 	}
 
 	public void private_alert(String inTitle, String inMessage, String inButtonLable) {
-		if (!((EBrowserActivity) mContext).isVisable()) {
+		/*if (!((EBrowserActivity) mContext).isVisable()) {
 			return;
-		}
+		}*/
 		if (null != mAlert) {
 			return;
 		}
@@ -2604,9 +2571,9 @@ public class EUExWindow extends EUExBase {
 	}
 
 	public void private_confirm(String inTitle, String inMessage, String[] inButtonLable) {
-		if (!((EBrowserActivity) mContext).isVisable()) {
+		/*if (!((EBrowserActivity) mContext).isVisable()) {
 			return;
-		}
+		}*/
 		if (inButtonLable == null) {
 			return;
 		}
@@ -2701,9 +2668,9 @@ public class EUExWindow extends EUExBase {
 	}
 
 	public void private_prompt(String inTitle, String inMessage, String inDefaultValue, String[] inButtonLables) {
-		if (!((EBrowserActivity) mContext).isVisable()) {
+		/*if (!((EBrowserActivity) mContext).isVisable()) {
 			return;
-		}
+		}*/
 		if (null != mPrompt) {
 			return;
 		}
@@ -2772,6 +2739,15 @@ public class EUExWindow extends EUExBase {
       mBrwView.getBrowserWindow().showSoftKeyboard();
       //}
 	}
+
+    public void hideSoftKeyboard(String[] params){
+        ((Activity)mContext).runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                hideSoftKeyboard(mBrwView.getWindowToken());
+            }
+        });
+    }
 
 	public void setWindowScrollbarVisible(String[] params) {
 		if (null == params || params.length < 1)
@@ -3036,7 +3012,32 @@ public class EUExWindow extends EUExBase {
 		}
 		mBrwView.setIsMultilPopoverFlippingEnbaled(enabled == 1 ? true : false);
 	}
-	
+
+    public void setIsSupportSlideCallback(String[] params) {
+        if (params == null || params.length < 1) {
+            errorCallback(0, 0, "error params!");
+            return;
+        }
+        Message msg = new Message();
+        msg.obj = this;
+        msg.what = MSG_SET_IS_SUPPORT_SLIDE_CALLBACK;
+        Bundle bd = new Bundle();
+        bd.putStringArray(TAG_BUNDLE_PARAM, params);
+        msg.setData(bd);
+        mHandler.sendMessage(msg);
+    }
+
+    private void setIsSupportSlideCallbackMsg(String[] params) {
+        String json = params[0];
+        try {
+            JSONObject jsonObject = new JSONObject(json);
+            boolean isSupport = Boolean.valueOf(jsonObject.getString("isSupport"));
+            mBrwView.setIsSupportSlideCallback(isSupport);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void onHandleMessage(Message msg) {
         if(mBrwView == null || mBrwView.getBrowserWindow() == null || msg == null){
@@ -3206,7 +3207,10 @@ public class EUExWindow extends EUExBase {
             case MSG_PUBLISH_CHANNEL_NOTIFICATION:
                 publishChannelNotificationMsg(param);
                 break;
-        default:
+            case MSG_SET_IS_SUPPORT_SLIDE_CALLBACK:
+                setIsSupportSlideCallbackMsg(param);
+                break;
+            default:
             break;
         }
     }
