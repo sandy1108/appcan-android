@@ -18,9 +18,7 @@
 
 package org.zywx.wbpalmstar.engine;
 
-import android.app.ActivityGroup;
 import android.app.AlertDialog;
-import android.app.LocalActivityManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
@@ -32,8 +30,8 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.*;
 import android.os.Process;
-import android.util.TypedValue;
-import android.view.Gravity;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
@@ -68,8 +66,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-@SuppressWarnings("deprecation")
-public final class EBrowserActivity extends ActivityGroup {
+public final class EBrowserActivity extends FragmentActivity {
 
 	public static final int F_OAUTH_CODE = 100001;
 	public final static int FILECHOOSER_RESULTCODE = 233;
@@ -95,6 +92,7 @@ public final class EBrowserActivity extends ActivityGroup {
 	
 	public SlidingMenu globalSlidingMenu;
 	private ValueCallback<Uri> mUploadMessage;
+	private boolean mLoadingRemoved=false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -235,21 +233,28 @@ public final class EBrowserActivity extends ActivityGroup {
 		return mEBrwMainFrame.customViewShown();
 	}
 
-	public void setContentViewVisible(){
+	public void setContentViewVisible(int delayTime){
+		if (mLoadingRemoved){
+			return;
+		}
+		final LocalBroadcastManager broadcastManager = LocalBroadcastManager
+				.getInstance(this);
 		mEHandler.postDelayed(new Runnable() {
 			@Override
 			public void run() {
 				runOnUiThread(new Runnable() {
 					@Override
 					public void run() {
+						mLoadingRemoved=true;
 						getWindow().setBackgroundDrawable(new ColorDrawable(0xFFFFFFFF));
 						Intent intent=new Intent(LoadingActivity.BROADCAST_ACTION);
-						sendBroadcast(intent);
+						broadcastManager.sendBroadcast(intent);
 					}
 				});
 			}
-		}, 200);
+		}, delayTime);
 	}
+
 
 	public final void showCustomView(View view, CustomViewCallback callback) {
 
@@ -419,34 +424,33 @@ public final class EBrowserActivity extends ActivityGroup {
 	    if(intent == null){
 	        return;
 	    }
-        Intent firstIntent = getIntent();
-        int type = 0;
         try {
-            type = intent.getIntExtra("ntype", 0);
-        }catch (Exception e){
+			Intent firstIntent = getIntent();
+			int type = intent.getIntExtra("ntype", 0);;
+			switch (type) {
+			case ENotification.F_TYPE_PUSH:
+			    if (null != mBrowser) {
+			        String data = intent.getStringExtra("data");
+					String pushMessage = intent.getStringExtra("message");
+			        firstIntent.putExtra("data", data);
+					firstIntent.putExtra("message", pushMessage);
+			        mBrowser.pushNotify();
+			    }
+			    break;
+			case ENotification.F_TYPE_USER:
 
-        }
-        switch (type) {
-        case ENotification.F_TYPE_PUSH:
-            if (null != mBrowser) {
-                String data = intent.getStringExtra("data");
-				String pushMessage = intent.getStringExtra("message");
-                firstIntent.putExtra("data", data);
-				firstIntent.putExtra("message", pushMessage);
-                mBrowser.pushNotify();
-            }
-            break;
-        case ENotification.F_TYPE_USER:
+			    break;
+			case ENotification.F_TYPE_SYS:
 
-            break;
-        case ENotification.F_TYPE_SYS:
-
-            break;
-        default:
-            getIntentData(intent);
-            firstIntent.putExtras(intent);
-            break;
-        }
+			    break;
+			default:
+			    getIntentData(intent);
+			    firstIntent.putExtras(intent);
+			    break;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public final void exitApp(boolean showDilog) {
@@ -510,8 +514,6 @@ public final class EBrowserActivity extends ActivityGroup {
 			mBrowser.onAppStop();
 		}
 		mBrowserAround.removeViewImmediate();
-		LocalActivityManager lm = getLocalActivityManager();
-		lm.removeAllActivities();
 		clean();
 		finish();
 		Process.killProcess(Process.myPid());
@@ -806,21 +808,25 @@ public final class EBrowserActivity extends ActivityGroup {
 				initEngine(msg);
 				break;
 			case F_MSG_LOAD_DELAY:
-				Intent intent = getIntent();
-				int type = intent.getIntExtra("ntype", 0);
-				switch (type) {
-				case ENotification.F_TYPE_PUSH:
-					mBrowser.setFromPush(true);
+				try {
+					Intent intent = getIntent();
+					int type = intent.getIntExtra("ntype", 0);
+					switch (type) {
+					case ENotification.F_TYPE_PUSH:
+						mBrowser.setFromPush(true);
+						break;
+					case ENotification.F_TYPE_USER:
+						// onNewIntent(intent);
+						break;
+					}
+					mBrowser.start();
 					break;
-				case ENotification.F_TYPE_USER:
-					// onNewIntent(intent);
-					break;
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
-				mBrowser.start();
-				break;
 			case F_MSG_LOAD_HIDE_SH:
 				mScreen.setVisibility(View.VISIBLE);
-				setContentViewVisible();
+				setContentViewVisible(0);
 				if (mBrowserAround.checkTimeFlag()) {
 					mBrowser.hiddenShelter();
 				} else {
