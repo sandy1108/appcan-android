@@ -19,110 +19,233 @@
 package org.zywx.wbpalmstar.engine;
 
 
+import java.util.Map;
+
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
+import android.net.Uri;
 import android.webkit.JsPromptResult;
 import android.webkit.JsResult;
+import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.widget.EditText;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.zywx.wbpalmstar.base.BDebug;
+import org.zywx.wbpalmstar.engine.callback.EUExDispatcherCallback;
+import org.zywx.wbpalmstar.engine.universalex.EUExBase;
+import org.zywx.wbpalmstar.engine.universalex.EUExDispatcher;
+import org.zywx.wbpalmstar.engine.universalex.EUExManager;
+import org.zywx.wbpalmstar.engine.universalex.EUExScript;
+import org.zywx.wbpalmstar.engine.universalex.EUExUtil;
+import org.zywx.wbpalmstar.engine.universalex.ThirdPluginObject;
+
 public class CBrowserMainFrame extends WebChromeClient {
-	/**
-	 *android version < 2.1 use 
-	 */
-	public CBrowserMainFrame(){
-	}
-	
-	@Override
-	public void onProgressChanged(WebView view, int newProgress) {
-		EBrowserView target = (EBrowserView)view;
-		EBrowserWindow bWindow = target.getBrowserWindow();
-		bWindow.setGlobalProgress(newProgress);
-		if(100 == newProgress){
-			bWindow.hiddenProgress();
-		}
-	}
 
-	@Override
-	public boolean onJsAlert(WebView view, String url, String message, final JsResult result) {
-		if (!((EBrowserActivity)view.getContext()).isVisable()){
-			result.cancel();
-			return true;
-		}
-		AlertDialog.Builder dia = new AlertDialog.Builder(view.getContext());
-		dia.setTitle("提示消息");
-		dia.setMessage(message);
-		dia.setCancelable(false);
-		dia.setPositiveButton("确定", new OnClickListener() {
-			public void onClick(DialogInterface dialog, int which) {
-				result.confirm();
-			}
-		});
-		dia.create();
-		dia.show();
-		return true;
-	}
+    public Context mContext;
 
-	@Override
-	public boolean onJsConfirm(WebView view, String url, String message, final JsResult result) {
-		if (!((EBrowserActivity)view.getContext()).isVisable()){
-			result.cancel();
-			return true;
-		} 
-		AlertDialog.Builder dia = new AlertDialog.Builder(view.getContext());
-		 dia.setMessage(message);
-		 dia.setTitle("确认消息");
-		 dia.setCancelable(false);
-		 dia.setPositiveButton("确定", 
-         	new DialogInterface.OnClickListener() {
-             	public void onClick(DialogInterface dialog, int which) {
-             		result.confirm();
-                 }
-             });
-		 dia.setNegativeButton("取消", 
-                 	new DialogInterface.OnClickListener() {
-             	public void onClick(DialogInterface dialog, int which) {
-             		result.cancel();
-                 }
-             });
-		 dia.create();
-		 dia.show();
-         return true;
-	}
+    /**
+     * android version < 2.1 use
+     */
+    public CBrowserMainFrame(Context context) {
+        this.mContext = context;
+    }
 
-	@Override
-	public boolean onJsPrompt(WebView view, String url, String message, String defaultValue, final JsPromptResult result) {
-		if (!((EBrowserActivity)view.getContext()).isVisable()){
-			result.cancel();
-			return true;
-		}
-		AlertDialog.Builder dia = new AlertDialog.Builder(view.getContext());
-		dia.setTitle(null);
-		dia.setMessage(message);
-		final EditText input = new EditText(view.getContext());
-		if (defaultValue != null) {
-			input.setText(defaultValue);
-		}
-		input.setSelectAllOnFocus(true);
-		dia.setView(input);
-		dia.setCancelable(false);
-		dia.setPositiveButton("确定", 
-			new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int which) {
-					result.confirm(input.getText().toString());
-			}
-		});
-		dia.setNegativeButton("取消", 
-			new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int which) {
-					result.cancel();
-			}
-		});
-		dia.create();
-		dia.show();
-		return true;
-	}
+    @Override
+    public void onProgressChanged(WebView view, int newProgress) {
+        if (view != null) {
+            EBrowserView target = (EBrowserView) view;
+            EBrowserWindow bWindow = target.getBrowserWindow();
+            if (bWindow != null) {
+                bWindow.setGlobalProgress(newProgress);
+                if (100 == newProgress) {
+                    bWindow.hiddenProgress();
+                }
+            }
+        }
+    }
+
+    @Override
+    public boolean onJsAlert(WebView view, String url, String message, final JsResult result) {
+        if (!((EBrowserActivity) view.getContext()).isVisable()) {
+            result.confirm();
+        }
+        AlertDialog.Builder dia = new AlertDialog.Builder(view.getContext());
+        dia.setTitle(EUExUtil.getResStringID("prompt"));
+        dia.setMessage(message);
+        dia.setCancelable(false);
+        dia.setPositiveButton(EUExUtil.getResStringID("confirm"), new OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                result.confirm();
+            }
+        });
+        dia.create();
+        dia.show();
+        return true;
+    }
+
+    @Override
+    public boolean onJsConfirm(WebView view, String url, String message, final JsResult result) {
+        if (!((EBrowserActivity) view.getContext()).isVisable()) {
+            result.cancel();
+            return true;
+        }
+        AlertDialog.Builder dia = new AlertDialog.Builder(view.getContext());
+        dia.setMessage(message);
+        dia.setTitle(EUExUtil.getResStringID("prompt"));
+        dia.setCancelable(false);
+        dia.setPositiveButton(EUExUtil.getResStringID("confirm"),
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        result.confirm();
+                    }
+                });
+        dia.setNegativeButton(EUExUtil.getResStringID("cancel"),
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        result.cancel();
+                    }
+                });
+        dia.create();
+        dia.show();
+        return true;
+    }
+
+    @Override
+    public boolean onJsPrompt(WebView view, String url, String message, String defaultValue, final JsPromptResult result) {
+        if (message != null
+                && message.startsWith(EUExScript.JS_APPCAN_ONJSPARSE)) {
+            result.cancel();
+            appCanJsParse(view,
+                    message.substring(EUExScript.JS_APPCAN_ONJSPARSE.length()));
+        } else {
+            if (!((EBrowserActivity) view.getContext()).isVisable()) {
+                result.cancel();
+                return true;
+            }
+            AlertDialog.Builder dia = new AlertDialog.Builder(view.getContext());
+            dia.setTitle(null);
+            dia.setMessage(message);
+            final EditText input = new EditText(view.getContext());
+            if (defaultValue != null) {
+                input.setText(defaultValue);
+            }
+            input.setSelectAllOnFocus(true);
+            dia.setView(input);
+            dia.setCancelable(false);
+            dia.setPositiveButton(EUExUtil.getResStringID("confirm"),
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            result.confirm(input.getText().toString());
+                        }
+                    });
+            dia.setNegativeButton(EUExUtil.getResStringID("cancel"),
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            result.cancel();
+                        }
+                    });
+            dia.create();
+            dia.show();
+        }
+        return true;
+    }
+
+    private void appCanJsParse(WebView view, String parseStr) {
+        try {
+            if (!(view instanceof EBrowserView)) {
+                return;
+            }
+            JSONObject json = new JSONObject(parseStr);
+            String uexName = json.optString("uexName");
+            String method = json.optString("method");
+            JSONArray jsonArray = json.getJSONArray("args");
+            JSONArray typesArray = json.getJSONArray("types");
+            int length = jsonArray.length();
+            String[] args = new String[length];
+            for (int i = 0; i < length; i++) {
+                String type = typesArray.getString(i);
+                String arg = jsonArray.getString(i);
+                if ("undefined".equals(type) && "null".equals(arg)) {
+                    args[i] = null;
+                } else {
+                    args[i] = arg;
+                }
+            }
+            EBrowserView browserView = (EBrowserView) view;
+            final EUExManager uexManager = browserView.getEUExManager();
+            if (uexManager != null) {
+                EUExDispatcher uexDispatcher = new EUExDispatcher(
+                        new EUExDispatcherCallback() {
+                            @Override
+                            public void onDispatch(String pluginName,
+                                                   String methodName, String[] params) {
+                                ELinkedList<EUExBase> plugins = uexManager
+                                        .getThirdPlugins();
+                                for (EUExBase plugin : plugins) {
+                                    if (plugin.getUexName().equals(pluginName)) {
+                                        uexManager.callMethod(plugin,
+                                                methodName, params);
+                                        return;
+                                    }
+                                }
+                                // 调用单实例插件
+                                Map<String, ThirdPluginObject> thirdPlugins = uexManager
+                                        .getPlugins();
+                                ThirdPluginObject thirdPluginObject = thirdPlugins
+                                        .get(pluginName);
+                                if (thirdPluginObject != null
+                                        && thirdPluginObject.isGlobal
+                                        && thirdPluginObject.pluginObj != null) {
+                                    uexManager.callMethod(
+                                            thirdPluginObject.pluginObj,
+                                            methodName, params);
+                                }
+                                BDebug.e("plugin", pluginName, "not exist...");
+                            }
+                        });
+                uexDispatcher.dispatch(uexName, method, args);
+                BDebug.i("appCanJsParse", "dispatch parseStr " + parseStr);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // For Android 3.0-
+    public void openFileChooser(ValueCallback<Uri> uploadMsg) {
+        ((EBrowserActivity) mContext).setmUploadMessage(uploadMsg);
+        Intent i = new Intent(Intent.ACTION_GET_CONTENT);
+        i.addCategory(Intent.CATEGORY_OPENABLE);
+        i.setType("image/*");
+        ((EBrowserActivity) mContext).startActivityForResult(Intent.createChooser(i, "File Chooser"),
+                EBrowserActivity.FILECHOOSER_RESULTCODE);
+    }
+
+    // For Android 3.0+
+    public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType) {
+        ((EBrowserActivity) mContext).setmUploadMessage(uploadMsg);
+        Intent i = new Intent(Intent.ACTION_GET_CONTENT);
+        i.addCategory(Intent.CATEGORY_OPENABLE);
+        i.setType("*/*");
+        ((EBrowserActivity) mContext).startActivityForResult(Intent.createChooser(i, "File Browser"),
+                EBrowserActivity.FILECHOOSER_RESULTCODE);
+    }
+
+    // For Android 4.1
+    public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType, String capture) {
+        ((EBrowserActivity) mContext).setmUploadMessage(uploadMsg);
+        Intent i = new Intent(Intent.ACTION_GET_CONTENT);
+        i.addCategory(Intent.CATEGORY_OPENABLE);
+        i.setType("image/*");
+        ((EBrowserActivity) mContext).startActivityForResult(Intent.createChooser(i, "File Chooser"),
+                EBrowserActivity.FILECHOOSER_RESULTCODE);
+    }
 
 }
