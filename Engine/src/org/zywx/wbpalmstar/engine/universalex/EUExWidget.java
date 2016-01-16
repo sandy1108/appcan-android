@@ -51,6 +51,7 @@ import org.zywx.wbpalmstar.engine.EBrowserAnimation;
 import org.zywx.wbpalmstar.engine.EBrowserView;
 import org.zywx.wbpalmstar.engine.EBrowserWindow;
 import org.zywx.wbpalmstar.engine.EWgtResultInfo;
+import org.zywx.wbpalmstar.platform.push.report.PushReportConstants;
 import org.zywx.wbpalmstar.widgetone.WidgetOneApplication;
 import org.zywx.wbpalmstar.widgetone.dataservice.ReData;
 import org.zywx.wbpalmstar.widgetone.dataservice.WDataManager;
@@ -77,11 +78,13 @@ public class EUExWidget extends EUExBase {
     public static final String function_getPushState = "uexWidget.cbGetPushState";
     public static final String function_onSpaceClick = "uexWidget.onSpaceClick";
     public static final String function_loadApp = "uexWidget.cbLoadApp";
+    public static final String function_getMBaaSHost = "uexWidget.cbMBaaSHost";
     private static final String BUNDLE_DATA = "data";
     private static final String BUNDLE_MESSAGE = "message";
     private static final String PUSH_MSG_BODY = "0";
     private static final String PUSH_MSG_ALL = "1";
     private static final int MSG_IS_APP_INSTALLED = 0;
+    private static final int MSG_RELOAD_WIDGET_BY_APPID= 1;
 
     public EUExWidget(Context context, EBrowserView inParent) {
         super(context, inParent);
@@ -466,11 +469,6 @@ public class EUExWidget extends EUExBase {
         }
     }
 
-    public void closeLoading(String[] params) {
-        ((EBrowserActivity) mContext).setContentViewVisible(0);
-    }
-
-
     public void loadApp(String[] parm) {
         if (parm.length < 3) {
             return;
@@ -749,6 +747,11 @@ public class EUExWidget extends EUExBase {
         });
     }
 
+    public void getMBaaSHost(String[] parm) {
+        String mbaas_host = ResoureFinder.getInstance().getString(mContext, "mbaas_host");
+        jsCallback(function_getMBaaSHost, 0, EUExCallback.F_C_TEXT, mbaas_host);
+    }
+
     public void getPushState(String[] parm) {
         SharedPreferences sp = mContext.getSharedPreferences("saveData",
                 Context.MODE_PRIVATE);
@@ -763,17 +766,16 @@ public class EUExWidget extends EUExBase {
         if (parm.length >= 1) {
             type = parm[0];
         }
+        SharedPreferences sp = mContext.getSharedPreferences(
+                PushReportConstants.PUSH_DATA_SHAREPRE, Context.MODE_PRIVATE);
         String userInfo = null;
-        try {
-            if (PUSH_MSG_ALL.equals(type)) {
-                // 获取推送消息所有内容
-                userInfo = ((EBrowserActivity) mContext).getIntent()
-                        .getStringExtra(BUNDLE_MESSAGE);
-            } else {
-                userInfo = ((EBrowserActivity) mContext).getIntent()
-                        .getStringExtra(BUNDLE_DATA);
-            }
-        } catch (Exception e) {
+        if (PUSH_MSG_ALL.equals(type)) {
+            // 获取推送消息所有内容
+            userInfo = sp.getString(
+                    PushReportConstants.PUSH_DATA_SHAREPRE_MESSAGE, "");
+        } else {
+            userInfo = sp.getString(
+                    PushReportConstants.PUSH_DATA_SHAREPRE_DATA, "");
         }
         ((WidgetOneApplication) mContext.getApplicationContext()).getPushInfo(
                 userInfo, System.currentTimeMillis() + "");
@@ -788,10 +790,6 @@ public class EUExWidget extends EUExBase {
         intent.putExtra(Intent.EXTRA_TEXT, inContent);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         mContext.startActivity(Intent.createChooser(intent, inShareTitle));
-    }
-
-    public void moveToBack(String[] params) {
-        ((Activity) mContext).moveTaskToBack(true);
     }
 
     public void openFile(String path) {
@@ -866,6 +864,35 @@ public class EUExWidget extends EUExBase {
         callBackPluginJs(JsConst.CALLBACK_IS_APP_INSTALLED, jsonObject.toString());
     }
 
+    public void reloadWidgetByAppId(String[] params){
+        if (params.length < 1) {
+            return;
+        }
+        Message msg = mHandler.obtainMessage();
+        msg.what = MSG_RELOAD_WIDGET_BY_APPID;
+        msg.obj = this;
+        Bundle bd = new Bundle();
+        bd.putStringArray(BUNDLE_DATA, params);
+        msg.setData(bd);
+        mHandler.sendMessage(msg);
+    }
+
+    private void reloadWidgetByAppIdMsg(String[] params) {
+        if (params == null || params.length < 1){
+            errorCallback(0, 0 , "error params!");
+            return;
+        }
+        String appId = params[0];
+        if (TextUtils.isEmpty(appId)) {
+            Log.e("reloadWidgetByAppId", "appId is empty!!!");
+            return;
+        }
+        EBrowserWindow curWind = mBrwView.getBrowserWindow();
+        if (null == curWind) {
+            return;
+        }
+        curWind.reloadWidgetByAppId(appId);
+    }
     private void callBackPluginJs(String methodName, String jsonData) {
         String js = SCRIPT_HEADER + "if(" + methodName + "){"
                 + methodName + "('" + jsonData + "');}";
@@ -887,6 +914,9 @@ public class EUExWidget extends EUExBase {
         switch (message.what) {
             case MSG_IS_APP_INSTALLED:
                 isAppInstalledMsg(bundle.getStringArray(BUNDLE_DATA));
+                break;
+            case MSG_RELOAD_WIDGET_BY_APPID:
+                reloadWidgetByAppIdMsg(bundle.getStringArray(BUNDLE_DATA));
                 break;
             default:
                 super.onHandleMessage(message);

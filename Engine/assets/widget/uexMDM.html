@@ -1,0 +1,186 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<link rel="stylesheet" type="text/css" href="css/index.css">
+
+<script type="text/javascript">
+	function login() {
+		alert("login");
+		uexMDM.login();
+	}
+	function reportLocation() {
+		alert("reportLocation");
+		uexMDM.reportLocation();
+	}
+	function reportNetworkTraffic() {
+		alert("reportNetworkTraffic");
+		uexMDM.reportNetworkTraffic();
+	}
+	function backupContacts() {
+		alert("backupContacts");
+		uexMDM.backupContacts();
+	}
+	function restoreContacts() {
+		alert("restoreContacts");
+		uexMDM.restoreContacts();
+	}
+	function restrictMEM() {
+		alert("restrictMEM");
+		uexMDM.restrictMEM();
+	}
+	function checkIsNeedVerifyCode() {
+		alert("checkIsNeedVerifyCode");
+		uexMDM.checkIsNeedVerifyCode();
+	}
+
+	//===========================================================
+
+	function setVPN() {
+		console.log("setVPN-----------------");
+		var VpnHost = "114.247.136.59";
+		//var VpnHost  = "100.1.51.40";
+		var VpnLoginName = "csyg2";
+		var VpnLoginPsw = "test1234";
+		var VpnCertPath = "res://1187_20130924102946Z.p12/";
+		var VpnCertPsw = "BJ6M36";
+		uexSXFVPN.setParam(VpnHost, VpnLoginName, VpnLoginPsw, VpnCertPath,
+				VpnCertPsw);
+		uexSXFVPN.login();
+	}
+
+	function setVPN2() {
+		console.log("setVPN2============");
+		var VpnHost = "114.247.136.59";
+		//var VpnHost  = "100.1.51.40";
+		var VpnLoginName = "csyg2";
+		var VpnLoginPsw = "test1234";
+		var VpnCertPath = "res://1187_20130924102946Z.p12/";
+		var VpnCertPsw = "BJ6M36";
+		uexSXFVPN.setLoginPush(VpnHost, VpnLoginName, VpnLoginPsw, VpnCertPath,
+				VpnCertPsw);
+	}
+
+	//==================================
+	function logcat() {
+		alert("logcat");
+		uexMDM.logcat();
+	}
+
+	function pushNotifyFunction(opId, dataType, data) {
+		console.log("pushNotifyFunction");
+		uexWidget.getPushInfo();
+	}
+	function setPushState(state) {
+		uexWidget.setPushState(state);
+	}
+	function getPushState() {
+		uexWidget.getPushState();
+	}
+	function setPushInfo() {
+		uexWidget.setPushInfo('123', 'zyp');
+	}
+	function getPushInfo() {
+		uexWidget.getPushInfo();
+	}
+	window.uexOnload = function(type) {
+		uexWidget.cbGetPushInfo = function(opCode, dataType, data) {
+			alert(data);
+		}
+		uexWidget.cbGetPushState = function(opId, dataType, data) {
+			alert(data);
+		}
+		uexWidget.setPushNotifyCallback("pushNotifyFunction");
+
+		//==================================
+
+		uexMDM.cbBackupContacts = function(opId, dataType, data) {
+			console.log("cbBackupContacts: " + data);
+			alert("cbBackupContacts: " + data);
+		}
+		uexMDM.cbRestoreContacts = function(opId, dataType, data) {
+			console.log("cbRestoreContacts: " + data);
+			alert("cbRestoreContacts: " + data);
+		}
+		uexMDM.cbOnCrossChanged = function(opId, dataType, data) {
+			console.log("cbOnCrossChanged: " + data);
+			alert("cbOnCrossChanged: " + data);
+		}
+		uexMDM.cbLogin = function(opId, dataType, data) {
+			console.log("cbLogin: " + data);
+			alert("cbLogin: " + data);
+		}
+		uexMDM.cbRestrictMEM = function(opId, dataType, data) {
+			console.log("cbRestrictMEM: " + data);
+			alert("cbRestrictMEM: " + data);
+		}
+		uexMDM.cbCheckIsNeedVerifyCode = function(opId, dataType, data) {
+			console.log("cbCheckIsNeedVerifyCode: " + data);
+			alert("cbCheckIsNeedVerifyCode: " + data);
+		}
+
+	}
+</script>
+</head>
+
+<body>
+	<div class="tit">
+		uexMDM
+	</div>
+	<div class="conbor">
+		<div class="consj">
+			<span>
+				调试接口
+			</span>
+			<input class="btn" type="button" value="导出LogCat日志" onclick="logcat();">
+			<br>
+			<br>
+			<span>
+				1.MDM API
+			</span>
+			<input class="btn" type="button" value="login" onclick="login();">
+			<br>
+			<br>
+			<input class="btn" type="button" value="checkIsNeedVerifyCode" onclick="checkIsNeedVerifyCode();">
+			<br>
+			<br>
+			<input class="btn" type="button" value="restrictMEM" onclick="restrictMEM();">
+			<br>
+			<br>
+			<input class="btn" type="button" value="reportLocation" onclick="reportLocation();">
+			<br>
+			<br>
+			<input class="btn" type="button" value="reportNetworkTraffic" onclick="reportNetworkTraffic();">
+			<br>
+			<br>
+			<input class="btn" type="button" value="backupContacts" onclick="backupContacts();">
+			<br>
+			<br>
+			<input class="btn" type="button" value="restoreContacts" onclick="restoreContacts();">
+			<br>
+			<br>
+			<span>
+				2.推送接口
+			</span>
+			<input class="btn" type="button" value="开启推送" onclick="setPushState('1');">
+			<br>
+			<input class="btn" type="button" value="关闭推送" onclick="setPushState('0');">
+			<br>
+			<input class="btn" type="button" value="getPushState" onclick="getPushState();">
+			<br>
+			<input class="btn" type="button" value="setPushInfo" onclick="setPushInfo();">
+			<br>
+			<input class="btn" type="button" value="getPushInfo" onclick="getPushInfo();">
+			<span>
+				3.VPN接口
+			</span>
+			<input class="btn" type="button" value="开启VPN" onclick="setVPN();">
+			<br>
+			<input class="btn" type="button" value="开启VPN2" onclick="setVPN2();">
+			<br>
+		</div>
+	</div>
+</body>
+</html>

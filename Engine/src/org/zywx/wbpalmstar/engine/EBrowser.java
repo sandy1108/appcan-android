@@ -127,11 +127,11 @@ public class EBrowser {
         mBrwWindPol.notifyHiddenShelter();
     }
 
-    protected void pushNotify() {
+    protected void pushNotify(String appType) {
         if (null == mBrwWindPol) {
             return;
         }
-        mBrwWindPol.pushNotify();
+        mBrwWindPol.pushNotify(appType);
     }
 
     public void uexOnAuthorize(String id) {
@@ -546,5 +546,11 @@ public class EBrowser {
 
     public void setSpaceEnable(SpaceClickListener listener) {
         mBrwWindPol.setSpaceEnable(listener);
+    }
+
+    public void onSlidingWindowStateChanged(int position) {
+        if (null != mBrwWindPol) {
+            mBrwWindPol.onSlidingWindowStateChanged(position);
+        }
     }
 }

@@ -62,7 +62,6 @@ public class EBrowserSetting implements EBrowserBaseSetting {
         mWebSetting.setJavaScriptEnabled(true);
         mWebSetting.setNeedInitialFocus(false);
         mWebSetting.setSupportMultipleWindows(false);
-        mWebSetting.setGeolocationEnabled(true);
         // mWebSetting.setNavDump(false);
         //mWebSetting.setPluginsEnabled(true);
         mWebSetting.setJavaScriptCanOpenWindowsAutomatically(false);

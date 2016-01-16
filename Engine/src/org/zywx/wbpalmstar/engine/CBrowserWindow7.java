@@ -18,6 +18,26 @@
 
 package org.zywx.wbpalmstar.engine;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.zywx.wbpalmstar.acedes.ACEDESBrowserWindow7;
+import org.zywx.wbpalmstar.base.BDebug;
+import org.zywx.wbpalmstar.base.BUtility;
+import org.zywx.wbpalmstar.acedes.EXWebViewClient;
+import org.zywx.wbpalmstar.engine.universalex.EUExScript;
+import org.zywx.wbpalmstar.engine.universalex.EUExUtil;
+import org.zywx.wbpalmstar.widgetone.dataservice.WWidgetData;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -30,26 +50,13 @@ import android.net.http.SslError;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Message;
+import android.util.Log;
 import android.webkit.CookieSyncManager;
 import android.webkit.HttpAuthHandler;
 import android.webkit.SslErrorHandler;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.widget.Toast;
-
-import org.zywx.wbpalmstar.acedes.ACEDESBrowserWindow7;
-import org.zywx.wbpalmstar.base.BDebug;
-import org.zywx.wbpalmstar.engine.universalex.EUExScript;
-import org.zywx.wbpalmstar.engine.universalex.EUExUtil;
-import org.zywx.wbpalmstar.widgetone.dataservice.WWidgetData;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class CBrowserWindow7 extends ACEDESBrowserWindow7 {
 
@@ -120,7 +127,8 @@ public class CBrowserWindow7 extends ACEDESBrowserWindow7 {
             }
             return true;
         }
-        boolean isUrl = url.startsWith("file") || url.startsWith("http");
+        boolean isUrl = url.startsWith("file") || url.startsWith("http")
+                || url.startsWith("content://");
         if (!isUrl) {
             return true;
         }
@@ -137,11 +145,13 @@ public class CBrowserWindow7 extends ACEDESBrowserWindow7 {
         }
         int sdkVersion = Build.VERSION.SDK_INT;
         if (sdkVersion >= 11) {
-            if (url.startsWith("file")) {
+            if (url != null) {
                 int index = url.indexOf("?");
                 if (index > 0) {
                     mParms = url.substring(index + 1);
-                    url = url.substring(0, index);
+                    if (!url.startsWith("http")) {
+                        url = url.substring(0, index);
+                    }
                 }
             }
         }
@@ -224,9 +234,7 @@ public class CBrowserWindow7 extends ACEDESBrowserWindow7 {
 
 
         if (!info.mFinished) {
-            if (WWidgetData.m_remove_loading == 1) {
-                ((EBrowserActivity) target.getContext()).setContentViewVisible(200);
-            }
+            ((EBrowserActivity)target.getContext()).setContentViewVisible();
         }
 
         info.mFinished = true;

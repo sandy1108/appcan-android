@@ -484,6 +484,17 @@ public class WDataManager {
             widgetData = getWidgetDataByXML(wgtPath, 2);
             // 启动 widgt
             if (widgetData != null) {
+                if (widgetData.m_obfuscation == 1) {
+                    String contentPrefix = "content://";
+                    String packg = m_context.getPackageName();
+                    String spPostFix = ".sp/";
+                    BUtility.g_desPath = contentPrefix + packg + spPostFix
+                            + "android_asset" + m_sboxPath;
+                    widgetData.m_indexUrl = contentPrefix + packg + spPostFix + "android_asset/"
+                            + widgetData.m_indexUrl.substring("file:///".length());
+                    widgetData.m_obfuscation = 0;
+                    BUtility.isDes = true;
+                }
                 return widgetData;
             }
 
@@ -491,6 +502,9 @@ public class WDataManager {
             if (currentWidget.m_wgtType == 0) {
                 wgtPath = F_ROOT_WIDGET_PATH + "plugin/" + appId
                         + "/config.xml";
+                if (isUpdateWidget && isCopyAssetsFinish) {
+                    wgtPath = m_sboxPath + wgtPath;
+                }
             } else if (currentWidget.m_wgtType == 2) {
                 wgtPath = currentWidget.m_widgetPath + "plugin/" + appId
                         + "/config.xml";
@@ -673,28 +687,9 @@ public class WDataManager {
                         return false;
                     }
                     FileInputStream input = new FileInputStream(file);
-                    XmlPullParser parser = Xml.newPullParser();
-                    parser.setInput(input, "utf-8");
-                    int tokenType = 0;
-                    boolean needContinue = true;
-                    String m_verString = null;
-                    do {
-                        tokenType = parser.next();
-                        switch (tokenType) {
-                            case XmlPullParser.START_TAG:
-                                String localName = (parser.getName()).toLowerCase();
-                                if ("widget".equals(localName)) {
-                                    //得到增量更新包的版本号
-                                    m_verString = parser.getAttributeValue(null, "version");
-                                    needContinue = false;
-                                }
-                                break;
-                            case XmlPullParser.END_DOCUMENT:
-                                needContinue = false;
-                                break;
-                        }
-                    } while (needContinue);
-
+                    //得到增量更新包config.xml文件中的版本号
+                    String m_verString = BUtility.parserXmlLabel(input,
+                            "config", "widget", "version");
                     //比较增量更新包和当前APK的版本号大小
                     String dbVerString = m_preferences.getString("dbVer", null);
                     if (m_verString != null && dbVerString != null) {
@@ -1399,12 +1394,7 @@ public class WDataManager {
                             if ("true".equals(text)) {
                                 widgetData.m_appdebug = 1;
                             }
-                        } else if ("removeloading".equals(localName)) {
-                            String text = parser.nextText();
-                            if ("true".equals(text)) {
-                                WWidgetData.m_remove_loading = 0;
-                            }
-                        } else if ("hardware".equals(localName)) {
+                        }else if ("hardware".equals(localName)) {
                             String text = parser.nextText();
                             if ("false".equals(text)) {
                                 EBrowserView.sHardwareAccelerate = false;

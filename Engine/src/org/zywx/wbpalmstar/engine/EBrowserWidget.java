@@ -38,7 +38,6 @@ import com.slidingmenu.lib.SlidingMenu;
 
 import org.json.JSONObject;
 import org.zywx.wbpalmstar.base.BConstant;
-import org.zywx.wbpalmstar.base.view.SwipeView;
 import org.zywx.wbpalmstar.engine.external.Compat;
 import org.zywx.wbpalmstar.engine.universalex.EUExWidget.SpaceClickListener;
 import org.zywx.wbpalmstar.widgetone.dataservice.WWidgetData;
@@ -112,7 +111,6 @@ public class EBrowserWidget extends AbsoluteLayout {
         addView(rootWindow);
         rootWindow.setWindPoType(F_WINDOW_POOL_TYPE_ROOT);
         rootWindow.init(eBrw, null);
-        rootWindow.setAbleToSwipe(false);
         windowStorage(rootWindow);
         mBroWindow = rootWindow;
     }
@@ -179,24 +177,11 @@ public class EBrowserWidget extends AbsoluteLayout {
             newWindow = new EBrowserWindow(mContext,
                     EBrowserWidget.this);
         }
-        if (entry.checkFlag(EBrwViewEntry.F_FLAG_NAV_TYPE)) {
-            EBrowserWindow.sNavFlag = true;
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            newWindow.setX(0f);
-        }
         boolean prevHidden = entry
                 .checkFlag(EBrwViewEntry.F_FLAG_NOT_HIDDEN);
 //		if (entry.mBgColor==null){
 //			prevHidden=true;
 //		}
-        final EBrowserWindow finalNewWindow = newWindow;
-        newWindow.setOnViewClosedListener(new SwipeView.OnViewClosedListener() {
-            @Override
-            public void onViewClosed() {
-                finalNewWindow.onCloseWindow(0, 0);
-            }
-        });
         newWindow.setPrevWindowWillHidden(prevHidden);
         newWindow.setDateType(entry.mDataType);
         newWindow.setWindPoType(F_WINDOW_POOL_TYPE_NEW);
@@ -214,7 +199,7 @@ public class EBrowserWidget extends AbsoluteLayout {
         if (entry.checkFlag(EBrwViewEntry.F_FLAG_OPAQUE)) {
             newWindow.setBackgroundColor(0xFFFFFFFF);
         }
-        LayoutParams parm = new LayoutParams(
+        AbsoluteLayout.LayoutParams parm = new AbsoluteLayout.LayoutParams(
                 Compat.FILL, Compat.FILL, 0, 0);
         newWindow.setLayoutParams(parm);
         newWindow.init(mBrw, entry);
@@ -302,7 +287,7 @@ public class EBrowserWidget extends AbsoluteLayout {
                 mBrw.hiddenShelter();
                 if (mBrw.isFromPush()) {
                     mBrw.setFromPush(false);
-                    mBrw.pushNotify();
+                    mBrw.pushNotify("2");
                 }
             }
             clearFlag();
@@ -593,7 +578,7 @@ public class EBrowserWidget extends AbsoluteLayout {
     public void pushNotify(String info) {
         EBrowserWindow beNotify = mEWindowStack.get(mPushNotifyWindName);
         if (null != beNotify) {
-            beNotify.pushNotify(mPushNotifyFunctionName);
+            beNotify.pushNotify(mPushNotifyFunctionName, info);
         }
     }
 
@@ -661,12 +646,8 @@ public class EBrowserWidget extends AbsoluteLayout {
                 mBroWindow.startAnimation(animPair[1]);
                 invalidate();
 
-                if (EBrowserWindow.sNavFlag) {
-                    setPreWindVisible(mBroWindow, GONE);
-                } else {
-                    if (!inWhich.isPrevWindowWillHidden()) {
-                        mBroWindow.setVisibility(GONE);
-                    }
+                if (!inWhich.isPrevWindowWillHidden()) {
+                    mBroWindow.setVisibility(GONE);
                 }
 
                 inWhich.notifyVisibilityChanged(0);
@@ -685,9 +666,6 @@ public class EBrowserWidget extends AbsoluteLayout {
                 invalidate();
                 mBroWindow.setFlag(EBrowserWindow.F_WINDOW_FLAG_WILL_REMOWE);
                 mBroWindow.setVisibility(GONE);
-                if (EBrowserWindow.sNavFlag) {
-                    setPreWindVisible(inWhich, VISIBLE);
-                }
                 mBroWindow.notifyVisibilityChanged(1);
                 mBroWindow = null;
                 mBroWindow = inWhich;
@@ -705,9 +683,6 @@ public class EBrowserWidget extends AbsoluteLayout {
 //			mBroWindow.startAnimation(animPair[1]);
                 mBroWindow.closeWindowByAnimation(animPair[1]);
 
-                if (EBrowserWindow.sNavFlag) {
-                    setPreWindVisible(preWind, VISIBLE);
-                }
 //			invalidate();
 //			inWhich.setVisibility(GONE);
 
@@ -722,15 +697,6 @@ public class EBrowserWidget extends AbsoluteLayout {
         }
         EBrowser.clearFlag();
     }
-
-    private void setPreWindVisible(EBrowserWindow currentWind, int visible) {
-        //侧滑关闭需要把上一个也显示出来
-        EBrowserWindow prePreWind = mEWindowStack.prev(currentWind);
-        if (prePreWind != null) {
-            prePreWind.setVisibility(visible);
-        }
-    }
-
 
     private boolean checkWindow(EBrwViewEntry inEntry) {
         EBrowserWindow window = mEWindowStack.contains(inEntry.mWindName);
@@ -1020,7 +986,6 @@ public class EBrowserWidget extends AbsoluteLayout {
                     boolean prevHidden = entry
                             .checkFlag(EBrwViewEntry.F_FLAG_NOT_HIDDEN);
                     newWindow.setPrevWindowWillHidden(prevHidden);
-                    newWindow.setSwipeEnabled(false);
                     newWindow.setDateType(entry.mDataType);
                     newWindow.setWindPoType(F_WINDOW_POOL_TYPE_NEW);
                     newWindow.setAnimId(entry.mAnimId);
@@ -1110,5 +1075,11 @@ public class EBrowserWidget extends AbsoluteLayout {
 
     public void setSpaceEnable(SpaceClickListener listener) {
         mBrw.setSpaceEnable(listener);
+    }
+
+    public void onSlidingWindowStateChanged(int position) {
+        if (null != mBroWindow) {
+            mBroWindow.onSlidingWindowStateChanged(position);
+        }
     }
 }

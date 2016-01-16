@@ -18,10 +18,14 @@
 
 package org.zywx.wbpalmstar.engine;
 
+import android.app.ActivityGroup;
 import android.app.AlertDialog;
+import android.app.LocalActivityManager;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.DialogInterface.OnClickListener;
+import android.content.SharedPreferences.Editor;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
@@ -30,8 +34,9 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.*;
 import android.os.Process;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
@@ -54,6 +59,7 @@ import org.zywx.wbpalmstar.engine.universalex.EUExUtil;
 import org.zywx.wbpalmstar.engine.universalex.ThirdPluginMgr;
 import org.zywx.wbpalmstar.engine.universalex.ThirdPluginObject;
 import org.zywx.wbpalmstar.platform.push.PushRecieveMsgReceiver;
+import org.zywx.wbpalmstar.platform.push.report.PushReportConstants;
 import org.zywx.wbpalmstar.widgetone.WidgetOneApplication;
 import org.zywx.wbpalmstar.widgetone.dataservice.WWidgetData;
 
@@ -66,7 +72,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-public final class EBrowserActivity extends FragmentActivity {
+@SuppressWarnings("deprecation")
+public final class EBrowserActivity extends ActivityGroup {
 
     public static final int F_OAUTH_CODE = 100001;
     public final static int FILECHOOSER_RESULTCODE = 233;
@@ -92,7 +99,6 @@ public final class EBrowserActivity extends FragmentActivity {
 
     public SlidingMenu globalSlidingMenu;
     private ValueCallback<Uri> mUploadMessage;
-    private boolean mLoadingRemoved = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -232,10 +238,7 @@ public final class EBrowserActivity extends FragmentActivity {
         return mEBrwMainFrame.customViewShown();
     }
 
-    public void setContentViewVisible(int delayTime) {
-        if (mLoadingRemoved) {
-            return;
-        }
+    public void setContentViewVisible(){
         final LocalBroadcastManager broadcastManager = LocalBroadcastManager
                 .getInstance(this);
         mEHandler.postDelayed(new Runnable() {
@@ -244,14 +247,13 @@ public final class EBrowserActivity extends FragmentActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        mLoadingRemoved = true;
                         getWindow().setBackgroundDrawable(new ColorDrawable(0xFFFFFFFF));
                         Intent intent = new Intent(LoadingActivity.BROADCAST_ACTION);
                         broadcastManager.sendBroadcast(intent);
                     }
                 });
             }
-        }, delayTime);
+        }, 200);
     }
 
 
@@ -426,30 +428,54 @@ public final class EBrowserActivity extends FragmentActivity {
         try {
             Intent firstIntent = getIntent();
             int type = intent.getIntExtra("ntype", 0);
-            ;
             switch (type) {
-                case ENotification.F_TYPE_PUSH:
-                    if (null != mBrowser) {
-                        String data = intent.getStringExtra("data");
-                        String pushMessage = intent.getStringExtra("message");
-                        firstIntent.putExtra("data", data);
-                        firstIntent.putExtra("message", pushMessage);
-                        mBrowser.pushNotify();
-                    }
-                    break;
-                case ENotification.F_TYPE_USER:
-
-                    break;
-                case ENotification.F_TYPE_SYS:
-
-                    break;
-                default:
-                    getIntentData(intent);
-                    firstIntent.putExtras(intent);
-                    break;
+            case ENotification.F_TYPE_PUSH:
+                handlePushNotify(intent);
+                break;
+            case ENotification.F_TYPE_USER:
+                break;
+            case ENotification.F_TYPE_SYS:
+                break;
+            default:
+                getIntentData(intent);
+                firstIntent.putExtras(intent);
+                break;
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private void handlePushNotify(Intent intent) {
+        if (null != mBrowser) {
+            try {
+                String data = intent.getStringExtra("data");
+                String pushMessage = intent.getStringExtra("message");
+                SharedPreferences sp = getSharedPreferences(
+                        PushReportConstants.PUSH_DATA_SHAREPRE,
+                        Context.MODE_PRIVATE);
+                Editor editor = sp.edit();
+                editor.putString(
+                        PushReportConstants.PUSH_DATA_SHAREPRE_DATA, data);
+                editor.putString(
+                        PushReportConstants.PUSH_DATA_SHAREPRE_MESSAGE,
+                        pushMessage);
+                editor.commit();
+                String appType = "";
+                if (mVisable && isForground) {
+                    //应用在前台
+                    appType = "0";
+                } else if (!mVisable && !isForground) {
+                    //应用Home键退到后台再点通知进入
+                    appType = "1";
+                } else if (mVisable && !isForground) {
+                    //应用Back键退出再点通知进入
+                    appType = "2";
+                }
+                mBrowser.pushNotify(appType);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -514,6 +540,8 @@ public final class EBrowserActivity extends FragmentActivity {
             mBrowser.onAppStop();
         }
         mBrowserAround.removeViewImmediate();
+        LocalActivityManager lm = getLocalActivityManager();
+        lm.removeAllActivities();
         clean();
         finish();
         Process.killProcess(Process.myPid());
@@ -826,7 +854,7 @@ public final class EBrowserActivity extends FragmentActivity {
                     }
                 case F_MSG_LOAD_HIDE_SH:
                     mScreen.setVisibility(View.VISIBLE);
-                    setContentViewVisible(0);
+                    setContentViewVisible();
                     if (mBrowserAround.checkTimeFlag()) {
                         mBrowser.hiddenShelter();
                     } else {
@@ -846,6 +874,12 @@ public final class EBrowserActivity extends FragmentActivity {
                 mBrowser.onLoadAppData(OtherAppData);
                 OtherAppData = null;
             }
+        }
+    }
+
+    public void onSlidingWindowStateChanged(int position) {
+        if (null != mBrowser) {
+            mBrowser.onSlidingWindowStateChanged(position);
         }
     }
 }

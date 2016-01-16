@@ -18,17 +18,12 @@
 
 package org.zywx.wbpalmstar.engine;
 
-import android.animation.Animator;
-import android.animation.ObjectAnimator;
 import android.graphics.Camera;
 import android.graphics.Matrix;
-import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
 import android.view.animation.TranslateAnimation;
-
-import org.zywx.wbpalmstar.base.BDebug;
 
 public class EBrowserAnimation {
 
@@ -320,41 +315,4 @@ public class EBrowserAnimation {
             matrix.postTranslate(centerX, centerY);
         }
     }
-
-    public static void animFromRight(View target, float width, long duration, long delayTime, final AnimatorListener
-            callback) {
-        BDebug.i("width", width);
-        ObjectAnimator animator = ObjectAnimator.ofFloat(target, "translationX", width, 0);
-        animator.setDuration(duration);
-        animator.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animator) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animator) {
-                if (callback != null) {
-                    callback.onAnimationEnd();
-                }
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animator) {
-
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animator) {
-
-            }
-        });
-        animator.setStartDelay(delayTime);
-        animator.start();
-    }
-
-    public interface AnimatorListener {
-        void onAnimationEnd();
-    }
-
 }

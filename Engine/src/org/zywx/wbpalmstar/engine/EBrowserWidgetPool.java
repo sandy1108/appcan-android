@@ -141,9 +141,9 @@ public class EBrowserWidgetPool {
         return mWgtStack.get(index);
     }
 
-    public void pushNotify() {
+    public void pushNotify(String appType) {
 
-        mWgtStack.peek().pushNotify(null);
+        mWgtStack.peek().pushNotify(appType);
     }
 
     public void uexOnAuthorize(String id) {
@@ -571,4 +571,12 @@ public class EBrowserWidgetPool {
         mWidPoolLoop.sendMessage(msg);
     }
 
+    public void onSlidingWindowStateChanged(int position) {
+        if (null != mWgtStack) {
+            EBrowserWidget eBrWidget = mWgtStack.peek();
+            if (null != eBrWidget) {
+                eBrWidget.onSlidingWindowStateChanged(position);
+            }
+        }
+    }
 }

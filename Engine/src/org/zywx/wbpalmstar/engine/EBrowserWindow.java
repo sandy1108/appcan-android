@@ -23,7 +23,6 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Point;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -34,11 +33,11 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
-import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebView;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -46,7 +45,6 @@ import org.json.JSONObject;
 import org.zywx.wbpalmstar.acedes.ACEDes;
 import org.zywx.wbpalmstar.base.BDebug;
 import org.zywx.wbpalmstar.base.BUtility;
-import org.zywx.wbpalmstar.base.view.SwipeView;
 import org.zywx.wbpalmstar.engine.EBrowserHistory.EHistoryEntry;
 import org.zywx.wbpalmstar.engine.external.Compat;
 import org.zywx.wbpalmstar.engine.universalex.EUExCallback;
@@ -56,14 +54,9 @@ import org.zywx.wbpalmstar.engine.universalex.EUExWidget.SpaceClickListener;
 import org.zywx.wbpalmstar.engine.universalex.EUExWindow;
 import org.zywx.wbpalmstar.widgetone.dataservice.WWidgetData;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-public class EBrowserWindow extends SwipeView implements AnimationListener {
+public class EBrowserWindow extends FrameLayout implements AnimationListener {
 
     private static final String TAG = "EBrowserWindow";
     public static final int F_WINDOW_FLAG_NONE = 0x0;
@@ -89,6 +82,7 @@ public class EBrowserWindow extends SwipeView implements AnimationListener {
     private int mflag;
     private int mWindPoType;
     private EBrowser mBrw;
+    private EBounceView mBounceView;
     private EBrowserView mTopView;
     private EBrowserView mMainView;
     private EBrowserView mBottomView;
@@ -152,13 +146,13 @@ public class EBrowserWindow extends SwipeView implements AnimationListener {
                     EBrwViewEntry.VIEW_TYPE_MAIN, this);
             mMainView.setVisibility(VISIBLE);
             mMainView.setName("main");
-            EBounceView bounceView = new EBounceView(mContext);
-            EUtil.viewBaseSetting(bounceView);
-            bounceView.setId(VIEW_MID);
+            mBounceView = new EBounceView(mContext);
+            EUtil.viewBaseSetting(mBounceView);
+            mBounceView.setId(VIEW_MID);
             LayoutParams bParm = new LayoutParams(Compat.FILL, Compat.FILL);
-            bounceView.setLayoutParams(bParm);
-            bounceView.addView(mMainView);
-            addView(bounceView);
+            mBounceView.setLayoutParams(bParm);
+            mBounceView.addView(mMainView);
+            addView(mBounceView);
         }
         mMainView.init();
         if (null == inEntry) {
@@ -166,8 +160,13 @@ public class EBrowserWindow extends SwipeView implements AnimationListener {
             mMainView.setRelativeUrl("index.html");
 
             if (!TextUtils.isEmpty(mBroWidget.getWidget().m_opaque)) {
-                mMainView.setBrwViewBackground(mBroWidget.getWidget().getOpaque(),
-                        mBroWidget.getWidget().m_bgColor, mBroWidget.getWidget().m_indexUrl);
+                /**wanglei del 20151124*/
+//                mMainView.setBrwViewBackground(mBroWidget.getWidget().getOpaque(),
+//                        mBroWidget.getWidget().m_bgColor, mBroWidget.getWidget().m_indexUrl);
+
+                /**wanglei add 20151124*/
+                mBounceView.setBounceViewBackground(mBroWidget.getWidget().getOpaque(),
+                        mBroWidget.getWidget().m_bgColor, mBroWidget.getWidget().m_indexUrl, mMainView);
             }
 
         } else {
@@ -182,8 +181,12 @@ public class EBrowserWindow extends SwipeView implements AnimationListener {
                 }
             }
             if (inEntry.hasExtraInfo) {
-                mMainView.setBrwViewBackground(inEntry.mOpaque,
-                        inEntry.mBgColor, inEntry.mData);
+                /**wanglei del 20151124*/
+//                mMainView.setBrwViewBackground(inEntry.mOpaque,
+//                        inEntry.mBgColor, inEntry.mData);
+                /**wanglei add 20151124*/
+                mBounceView.setBounceViewBackground(inEntry.mOpaque,
+                        inEntry.mBgColor, inEntry.mData, mMainView);
             }
         }
     }
@@ -202,17 +205,29 @@ public class EBrowserWindow extends SwipeView implements AnimationListener {
     }
 
     public void addViewToCurrentWindow(View child) {
-        Message msg = mWindLoop.obtainMessage();
-        msg.what = F_WHANDLER_ADD_VIEW;
-        msg.obj = child;
-        mWindLoop.sendMessage(msg);
+        //Message msg = mWindLoop.obtainMessage();
+        //msg.what = F_WHANDLER_ADD_VIEW;
+        //msg.obj = child;
+        //mWindLoop.sendMessage(msg);
+        child.setTag(EViewEntry.F_PLUGIN_VIEW_TAG);
+        Animation anim = child.getAnimation();
+        addView(child);
+        if (null != anim) {
+            anim.start();
+        }
+        bringChildToFront(child);
     }
 
     public void removeViewFromCurrentWindow(View child) {
-        Message msg = mWindLoop.obtainMessage();
-        msg.what = F_WHANDLER_REMOVE_VIEW;
-        msg.obj = child;
-        mWindLoop.sendMessage(msg);
+        //Message msg = mWindLoop.obtainMessage();
+        //msg.what = F_WHANDLER_REMOVE_VIEW;
+        //msg.obj = child;
+        //mWindLoop.sendMessage(msg);
+        Animation removeAnim = child.getAnimation();
+        if (null != removeAnim) {
+            removeAnim.start();
+        }
+        removeView(child);
     }
 
 
@@ -583,8 +598,12 @@ public class EBrowserWindow extends SwipeView implements AnimationListener {
         EBrwViewEntry entity = entitys.get(0);
         View parent = (View) mainPop.getParent();
         if (entity.hasExtraInfo) {
-            mainPop.setBrwViewBackground(entity.mOpaque, entity.mBgColor, "");
+            /**wanglei del 20151124*/
+//            mainPop.setBrwViewBackground(entity.mOpaque, entity.mBgColor, "");
+            /**wanglei add 20151124*/
+            ((EBounceView) parent).setBounceViewBackground(entity.mOpaque, entity.mBgColor, "", mMainView);
         }
+        //TODO 为什么要先remove掉parent，再添加？？？？wanglei 20151124
         removeView(parent);
         LayoutParams popParm = new LayoutParams(entity.mWidth, entity.mHeight);
         int parentRight = getRight();
@@ -608,14 +627,26 @@ public class EBrowserWindow extends SwipeView implements AnimationListener {
         popParm.leftMargin = entity.mX;
         parent.setLayoutParams(popParm);
         addView(parent);
+        /**wanglei add 20151124*/
+        if (entitys.size() > 0) {
+            EBrwViewEntry entityTemp = entitys.get(0);
+            EBrowserView childTemp = childs.get(0);
+            if(entityTemp.hasExtraInfo){   
+                ((EBounceView) childTemp.getParent()).setBounceViewBackground(
+                        entityTemp.mOpaque, entityTemp.mBgColor, "", childTemp);
+            }
+        }
         for (int i = 0; i < entitys.size(); i++) {
             EBrwViewEntry entityTemp = entitys.get(0);
             EBrowserView childTemp = childs.get(0);
             childTemp.setDateType(entityTemp.mDataType);
             childTemp.setQuery(entityTemp.mQuery);
-            if (entityTemp.hasExtraInfo) {
-                childTemp.setBrwViewBackground(entityTemp.mOpaque, entityTemp.mBgColor, "");
-            }
+            /**wanglei add 20151124*/
+            childTemp.setBackgroundColor(Color.TRANSPARENT);
+            /**wanglei del 20151124*/
+//            if (entityTemp.hasExtraInfo) {
+//                childTemp.setBrwViewBackground(entityTemp.mOpaque, entityTemp.mBgColor, "");
+//            }
             switch (entityTemp.mDataType) {
                 case EBrwViewEntry.WINDOW_DATA_TYPE_URL:
 //				if (entityTemp.checkFlag(EBrwViewEntry.F_FLAG_OBFUSCATION)) {
@@ -659,8 +690,14 @@ public class EBrowserWindow extends SwipeView implements AnimationListener {
         popParm.bottomMargin = entity.mBottom;
         parent.setLayoutParams(popParm);
         if (entity.hasExtraInfo) {
-            child.setBrwViewBackground(entity.mOpaque, entity.mBgColor, "");
+            /**wanglei del 20151124*/
+//            child.setBrwViewBackground(entity.mOpaque, entity.mBgColor, "");
+            /**wanglei add 20151124*/
+            ((EBounceView) child.getParent()).setBounceViewBackground(
+                    entity.mOpaque, entity.mBgColor, "", child);
         }
+        /**wanglei add 20151124*/
+        child.setBackgroundColor(Color.TRANSPARENT);
         addView(parent);
         switch (entity.mDataType) {
             case EBrwViewEntry.WINDOW_DATA_TYPE_URL:
@@ -901,11 +938,11 @@ public class EBrowserWindow extends SwipeView implements AnimationListener {
         }
     }
 
-    protected void pushNotify(String function) {
+    protected void pushNotify(String function, String appType) {
         if (null == mMainView) {
             return;
         }
-        String js = "javascript:" + function + "();";
+        String js = "javascript:" + function + "('" + appType + "');";
         mMainView.loadUrl(js);
     }
 
@@ -1556,6 +1593,7 @@ public class EBrowserWindow extends SwipeView implements AnimationListener {
         mPopTable = null;
         mMultiPopTable = null;
         mAddView = null;
+        mBounceView = null;
         mBroWidget = null;
         mObHistroy = null;
         mName = null;
@@ -1761,8 +1799,13 @@ public class EBrowserWindow extends SwipeView implements AnimationListener {
             }
         }
         if (entity.hasExtraInfo) {
-            eView.setBrwViewBackground(entity.mOpaque, entity.mBgColor, "");
+            /** wanglei del 20151124*/
+//            eView.setBrwViewBackground(entity.mOpaque, entity.mBgColor, "");
+            /** wanglei add 20151124*/
+            bounceView.setBounceViewBackground(entity.mOpaque, entity.mBgColor, "", eView);
         }
+        /** wanglei add 20151124*/
+        eView.setBackgroundColor(Color.TRANSPARENT);
         if (entity.checkFlag(EBrwViewEntry.F_FLAG_OAUTH)) {
             eView.setOAuth(true);
         }
@@ -2214,7 +2257,11 @@ public class EBrowserWindow extends SwipeView implements AnimationListener {
         bounceView.addView(parentBrowerview);
         addView(bounceView);
         if (mainEntry.hasExtraInfo) {
-            parentBrowerview.setBrwViewBackground(mainEntry.mOpaque, mainEntry.mBgColor, "");
+            /** wanglei del 20151124*/
+//            parentBrowerview.setBrwViewBackground(mainEntry.mOpaque, mainEntry.mBgColor, "");
+            /** wanglei add 20151124*/
+            bounceView.setBounceViewBackground(
+                    mainEntry.mOpaque, mainEntry.mBgColor, "", parentBrowerview);
         } else {
             if (mainEntry.checkFlag(EBrwViewEntry.F_FLAG_OPAQUE)) {
                 parentBrowerview.setOpaque(true);
@@ -2237,7 +2284,10 @@ public class EBrowserWindow extends SwipeView implements AnimationListener {
             bounceViewChild.setLayoutParams(new LayoutParams(
                     LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
             if (entity.hasExtraInfo) {
-                childView.setBrwViewBackground(entity.mOpaque, entity.mBgColor, "");
+                /** wanglei del 20151124*/
+//                childView.setBrwViewBackground(entity.mOpaque, entity.mBgColor, "");
+                /** wanglei add 20151124*/
+                bounceViewChild.setBounceViewBackground(entity.mOpaque, entity.mBgColor, "", childView);
             }
             bounceViewChild.addView(childView);
             viewList.add(bounceViewChild);
@@ -2253,7 +2303,6 @@ public class EBrowserWindow extends SwipeView implements AnimationListener {
         mPager.setOnPageChangeListener(new MyPageChangedListener(
                 parentBrowerview.getName()));
         mPager.setLayoutParams(pagerParm);
-        mPager.setBackgroundColor(Color.TRANSPARENT);
         parentBrowerview.addView(mPager);
         mMultiPopPager.put(parentBrowerview.getName(), mPager);
         final ArrayList<EBrowserView> list = new ArrayList<EBrowserView>();
@@ -2490,7 +2539,7 @@ public class EBrowserWindow extends SwipeView implements AnimationListener {
         }
 
 		/*
-         * 当页面在滑动的时候会调用此方法，在滑动被停止之前，此方法回一直得到 调用。其中三个参数的含义分别为： arg0
+		 * 当页面在滑动的时候会调用此方法，在滑动被停止之前，此方法回一直得到 调用。其中三个参数的含义分别为： arg0
 		 * :当前页面，及你点击滑动的页面 arg1:当前页面偏移的百分比 arg2:当前页面偏移的像素位置
 		 */
 
@@ -2532,12 +2581,9 @@ public class EBrowserWindow extends SwipeView implements AnimationListener {
     public void createProgressDialog(String title, String content,
                                      boolean isCancel) {
         if (mGlobalProDialog == null) {
-            mGlobalProDialog = new ProgressDialog(mContext,ProgressDialog.THEME_HOLO_DARK);
+            mGlobalProDialog = new ProgressDialog(mContext);
         }
-        mGlobalProDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        if (!TextUtils.isEmpty(title)){
-            mGlobalProDialog.setTitle(title);
-        }
+        mGlobalProDialog.setTitle(title);
         mGlobalProDialog.setMessage(content);
         mGlobalProDialog.setCancelable(isCancel);
         mGlobalProDialog.show();
@@ -2582,7 +2628,7 @@ public class EBrowserWindow extends SwipeView implements AnimationListener {
         if (mChannelList == null) {
             mChannelList = new ArrayList<HashMap<String, String>>();
         }
-        if (hasChannel(channelId)) {
+        if (hasChannel(channelId, name)) {
             return;
         }
         HashMap<String, String> item = new HashMap<String, String>();
@@ -2595,9 +2641,10 @@ public class EBrowserWindow extends SwipeView implements AnimationListener {
         mChannelList.add(item);
     }
 
-    private boolean hasChannel(String channelId) {
-        for (HashMap<String, String> item : mChannelList) {
-            if (channelId.equals(item.get(TAG_CHANNEL_ID))) {
+    private boolean hasChannel(String channelId, String name) {
+        for (HashMap<String,String> item:mChannelList) {
+            if (channelId.equals(item.get(TAG_CHANNEL_ID))
+                    && name.equals(item.get(TAG_CHANNEL_WINNAME))) {
                 return true;
             }
         }
@@ -2828,4 +2875,12 @@ public class EBrowserWindow extends SwipeView implements AnimationListener {
         }
     }
 
+    public void onSlidingWindowStateChanged(int position) {
+        if (null == mMainView) {
+            return;
+        }
+        String js = "javascript:if(uexWindow.onSlidingWindowStateChanged){uexWindow.onSlidingWindowStateChanged("
+                + position + ");}";
+        mMainView.loadUrl(js);
+    }
 }

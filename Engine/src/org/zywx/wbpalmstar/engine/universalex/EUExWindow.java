@@ -52,9 +52,6 @@ import org.json.JSONObject;
 import org.zywx.wbpalmstar.base.BDebug;
 import org.zywx.wbpalmstar.base.BUtility;
 import org.zywx.wbpalmstar.base.ResoureFinder;
-import org.zywx.wbpalmstar.base.vo.CreateContainerVO;
-import org.zywx.wbpalmstar.base.vo.SetSwipeCloseEnableVO;
-import org.zywx.wbpalmstar.engine.DataHelper;
 import org.zywx.wbpalmstar.engine.EBrowser;
 import org.zywx.wbpalmstar.engine.EBrowserActivity;
 import org.zywx.wbpalmstar.engine.EBrowserAnimation;
@@ -93,7 +90,6 @@ public class EUExWindow extends EUExBase {
     public static final String function_cbslipedDownEdge = "uexWindow.slipedDownEdge";//不建议使用
     public static final String function_cbCreatePluginViewContainer = "uexWindow.cbCreatePluginViewContainer";
     public static final String function_cbClosePluginViewContainer = "uexWindow.cbClosePluginViewContainer";
-    public static final String function_onPluginContainerPageChange = "uexWindow.onPluginContainerPageChange";
 
     public static final String function_onSlipedUpward = "uexWindow.onSlipedUpward";
     public static final String function_onSlipedDownward = "uexWindow.onSlipedDownward";
@@ -154,7 +150,6 @@ public class EUExWindow extends EUExBase {
     private static final int MSG_POST_GLOBAL_NOTIFICATION = 46;
     private static final int MSG_SUBSCRIBE_CHANNEL_NOTIFICATION = 47;
     private static final int MSG_FUNCTION_RELOAD = 48;
-    private static final int MSG_FUNCTION_RELOAD_WIDGET_BY_APPID = 49;
     private static final int MSG_FUNCTION_GET_SLIDING_WINDOW_STATE = 50;
     private static final int MSG_SET_IS_SUPPORT_SLIDE_CALLBACK = 51;
     private static final int MSG_PLUGINVIEW_CONTAINER_CREATE = 52;
@@ -205,7 +200,8 @@ public class EUExWindow extends EUExBase {
         String inFlag = parm[6];
         String animDuration = null;
         boolean opaque = false;
-        String bgColor = null;
+        /**赋初值，避免不传bgColor崩溃*/
+        String bgColor = "#00000000";
         boolean hasExtraInfo = false;
         int hardware = -1;
         if (parm.length > 7) {
@@ -281,11 +277,13 @@ public class EUExWindow extends EUExBase {
         }
         String query = null;
         if (Build.VERSION.SDK_INT >= 11) {
-            if (EBrwViewEntry.isUrl(dataType) && data.startsWith("file")) {
+            if (EBrwViewEntry.isUrl(dataType) && data != null) {
                 int index = data.indexOf("?");
                 if (index > 0) {
                     query = data.substring(index + 1);
-                    data = data.substring(0, index);
+                    if (!data.startsWith("http")) {
+                        data = data.substring(0, index);
+                    }
                 }
             }
         }
@@ -308,7 +306,7 @@ public class EUExWindow extends EUExBase {
 
     private boolean checkWindPermission(String windName) {
         WWidgetData rootWgt = mBrwView.getRootWidget();
-        String[] winds = rootWgt.disableRootWindows;
+        ArrayList<String> winds = rootWgt.disableRootWindowsList;
         if (null == windName || windName.trim().length() == 0 || null == winds) {
             return true;
         }
@@ -322,7 +320,7 @@ public class EUExWindow extends EUExBase {
 
     private boolean checkWindPopPermission(String windPopName) {
         WWidgetData rootWgt = mBrwView.getRootWidget();
-        String[] winds = rootWgt.disableSonWindows;
+        ArrayList<String>  winds = rootWgt.disableSonWindowsList;
         if (null == windPopName || windPopName.trim().length() == 0
                 || null == winds) {
             return true;
@@ -511,32 +509,6 @@ public class EUExWindow extends EUExBase {
         mHandler.sendMessage(msg);
     }
 
-    public void reloadWidgetByAppId(String[] params) {
-        if (params.length < 1) {
-            return;
-        }
-        Message msg = mHandler.obtainMessage();
-        msg.what = MSG_FUNCTION_RELOAD_WIDGET_BY_APPID;
-        msg.obj = this;
-        Bundle bd = new Bundle();
-        bd.putStringArray(TAG_BUNDLE_PARAM, params);
-        msg.setData(bd);
-        mHandler.sendMessage(msg);
-    }
-
-    private void reloadWidgetByAppIdMsg(String[] params) {
-        String appId = params[0];
-        if (TextUtils.isEmpty(appId)) {
-            Log.e("reloadWidgetByAppId", "appId is empty!!!");
-            return;
-        }
-        EBrowserWindow curWind = mBrwView.getBrowserWindow();
-        if (null == curWind) {
-            return;
-        }
-        curWind.reloadWidgetByAppId(appId);
-    }
-
     public void openSlibing(String[] parm) {
         if (parm.length < 6) {
             return;
@@ -584,11 +556,13 @@ public class EUExWindow extends EUExBase {
         String url = BUtility.makeUrl(mBrwView.getCurrentUrl(), inUrl);
         String query = null;
         if (Build.VERSION.SDK_INT >= 11) {
-            if (url != null && url.startsWith("file")) {
+            if (url != null) {
                 int index = url.indexOf("?");
                 if (index > 0) {
                     query = url.substring(index + 1);
-                    url = url.substring(0, index);
+                    if (!url.startsWith("http")) {
+                        url = url.substring(0, index);
+                    }
                 }
             }
         }
@@ -959,11 +933,13 @@ public class EUExWindow extends EUExBase {
         }
         String query = null;
         if (Build.VERSION.SDK_INT >= 11) {
-            if (EBrwViewEntry.isUrl(dataType) && data.startsWith("file")) {
+            if (EBrwViewEntry.isUrl(dataType) && data != null) {
                 int index = data.indexOf("?");
                 if (index > 0) {
                     query = data.substring(index + 1);
-                    data = data.substring(0, index);
+                    if (!url.startsWith("http")) {
+                        data = data.substring(0, index);
+                    }
                 }
             }
         }
@@ -1035,7 +1011,8 @@ public class EUExWindow extends EUExBase {
             marginBottom = parm[10];
         }
         boolean opaque = false;
-        String bgColor = null;
+        /**赋初值，避免不传bgColor崩溃*/
+        String bgColor = "#00000000";
         boolean hasExtraInfo = false;
         int hardware = -1;
         if (parm.length > 11) {
@@ -1135,17 +1112,17 @@ public class EUExWindow extends EUExBase {
         popEntry.mBottom = bottom;
         popEntry.mOpaque = opaque;
         popEntry.mBgColor = bgColor;
-        popEntry.mHardware = hardware;
         popEntry.hasExtraInfo = hasExtraInfo;
         String query = null;
         if (Build.VERSION.SDK_INT >= 11) {
-            if (url != null && url.trim().length() != 0
-                    && url.startsWith("file")) {
+            if (url != null && url.trim().length() != 0) {
                 int index = url.indexOf("?");
                 if (index > 0) {
                     query = url.substring(index + 1);
-                    url = url.substring(0, index);
-                    popEntry.mUrl = url;
+                    if (!url.startsWith("http")) {
+                        url = url.substring(0, index);
+                        popEntry.mUrl = url;
+                    }
                 }
             }
         }
@@ -1326,7 +1303,8 @@ public class EUExWindow extends EUExBase {
         String inIndexSelect = parm[9];
 
         boolean opaque = false;
-        String bgColor = null;
+        /**赋初值，避免不传bgColor崩溃*/
+        String bgColor = "#00000000";
         boolean hasExtraInfo = false;
         if (parm.length > 10) {
             String jsonData = parm[10];
@@ -1420,7 +1398,8 @@ public class EUExWindow extends EUExBase {
                 EBrwViewEntry popEntry = new EBrwViewEntry(
                         EBrwViewEntry.VIEW_TYPE_POP);
                 boolean opaque1 = false;
-                String bgColor1 = null;
+                /**赋初值，避免不传bgColor崩溃*/
+                String bgColor1 = "#00000000";
                 boolean hasExtraInfo1 = false;
                 if (jsonContent.getJSONObject(i).has(EBrwViewEntry.TAG_EXTRAINFO)) {
                     try {
@@ -1469,13 +1448,14 @@ public class EUExWindow extends EUExBase {
                     String query = null;
                     if (Build.VERSION.SDK_INT >= 11) {
                         if (childUrl[i] != null
-                                && childUrl[i].trim().length() != 0
-                                && childUrl[i].startsWith("file")) {
+                                && childUrl[i].trim().length() != 0) {
                             int index = childUrl[i].indexOf("?");
                             if (index > 0) {
                                 query = childUrl[i].substring(index + 1);
-                                childUrl[i] = childUrl[i].substring(0, index);
-                                popEntry.mUrl = childUrl[i];
+                                if (!childUrl[i].startsWith("http")) {
+                                    childUrl[i] = childUrl[i].substring(0, index);
+                                    popEntry.mUrl = childUrl[i];
+                                }
                             }
                         }
                     }
@@ -2306,14 +2286,6 @@ public class EUExWindow extends EUExBase {
         }
     }
 
-    public void setSwipeCloseEnable(String[] param) {
-        SetSwipeCloseEnableVO input = DataHelper.gson.fromJson(param[0], SetSwipeCloseEnableVO.class);
-        if (input != null) {
-            EBrowserWindow curWindow = mBrwView.getBrowserWindow();
-            curWindow.setSwipeEnabled(input.getEnable() == 1);
-        }
-    }
-
     public void windowBack(String[] parm) {
         Message msg = new Message();
         msg.obj = this;
@@ -2916,17 +2888,9 @@ public class EUExWindow extends EUExBase {
         return Integer.parseInt(str);
     }
 
-    private void closeAlert() {
-        if (mAlert != null) {
-            mAlert.dismiss();
-            mAlert = null;
-        }
-    }
-
     @Override
     public boolean clean() {
         closeToast(null);
-        closeAlert();
         // mBrwView.resetBounceView(0);
         // mBrwView.resetBounceView(1);
         destroyProgressDialog(null);
@@ -3140,53 +3104,41 @@ public class EUExWindow extends EUExBase {
             errorCallback(0, 0, "error params!");
             return;
         }
-        final CreateContainerVO inputVO = DataHelper.gson.fromJson(params[0], CreateContainerVO.class);
+        try {
+            JSONObject json = new JSONObject(params[0].toString());
+            float x = Float.parseFloat(json.getString("x"));
+            float y = Float.parseFloat(json.getString("y"));
+            float w = Float.parseFloat(json.getString("w"));
+            float h = Float.parseFloat(json.getString("h"));
+            String opid = json.getString("id");
+            
+            EBrowserWindow mWindow = mBrwView.getBrowserWindow();
+            int count = mWindow.getChildCount();
+            for (int i = 0; i < count ;i++ ) {
+                View view = mWindow.getChildAt(i);
+                if (view instanceof MyViewPager) {
+                    MyViewPager pager = (MyViewPager)view;
+                    if (opid.equals((String)pager.getOpId())) {
+                        return;
+                    }
+                }//end instance
+            }//end for
 
-        EBrowserWindow mWindow = mBrwView.getBrowserWindow();
-        int count = mWindow.getChildCount();
-        for (int i = 0; i < count; i++) {
-            View view = mWindow.getChildAt(i);
-            if (view instanceof ContainerViewPager) {
-                ContainerViewPager pager = (ContainerViewPager) view;
-                if (inputVO.getId().equals((String) pager.getContainerVO().getId())) {
-                    return;
-                }
-            }//end instance
-        }//end for
-
-        ContainerViewPager containerViewPager = new ContainerViewPager(mContext, inputVO);
-        ContainerAdapter containerAdapter = new ContainerAdapter(new
-                Vector<FrameLayout>());
-        containerViewPager.setAdapter(containerAdapter);
-        containerViewPager.setOnPageChangeListener(new ContainerViewPager.OnPageChangeListener() {
-			
-			@Override
-			public void onPageSelected(int index) {
-				String js = SCRIPT_HEADER + "if("
-						+ function_onPluginContainerPageChange + "){"
-						+ function_onPluginContainerPageChange + "(" + inputVO.getId()
-						+ "," + EUExCallback.F_C_INT + "," + index
-						+ SCRIPT_TAIL;
-				onCallback(js);
-			}
-			
-			@Override
-			public void onPageScrolled(int arg0, float arg1, int arg2) {
-			}
-			
-			@Override
-			public void onPageScrollStateChanged(int arg0) {
-			}
-		});
-        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams((int) inputVO.getW(), (int) inputVO.getH());
-        lp.leftMargin = (int) inputVO.getX();
-        lp.topMargin = (int) inputVO.getY();
-        if(mBrwView != null){
-        	mBrwView.addViewToCurrentWindow(containerViewPager, lp);
+            MyViewPager myPager = new MyViewPager(mContext);
+            MyPagerAdapter adapter = new MyPagerAdapter(new Vector<FrameLayout>());
+            myPager.setAdapter(adapter);
+            myPager.setOpId(opid);
+            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams((int) w,    (int) h);
+            lp.leftMargin = (int) x;
+            lp.topMargin = (int) y;
+            mBrwView.addViewToCurrentWindow(myPager, lp);
             String js = SCRIPT_HEADER + "if(" + function_cbCreatePluginViewContainer + "){"
-                    + function_cbCreatePluginViewContainer + "(" + inputVO.getId() + "," + EUExCallback.F_C_TEXT + ",'"
-                    + "success" + "'" + SCRIPT_TAIL;
+                    + function_cbCreatePluginViewContainer + "(" + opid + "," + EUExCallback.F_C_TEXT + ",'"
+                    + "success" + "'"+ SCRIPT_TAIL;
             onCallback(js);
+        } catch (Exception e) {
+            e.printStackTrace();
+            errorCallback(0, 0, "error params!");
         }
     }
 
@@ -3218,11 +3170,11 @@ public class EUExWindow extends EUExBase {
             int count = mWindow.getChildCount();
             for (int i = 0; i < count; i++) {
                 View view = mWindow.getChildAt(i);
-                if (view instanceof ContainerViewPager) {
-                    ContainerViewPager pager = (ContainerViewPager) view;
-                    if (opid.equals((String) pager.getContainerVO().getId())) {
-                        removeViewFromCurrentWindow(pager);
-                        ContainerAdapter adapter = (ContainerAdapter) pager.getAdapter();
+                if (view instanceof MyViewPager) {
+                    MyViewPager pager = (MyViewPager)view;
+                    if (opid.equals((String)pager.getOpId())) {
+                        mBrwView.removeViewFromCurrentWindow(pager);
+                        MyPagerAdapter adapter = (MyPagerAdapter) pager.getAdapter();
                         Vector<FrameLayout> views = adapter.getViewList();
                         int size = views.size();
                         for (int j = 0; j < size; j++) {
@@ -3266,9 +3218,9 @@ public class EUExWindow extends EUExBase {
             int count = mWindow.getChildCount();
             for (int i = 0; i < count; i++) {
                 View view = mWindow.getChildAt(i);
-                if (view instanceof ContainerViewPager) {
-                    ContainerViewPager pager = (ContainerViewPager) view;
-                    if (opid.equals((String) pager.getContainerVO().getId())) {
+                if (view instanceof MyViewPager) {
+                    MyViewPager pager = (MyViewPager)view;
+                    if (opid.equals((String)pager.getOpId())) {
                         int index = json.optInt("index");
                         pager.setCurrentItem(index);
                         return;
@@ -3280,24 +3232,24 @@ public class EUExWindow extends EUExBase {
         }
     }
 
-    class ContainerViewPager extends ViewPager {
-        private CreateContainerVO mContainerVO;
+    class MyViewPager extends ViewPager{
+        private String opId = "";
 
-        public ContainerViewPager(Context context, CreateContainerVO containerVO) {
+        public MyViewPager(Context context) {
             super(context);
-            this.mContainerVO = containerVO;
         }
-
-        public CreateContainerVO getContainerVO() {
-            return mContainerVO;
+        public String getOpId() {
+            return opId;
+        }
+        public void setOpId(String opId) {
+            this.opId = opId;
         }
     }
 
-    class ContainerAdapter extends PagerAdapter {
+    class MyPagerAdapter extends PagerAdapter{
         Vector<FrameLayout> viewList;
         int mChildCount = 0;
-
-        public ContainerAdapter(Vector<FrameLayout> viewList) {
+        public MyPagerAdapter(Vector<FrameLayout> viewList) {
             this.viewList = viewList;
         }
 
@@ -3482,9 +3434,6 @@ public class EUExWindow extends EUExBase {
                 break;
             case MSG_FUNCTION_RELOAD:
                 mBrwView.reload();
-                break;
-            case MSG_FUNCTION_RELOAD_WIDGET_BY_APPID:
-                if (param != null) reloadWidgetByAppIdMsg(param);
                 break;
             case MSG_SET_WINDOW_HIDDEN:
                 setWindowHiddenMsg(param);

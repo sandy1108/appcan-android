@@ -31,10 +31,15 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Environment;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Xml;
 
+import org.xmlpull.v1.XmlPullParser;
+import org.zywx.wbpalmstar.acedes.ACEDes;
 import org.zywx.wbpalmstar.engine.EBrowserView;
 import org.zywx.wbpalmstar.engine.universalex.EUExUtil;
+import org.zywx.wbpalmstar.platform.encryption.PEncryption;
 import org.zywx.wbpalmstar.widgetone.dataservice.WDataManager;
 
 import java.io.BufferedReader;
@@ -46,7 +51,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.text.BreakIterator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -806,5 +810,190 @@ public class BUtility {
             }
         }
         return inSampleSize;
+    }
+
+    /**
+     * @param encrypt
+     *            要解密的字符串
+     * @param appId
+     * @return
+     */
+    public static String decryptString(String encrypt, String appId) {
+        byte[] encryptToByte = HexStringToBinary(encrypt);
+        String encryptDecrypt = new String(PEncryption.os_decrypt(
+                encryptToByte, encryptToByte.length, appId));
+        return encryptDecrypt;
+    }
+
+    /**
+     * @param hexString
+     * @return 将十六进制转换为字节数组
+     */
+    private static byte[] HexStringToBinary(String hexString) {
+        // hexString的长度对2取整，作为bytes的长度
+        String hexStr = "0123456789ABCDEF";
+        int len = hexString.length() / 2;
+        byte[] bytes = new byte[len];
+        byte high = 0;// 字节高四位
+        byte low = 0;// 字节低四位
+
+        for (int i = 0; i < len; i++) {
+            // 右移四位得到高位
+            high = (byte) ((hexStr.indexOf(hexString.charAt(2 * i))) << 4);
+            low = (byte) hexStr.indexOf(hexString.charAt(2 * i + 1));
+            bytes[i] = (byte) (high | low);// 高地位做或运算
+        }
+        return bytes;
+    }
+
+    /**
+     * 得到沙箱目录路径
+     * 
+     * @return
+     */
+    public static String getSBoxRootPath(Context context) {
+        return context.getFilesDir().getAbsolutePath() + "/";
+    }
+
+    /**
+     * 获得config文件中指定标签或者标签中属性的值
+     * 
+     * @param context
+     * @param label
+     *            标签名
+     * @param attribute
+     *            属性名,没有属性传null
+     * @return
+     */
+    public static String getConfigLabelValue(Context context, String label,
+            String attribute) {
+        String value = "";
+        // 如果传入的标签不为空（包含null和""两种情况）
+        if (!TextUtils.isEmpty(label)) {
+            InputStream inputStream = null;
+            try {
+                // 如果开启增量更新并且沙箱中的widget包已经拷贝完成，就从沙箱中读取，否则从assets中读取
+                if (WDataManager.isUpdateWidget
+                        && WDataManager.isCopyAssetsFinish) {
+                    String configPath = getSBoxRootPath(context)
+                            + "widget/config.xml";
+                    File file = new File(configPath);
+                    inputStream = new FileInputStream(file);
+                } else {
+                    inputStream = context.getAssets().open("widget/config.xml");
+                }
+                value = parserXmlLabel(inputStream, "config", label, attribute);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return value;
+    }
+
+    /**
+     * 获得xml文件中指定标签或者标签中属性的值
+     * 
+     * @param inputStream
+     *            xml文件输入流
+     * @param fileName
+     *            xml文件名，不带后缀
+     * @param label
+     *            标签名
+     * @param attribute
+     *            属性名,没有属性传null
+     * @return
+     */
+    public static String parserXmlLabel(InputStream inputStream,
+            String fileName, String label, String attribute) {
+        String value = "";
+        // 如果标签不为空并且输入流不为空
+        if (!TextUtils.isEmpty(label) && inputStream != null) {
+            try {
+                inputStream = decodeInputStream(inputStream, fileName);
+                // 使用Xml的静态方法生成语法分析器
+                XmlPullParser parser = Xml.newPullParser();
+                parser.setInput(inputStream, "utf-8");
+                int eventType = XmlPullParser.START_DOCUMENT;
+                boolean needContinue = true;
+                // 循环直到找到符合的标签或者直到文档结束
+                while (needContinue) {
+                    eventType = parser.next();
+                    switch (eventType) {
+                    case XmlPullParser.START_TAG:
+                        String localName = (parser.getName())
+                                .toLowerCase();
+                        // 如果该标签是传入的标签，获取该标签的值或者其属性的值
+                        if (localName.equals(label.toLowerCase())) {
+                            if (!TextUtils.isEmpty(attribute)) {
+                                value = parser.getAttributeValue(null, attribute);
+                            } else {
+                                value = parser.nextText();
+                            }
+                            needContinue = false;
+                        }
+                        break;
+                    case XmlPullParser.END_DOCUMENT:
+                        needContinue = false;
+                        break;
+                    default:
+                        break;
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                // 如果inputStream不为空，释放掉
+                if (inputStream != null) {
+                    try {
+                        inputStream.close();
+                        inputStream = null;
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+        return value;
+    }
+    
+    /**
+     * 解密文件
+     * 
+     * @param inputStream
+     *            文件输入流
+     * @param fileName
+     *            文件名，不带后缀
+     * @return
+     */
+    public static InputStream decodeInputStream(InputStream inputStream,
+            String fileName) {
+        try {
+            // 先判断是否加密,如果是加密了才解密
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            byte[] buffer = new byte[1024];
+            int len;
+            while ((len = inputStream.read(buffer)) > -1) {
+                baos.write(buffer, 0, len);
+            }
+            baos.flush();
+
+            InputStream is1 = new ByteArrayInputStream(baos.toByteArray());
+            InputStream is2 = new ByteArrayInputStream(baos.toByteArray());
+            boolean isV = ACEDes.isEncrypted(is1);
+            if (isV) {
+                InputStream resStream = null;
+                byte[] data = null;
+                String result = null;
+                data = transStreamToBytes(is2, is2.available());
+                result = ACEDes.htmlDecode(data, fileName);
+                resStream = new ByteArrayInputStream(result.getBytes());
+                return resStream;
+            } else {
+                return is2;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return inputStream;
+        }
     }
 }

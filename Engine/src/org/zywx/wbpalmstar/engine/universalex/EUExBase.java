@@ -24,25 +24,20 @@ import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Looper;
 import android.os.Message;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
-import org.zywx.wbpalmstar.base.view.BaseFragment;
 import org.zywx.wbpalmstar.engine.EBrowserActivity;
-import org.zywx.wbpalmstar.engine.EBrowserAnimation;
 import org.zywx.wbpalmstar.engine.EBrowserView;
 import org.zywx.wbpalmstar.engine.EBrowserWindow;
 import org.zywx.wbpalmstar.engine.EWgtResultInfo;
-import org.zywx.wbpalmstar.engine.universalex.EUExWindow.ContainerAdapter;
-import org.zywx.wbpalmstar.engine.universalex.EUExWindow.ContainerViewPager;
+import org.zywx.wbpalmstar.engine.universalex.EUExWindow.MyPagerAdapter;
+import org.zywx.wbpalmstar.engine.universalex.EUExWindow.MyViewPager;
 import org.zywx.wbpalmstar.widgetone.dataservice.WWidgetData;
 
 import java.io.File;
@@ -257,12 +252,11 @@ public abstract class EUExBase {
                 int h = parms.height;
                 for (int i = 0; i < count; i++) {
                     View view = mWindow.getChildAt(i);
-                    if (view instanceof ContainerViewPager) {
-                        final ContainerViewPager pager = (ContainerViewPager) view;
-                        if (opid.equals(pager.getContainerVO().getId())) {
-                            ContainerAdapter adapter = (ContainerAdapter) pager.getAdapter();
+                    if (view instanceof MyViewPager) {
+                        MyViewPager pager = (MyViewPager)view;
+                        if (opid.equals((String)pager.getOpId())) {
+                            MyPagerAdapter adapter = (MyPagerAdapter) pager.getAdapter();
                             Vector<FrameLayout> views = adapter.getViewList();
-                            boolean needAnim = views.size() == 0;//第一次添加view时播放动画
                             child.setLayoutParams(parms);
                             FrameLayout layout = new FrameLayout(mContext);
                             layout.addView(child);
@@ -279,9 +273,6 @@ public abstract class EUExBase {
                             }
                             adapter.setViewList(views);
                             adapter.notifyDataSetChanged();
-                            if (needAnim && pager.getContainerVO().getAnimTime() != 0) {
-                                startAnimationDelay(pager, child);
-                            }
                             return;
                         }//end equals opid
                     }//end instanceof
@@ -293,37 +284,6 @@ public abstract class EUExBase {
             }// end run 
         });// end runOnUI
     }
-
-    /**
-     * 播放动画
-     *
-     * @param pager
-     * @param child
-     */
-    private void startAnimationDelay(final ContainerViewPager pager, final View child) {
-        final float width = pager.getContainerVO().getW();
-        child.setTranslationX(width);
-        final ViewTreeObserver observer = child.getViewTreeObserver();
-        observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                if (Build.VERSION.SDK_INT < 16) {
-                    observer.removeGlobalOnLayoutListener(this);
-                } else {
-                    observer.removeOnGlobalLayoutListener(this);
-                }
-                EBrowserAnimation.animFromRight(child, width, pager.getContainerVO().getAnimTime(),
-                        pager.getContainerVO().getAnimDelayTime(),
-                        new EBrowserAnimation.AnimatorListener() {
-                            @Override
-                            public void onAnimationEnd() {
-
-                            }
-                        });
-            }
-        });
-    }
-
 
     /**
      * 移除一个view在指定id的容器中
@@ -343,10 +303,10 @@ public abstract class EUExBase {
                 int count = mWindow.getChildCount();
                 for (int i = 0; i < count; i++) {
                     View view = mWindow.getChildAt(i);
-                    if (view instanceof ContainerViewPager) {
-                        ContainerViewPager pager = (ContainerViewPager) view;
-                        if (opid.equals((String) pager.getContainerVO().getId())) {
-                            ContainerAdapter adapter = (ContainerAdapter) pager.getAdapter();
+                    if (view instanceof MyViewPager) {
+                        MyViewPager pager = (MyViewPager)view;
+                        if (opid.equals((String)pager.getOpId())) {
+                            MyPagerAdapter adapter = (MyPagerAdapter) pager.getAdapter();
                             Vector<FrameLayout> views = adapter.getViewList();
                             if (index < views.size() && index >= 0) {
                                 adapter.destroyItem(pager, index, null);
@@ -400,75 +360,6 @@ public abstract class EUExBase {
             }
         }
     }
-
-    public void addFragmentToCurrentWindow(BaseFragment fragment,
-                                           final RelativeLayout.LayoutParams params,
-                                           String tag) {
-        addFragment(fragment, tag);
-        fragment.setOnViewCreatedListener(new BaseFragment.OnViewCreatedListener() {
-            @Override
-            public void onViewCreated(View view) {
-                addViewToCurrentWindow(view, params);
-            }
-        });
-    }
-
-    public void removeFragmentFromWindow(BaseFragment fragment) {
-        if (fragment.getView() != null) {
-            removeViewFromCurrentWindow(fragment.getView());
-        }
-        removeFragment(fragment);
-    }
-
-    /**
-     * @param fragment
-     * @param params
-     * @param tag      作为Fragment的Tag，和添加到WebView的tag,必须保证唯一性
-     */
-    public void addFragmentToWebView(BaseFragment fragment,
-                                     final android.widget.AbsoluteLayout.LayoutParams params,
-                                     final String tag) {
-        if (TextUtils.isEmpty(tag)) {
-            return;
-        }
-        addFragment(fragment, tag);
-        fragment.setOnViewCreatedListener(new BaseFragment.OnViewCreatedListener() {
-            @Override
-            public void onViewCreated(View view) {
-                addViewToWebView(view, params, tag);
-            }
-        });
-    }
-
-    public void removeFragmentFromWebView(String tag) {
-        removeViewFromWebView(tag);
-        removeFragment(tag);
-    }
-
-    private void addFragment(Fragment fragment, String tag) {
-        ((FragmentActivity) mContext).getSupportFragmentManager().beginTransaction()
-                .add(fragment, tag).commit();
-    }
-
-    private void removeFragment(Fragment fragment) {
-        if (mContext==null){
-            return;
-        }
-        ((FragmentActivity) mContext).getSupportFragmentManager().beginTransaction()
-                .remove(fragment).commit();
-    }
-
-    private void removeFragment(String tag) {
-        if (TextUtils.isEmpty(tag)) {
-            return;
-        }
-        Fragment fragment = ((FragmentActivity) mContext).
-                getSupportFragmentManager().findFragmentByTag(tag);
-        if (fragment != null) {
-            removeFragment(fragment);
-        }
-    }
-
 
     /**
      * 加载一个widget

@@ -26,6 +26,7 @@ import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.text.TextUtils;
 import android.util.Log;
@@ -317,7 +318,6 @@ public class PushService extends Service implements PushDataCallback {
         Intent intent = new Intent(PushRecieveMsgReceiver.ACTION_PUSH);
         intent.putExtra("data", value);
         intent.putExtra("title", tickerText);
-        intent.putExtra("packg", packg);
         intent.putExtra("widgetName", widgetName);
         intent.setPackage(packg);
         intent.putExtra("message", pushMessage);
@@ -521,4 +521,54 @@ public class PushService extends Service implements PushDataCallback {
         }
     }
 
+    @Override
+    public void pushDataInfo(JSONObject data) {
+        try {
+            PushDataInfo dataInfo = new PushDataInfo();
+            dataInfo.setPushDataString(data.toString());
+            dataInfo.setContentAvailable(data.getInt("content-available"));
+            dataInfo.setAppId(data.getString("appId"));
+            dataInfo.setTaskId(data.getString("taskId"));
+            dataInfo.setTitle(data.getString("title"));
+            dataInfo.setBody(data.getString("alert"));
+            dataInfo.setBadge(data.getInt("badge"));
+            if (data.has("remindType")) {
+                String remindStrs = data.getString("remindType");
+                dataInfo.setRemindType(remindStrs.split(","));
+            }
+
+            if (data.has("style")) {
+                JSONObject styleJsonObject = data.getJSONObject("style");
+                if (styleJsonObject.has("icon")) {
+                    dataInfo.setIconUrl(styleJsonObject.getString("icon"));
+                }
+                if (styleJsonObject.has("rgb")) {
+                    dataInfo.setFontColor(styleJsonObject.getString("rgb"));
+                }
+            }
+            
+            JSONObject behaviorJsonObject = data.getJSONObject("behavior");
+            if (behaviorJsonObject.has("behavior")) {
+                dataInfo.setBehavior(behaviorJsonObject.getString("behavior"));
+            }
+            
+            Intent intent = new Intent(PushRecieveMsgReceiver.ACTION_PUSH);
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("pushDataInfo", dataInfo);
+            intent.putExtras(bundle);
+            intent.setPackage(getPackageName());
+            sendBroadcast(intent);
+            
+            try {
+                PushReportAgent
+                        .reportPush(data.toString(), System.currentTimeMillis()
+                                + "", PushReportConstants.EVENT_TYPE_ARRIVED,
+                                softToken, this);// 推送消息到达上报
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 }
