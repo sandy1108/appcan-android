@@ -33,7 +33,7 @@ import java.io.File;
 public class BDebug {
 
     public static final String FILE_NAME = "appcandebug.txt";
-    public static boolean DEBUG = false;
+	public static boolean DEBUG = true;
 
     public static final String TAG = "appcan";
 

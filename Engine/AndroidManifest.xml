@@ -18,75 +18,91 @@
             android:name="org.zywx.wbpalmstar.engine.EBrowserActivity"
             android:alwaysRetainTaskState="true"
             android:configChanges="keyboardHidden|orientation"
-            android:launchMode="singleTop"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/browser_main_theme"
             android:exported="true"
             android:windowSoftInputMode="stateHidden|adjustResize" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="appcanscheme" />
+            </intent-filter>
         </activity>
-        <activity android:name="org.zywx.wbpalmstar.engine.TempActivity"
+        <activity
+            android:name="org.zywx.wbpalmstar.engine.TempActivity"
             android:launchMode="standard"
             android:screenOrientation="portrait"
             android:theme="@style/browser_loading_theme"/>
-        <activity android:name="org.zywx.wbpalmstar.engine.LoadingActivity"
+        <activity
+            android:name="org.zywx.wbpalmstar.engine.LoadingActivity"
             android:configChanges="keyboardHidden|orientation"
-            android:theme="@style/browser_loading_theme"
-            android:screenOrientation="portrait"
             android:launchMode="standard"
-            >
+            android:screenOrientation="portrait"
+            android:theme="@style/browser_loading_theme" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name="org.zywx.wbpalmstar.wbpalm.V8PalmActivity"
-            android:configChanges="orientation"
-            android:process=":game"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
 
-        <service
-            android:name="org.zywx.wbpalmstar.platform.memoryControl.KeepForeService"
-            android:enabled="true"
-            android:exported="false"
-            android:process="com.android.acore" >
-            <intent-filter>
-                <action android:name="appcan.intent.action.largeHeap" />
-            </intent-filter>
-        </service>
 
         <!-- push -->
         <service
             android:name="org.zywx.wbpalmstar.platform.push.PushService"
-            android:process=":push"
+            android:enabled="true"
             android:exported="false"
-            android:enabled="true" />
+            android:process=":push" />
 
         <receiver
-            android:name="org.zywx.wbpalmstar.platform.push.PushBroadCastReceiver" android:process=":push">
+            android:name="org.zywx.wbpalmstar.platform.push.PushBroadCastReceiver"
+            android:process=":push" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
 
         <receiver
-            android:name="org.zywx.wbpalmstar.platform.push.PushRecieveMsgReceiver" android:exported="false">
+            android:name="org.zywx.wbpalmstar.platform.push.PushRecieveMsgReceiver"
+            android:exported="false" >
             <intent-filter>
                 <action android:name="org.zywx.push.receive" />
             </intent-filter>
         </receiver>
+        <provider
+            android:name="org.zywx.wbpalmstar.base.ACEContentProvider"
+            android:authorities="org.zywx.wbpalmstar.widgetone.uex.sp"
+            android:exported="false" />
+        <activity
+            android:name="com.ryg.dynamicload.DLProxyActivity"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="com.ryg.dynamicload.proxy.activity.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.ryg.dynamicload.DLProxyFragmentActivity"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="com.ryg.dynamicload.proxy.fragmentactivity.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <service android:name="com.ryg.dynamicload.DLProxyService" >
+        </service>
         
-        <provider android:name="org.zywx.wbpalmstar.base.ACEContentProvider"
-          android:authorities="org.zywx.wbpalmstar.widgetone.uex.sp" android:exported="false"/>
+        <activity
+            android:name="org.zywx.wbpalmstar.plugin.uexdevice.TestActivity" />
     </application>
 
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FIND_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
@@ -106,11 +122,7 @@
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-
-    <uses-feature android:name="android.hardware.camera" />
-    <uses-feature
-        android:name="android.hardware.camera.autofocus"
-        android:required="false" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
 
     <supports-screens
         android:anyDensity="true"
@@ -120,4 +132,6 @@
         android:smallScreens="true"
         android:xlargeScreens="true" />
 
+    <uses-sdk
+        android:minSdkVersion="10"/>
 </manifest>

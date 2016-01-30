@@ -18,6 +18,17 @@
 
 package org.zywx.wbpalmstar.engine.universalex;
 
+import java.io.File;
+import java.util.Vector;
+
+import org.zywx.wbpalmstar.engine.EBrowserActivity;
+import org.zywx.wbpalmstar.engine.EBrowserView;
+import org.zywx.wbpalmstar.engine.EBrowserWindow;
+import org.zywx.wbpalmstar.engine.EWgtResultInfo;
+import org.zywx.wbpalmstar.engine.universalex.EUExWindow.MyPagerAdapter;
+import org.zywx.wbpalmstar.engine.universalex.EUExWindow.MyViewPager;
+import org.zywx.wbpalmstar.widgetone.dataservice.WWidgetData;
+
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -31,17 +42,6 @@ import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
-
-import org.zywx.wbpalmstar.engine.EBrowserActivity;
-import org.zywx.wbpalmstar.engine.EBrowserView;
-import org.zywx.wbpalmstar.engine.EBrowserWindow;
-import org.zywx.wbpalmstar.engine.EWgtResultInfo;
-import org.zywx.wbpalmstar.engine.universalex.EUExWindow.MyPagerAdapter;
-import org.zywx.wbpalmstar.engine.universalex.EUExWindow.MyViewPager;
-import org.zywx.wbpalmstar.widgetone.dataservice.WWidgetData;
-
-import java.io.File;
-import java.util.Vector;
 
 public abstract class EUExBase {
 
@@ -60,6 +60,8 @@ public abstract class EUExBase {
      * 本js扩展对象所在的WebView.
      */
     public EBrowserView mBrwView;
+
+	private int mType;
 
     protected boolean mDestroyed;
     protected boolean mStopped;

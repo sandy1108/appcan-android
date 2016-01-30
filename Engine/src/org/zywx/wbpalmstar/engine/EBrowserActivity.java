@@ -18,35 +18,13 @@
 
 package org.zywx.wbpalmstar.engine;
 
-import android.app.ActivityGroup;
-import android.app.AlertDialog;
-import android.app.LocalActivityManager;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.SharedPreferences;
-import android.content.DialogInterface.OnClickListener;
-import android.content.SharedPreferences.Editor;
-import android.content.Intent;
-import android.content.pm.ActivityInfo;
-import android.content.res.Configuration;
-import android.graphics.Bitmap;
-import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
-import android.os.*;
-import android.os.Process;
-import android.support.v4.content.LocalBroadcastManager;
-import android.util.TypedValue;
-import android.view.Gravity;
-import android.view.KeyEvent;
-import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-import android.webkit.ValueCallback;
-import android.webkit.WebChromeClient.CustomViewCallback;
-import android.widget.FrameLayout;
-import android.widget.TextView;
-
-import com.slidingmenu.lib.SlidingMenu;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.lang.reflect.Method;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -63,14 +41,37 @@ import org.zywx.wbpalmstar.platform.push.report.PushReportConstants;
 import org.zywx.wbpalmstar.widgetone.WidgetOneApplication;
 import org.zywx.wbpalmstar.widgetone.dataservice.WWidgetData;
 
+import android.app.ActivityGroup;
+import android.app.AlertDialog;
+import android.app.LocalActivityManager;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.content.pm.ActivityInfo;
+import android.content.res.AssetManager;
+import android.content.res.Configuration;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
+import android.os.Process;
+import android.support.v4.content.LocalBroadcastManager;
+import android.view.KeyEvent;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.webkit.ValueCallback;
+import android.webkit.WebChromeClient.CustomViewCallback;
+import android.widget.FrameLayout;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.lang.reflect.Method;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import com.slidingmenu.lib.SlidingMenu;
 
 @SuppressWarnings("deprecation")
 public final class EBrowserActivity extends ActivityGroup {
@@ -92,7 +93,7 @@ public final class EBrowserActivity extends ActivityGroup {
     private String mAuthorID;
     private boolean mSipBranch;
 
-    public static boolean develop = false;
+	public static boolean develop = false;
     public static boolean analytics = true;
     private JSONObject OtherAppData;
     public static boolean isForground = false;
@@ -882,4 +883,23 @@ public final class EBrowserActivity extends ActivityGroup {
             mBrowser.onSlidingWindowStateChanged(position);
         }
     }
+
+	@Override
+	public AssetManager getAssets() {
+		// TODO Auto-generated method stub
+		return getApplicationContext().getAssets();
+	}
+
+	@Override
+	public Resources getResources() {
+		// TODO Auto-generated method stub
+		return getApplicationContext().getResources();
+	}
+
+	@Override
+	public ClassLoader getClassLoader() {
+		// TODO Auto-generated method stub
+		return getApplicationContext().getClassLoader();
+	}
+
 }

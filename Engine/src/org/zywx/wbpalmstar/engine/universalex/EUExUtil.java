@@ -55,6 +55,10 @@ public class EUExUtil {
         mContext = ctx.getApplicationContext();
     }
 
+	public static void initWithPlugins() {
+
+	}
+
     public static int getResDrawableID(String resName) {
 
         return resources.getIdentifier(resName, drawable, packageName);
