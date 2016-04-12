@@ -52,9 +52,12 @@ import org.json.JSONObject;
 import org.zywx.wbpalmstar.base.BDebug;
 import org.zywx.wbpalmstar.base.BUtility;
 import org.zywx.wbpalmstar.base.ResoureFinder;
+import org.zywx.wbpalmstar.base.util.SpManager;
 import org.zywx.wbpalmstar.base.vo.CreateContainerVO;
 import org.zywx.wbpalmstar.base.vo.SetSwipeCloseEnableVO;
+import org.zywx.wbpalmstar.base.vo.ShareInputVO;
 import org.zywx.wbpalmstar.engine.DataHelper;
+import org.zywx.wbpalmstar.engine.EBounceView;
 import org.zywx.wbpalmstar.engine.EBrowser;
 import org.zywx.wbpalmstar.engine.EBrowserActivity;
 import org.zywx.wbpalmstar.engine.EBrowserAnimation;
@@ -64,6 +67,7 @@ import org.zywx.wbpalmstar.engine.EBrowserWindow;
 import org.zywx.wbpalmstar.engine.EBrwViewEntry;
 import org.zywx.wbpalmstar.engine.EDialogTask;
 import org.zywx.wbpalmstar.engine.ESystemInfo;
+import org.zywx.wbpalmstar.engine.EUtil;
 import org.zywx.wbpalmstar.engine.EViewEntry;
 import org.zywx.wbpalmstar.platform.window.ActionSheetDialog;
 import org.zywx.wbpalmstar.platform.window.ActionSheetDialog.ActionSheetDialogItemClickListener;
@@ -72,6 +76,7 @@ import org.zywx.wbpalmstar.widgetone.dataservice.WWidgetData;
 
 import java.security.MessageDigest;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 public class EUExWindow extends EUExBase {
@@ -93,6 +98,8 @@ public class EUExWindow extends EUExBase {
     public static final String function_cbslipedDownEdge = "uexWindow.slipedDownEdge";//不建议使用
     public static final String function_cbCreatePluginViewContainer = "uexWindow.cbCreatePluginViewContainer";
     public static final String function_cbClosePluginViewContainer = "uexWindow.cbClosePluginViewContainer";
+    public static final String function_cbShowPluginViewContainer = "uexWindow.cbShowPluginViewContainer";
+    public static final String function_cbHidePluginViewContainer = "uexWindow.cbHidePluginViewContainer";
     public static final String function_onPluginContainerPageChange = "uexWindow.onPluginContainerPageChange";
 
     public static final String function_onSlipedUpward = "uexWindow.onSlipedUpward";
@@ -154,12 +161,17 @@ public class EUExWindow extends EUExBase {
     private static final int MSG_POST_GLOBAL_NOTIFICATION = 46;
     private static final int MSG_SUBSCRIBE_CHANNEL_NOTIFICATION = 47;
     private static final int MSG_FUNCTION_RELOAD = 48;
-    private static final int MSG_FUNCTION_RELOAD_WIDGET_BY_APPID = 49;
     private static final int MSG_FUNCTION_GET_SLIDING_WINDOW_STATE = 50;
     private static final int MSG_SET_IS_SUPPORT_SLIDE_CALLBACK = 51;
     private static final int MSG_PLUGINVIEW_CONTAINER_CREATE = 52;
     private static final int MSG_PLUGINVIEW_CONTAINER_CLOSE = 53;
     private static final int MSG_PLUGINVIEW_CONTAINER_SET = 54;
+    private static final int MSG_PLUGINVIEW_CONTAINER_SHOW = 55;
+    private static final int MSG_PLUGINVIEW_CONTAINER_HIDE = 56;
+    private static final int MSG_PUBLISH_CHANNEL_NOTIFICATION_FOR_JSON = 57;
+    private static final int MSG_SET_IS_SUPPORT_SWIPE_CALLBACK = 58;
+    private static final int MSG_DISTURB_LONG_PRESS_GESTURE = 59;
+    private static final int MSG_FUNCTION_SETAUTOROTATEENABLE= 60;
     private AlertDialog mAlert;
     private AlertDialog.Builder mConfirm;
     private PromptDialog mPrompt;
@@ -205,7 +217,8 @@ public class EUExWindow extends EUExBase {
         String inFlag = parm[6];
         String animDuration = null;
         boolean opaque = false;
-        String bgColor = null;
+        /**赋初值，避免不传bgColor崩溃*/
+        String bgColor = "#00000000";
         boolean hasExtraInfo = false;
         int hardware = -1;
         if (parm.length > 7) {
@@ -281,11 +294,13 @@ public class EUExWindow extends EUExBase {
         }
         String query = null;
         if (Build.VERSION.SDK_INT >= 11) {
-            if (EBrwViewEntry.isUrl(dataType) && data.startsWith("file")) {
+            if (EBrwViewEntry.isUrl(dataType) && data != null) {
                 int index = data.indexOf("?");
                 if (index > 0) {
                     query = data.substring(index + 1);
-                    data = data.substring(0, index);
+                    if (!data.startsWith("http")) {
+                        data = data.substring(0, index);
+                    }
                 }
             }
         }
@@ -306,9 +321,17 @@ public class EUExWindow extends EUExBase {
         curWind.createWindow(mBrwView, windEntry);
     }
 
+    public int getHeight(String[] params){
+        return mBrwView.getBrowserWindow().getHeight();
+    }
+
+    public int getWidth(String[] params){
+        return mBrwView.getBrowserWindow().getWidth();
+    }
+
     private boolean checkWindPermission(String windName) {
         WWidgetData rootWgt = mBrwView.getRootWidget();
-        String[] winds = rootWgt.disableRootWindows;
+        ArrayList<String> winds = rootWgt.disableRootWindowsList;
         if (null == windName || windName.trim().length() == 0 || null == winds) {
             return true;
         }
@@ -322,7 +345,7 @@ public class EUExWindow extends EUExBase {
 
     private boolean checkWindPopPermission(String windPopName) {
         WWidgetData rootWgt = mBrwView.getRootWidget();
-        String[] winds = rootWgt.disableSonWindows;
+        ArrayList<String>  winds = rootWgt.disableSonWindowsList;
         if (null == windPopName || windPopName.trim().length() == 0
                 || null == winds) {
             return true;
@@ -377,6 +400,32 @@ public class EUExWindow extends EUExBase {
                 e.printStackTrace();
             }
             activity.changeConfiguration(or);
+        }
+    }
+
+    public void setAutorotateEnable(String[] parm) {
+        if (parm.length < 1) {
+            return;
+        }
+        Message msg = new Message();
+        msg.obj = this;
+        msg.what = MSG_FUNCTION_SETAUTOROTATEENABLE;
+        Bundle bd = new Bundle();
+        bd.putStringArray(TAG_BUNDLE_PARAM, parm);
+        msg.setData(bd);
+        mHandler.sendMessage(msg);
+    }
+
+    public void setAutorotateEnableMsg(String[] parm) {
+        int enabled = 0;
+        try {
+            enabled = Integer.parseInt(parm[0]);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (null != mBrwView) {
+            EBrowserActivity activity = (EBrowserActivity) mContext;
+            activity.setAutorotateEnable(enabled);
         }
     }
 
@@ -511,32 +560,6 @@ public class EUExWindow extends EUExBase {
         mHandler.sendMessage(msg);
     }
 
-    public void reloadWidgetByAppId(String[] params) {
-        if (params.length < 1) {
-            return;
-        }
-        Message msg = mHandler.obtainMessage();
-        msg.what = MSG_FUNCTION_RELOAD_WIDGET_BY_APPID;
-        msg.obj = this;
-        Bundle bd = new Bundle();
-        bd.putStringArray(TAG_BUNDLE_PARAM, params);
-        msg.setData(bd);
-        mHandler.sendMessage(msg);
-    }
-
-    private void reloadWidgetByAppIdMsg(String[] params) {
-        String appId = params[0];
-        if (TextUtils.isEmpty(appId)) {
-            Log.e("reloadWidgetByAppId", "appId is empty!!!");
-            return;
-        }
-        EBrowserWindow curWind = mBrwView.getBrowserWindow();
-        if (null == curWind) {
-            return;
-        }
-        curWind.reloadWidgetByAppId(appId);
-    }
-
     public void openSlibing(String[] parm) {
         if (parm.length < 6) {
             return;
@@ -584,11 +607,13 @@ public class EUExWindow extends EUExBase {
         String url = BUtility.makeUrl(mBrwView.getCurrentUrl(), inUrl);
         String query = null;
         if (Build.VERSION.SDK_INT >= 11) {
-            if (url != null && url.startsWith("file")) {
+            if (url != null) {
                 int index = url.indexOf("?");
                 if (index > 0) {
                     query = url.substring(index + 1);
-                    url = url.substring(0, index);
+                    if (!url.startsWith("http")) {
+                        url = url.substring(0, index);
+                    }
                 }
             }
         }
@@ -857,7 +882,6 @@ public class EUExWindow extends EUExBase {
             }
 
             if ("1".equals(animationId)) {
-                String bg = jsonObject.optString("bg");
                 //仿QQ侧边栏动画
                 activity.globalSlidingMenu.setBehindCanvasTransformer(new SlidingMenu.CanvasTransformer() {
                     @Override
@@ -873,9 +897,6 @@ public class EUExWindow extends EUExBase {
                         canvas.scale(scale, scale, canvas.getWidth() / 2, canvas.getHeight() / 2);
                     }
                 });
-                if (!TextUtils.isEmpty(bg)) {
-                    setViewBackground(activity.globalSlidingMenu, bg, mBrwView.getCurrentWidget().m_indexUrl);
-                }
                 activity.globalSlidingMenu.setFadeEnabled(false);
             } else {
                 activity.globalSlidingMenu.setShadowWidthRes(EUExUtil.getResDimenID("shadow_width"));
@@ -885,6 +906,11 @@ public class EUExWindow extends EUExBase {
                     activity.globalSlidingMenu.setShadowDrawable(EUExUtil.getResDrawableID("shadow"));
                 }
                 activity.globalSlidingMenu.setFadeDegree(0.35f);
+            }
+
+            String bg = jsonObject.optString("bg");
+            if (!TextUtils.isEmpty(bg)) {
+                setViewBackground(activity.globalSlidingMenu, bg, mBrwView.getCurrentWidget().m_indexUrl);
             }
 
             if (leftJsonObj != null && rightJsonObj != null) {
@@ -959,11 +985,13 @@ public class EUExWindow extends EUExBase {
         }
         String query = null;
         if (Build.VERSION.SDK_INT >= 11) {
-            if (EBrwViewEntry.isUrl(dataType) && data.startsWith("file")) {
+            if (EBrwViewEntry.isUrl(dataType) && data != null) {
                 int index = data.indexOf("?");
                 if (index > 0) {
                     query = data.substring(index + 1);
-                    data = data.substring(0, index);
+                    if (!url.startsWith("http")) {
+                        data = data.substring(0, index);
+                    }
                 }
             }
         }
@@ -1035,7 +1063,8 @@ public class EUExWindow extends EUExBase {
             marginBottom = parm[10];
         }
         boolean opaque = false;
-        String bgColor = null;
+        /**赋初值，避免不传bgColor崩溃*/
+        String bgColor = "#00000000";
         boolean hasExtraInfo = false;
         int hardware = -1;
         if (parm.length > 11) {
@@ -1139,13 +1168,14 @@ public class EUExWindow extends EUExBase {
         popEntry.hasExtraInfo = hasExtraInfo;
         String query = null;
         if (Build.VERSION.SDK_INT >= 11) {
-            if (url != null && url.trim().length() != 0
-                    && url.startsWith("file")) {
+            if (url != null && url.trim().length() != 0) {
                 int index = url.indexOf("?");
                 if (index > 0) {
                     query = url.substring(index + 1);
-                    url = url.substring(0, index);
-                    popEntry.mUrl = url;
+                    if (!url.startsWith("http")) {
+                        url = url.substring(0, index);
+                        popEntry.mUrl = url;
+                    }
                 }
             }
         }
@@ -1326,7 +1356,8 @@ public class EUExWindow extends EUExBase {
         String inIndexSelect = parm[9];
 
         boolean opaque = false;
-        String bgColor = null;
+        /**赋初值，避免不传bgColor崩溃*/
+        String bgColor = "#00000000";
         boolean hasExtraInfo = false;
         if (parm.length > 10) {
             String jsonData = parm[10];
@@ -1420,7 +1451,8 @@ public class EUExWindow extends EUExBase {
                 EBrwViewEntry popEntry = new EBrwViewEntry(
                         EBrwViewEntry.VIEW_TYPE_POP);
                 boolean opaque1 = false;
-                String bgColor1 = null;
+                /**赋初值，避免不传bgColor崩溃*/
+                String bgColor1 = "#00000000";
                 boolean hasExtraInfo1 = false;
                 if (jsonContent.getJSONObject(i).has(EBrwViewEntry.TAG_EXTRAINFO)) {
                     try {
@@ -1469,13 +1501,14 @@ public class EUExWindow extends EUExBase {
                     String query = null;
                     if (Build.VERSION.SDK_INT >= 11) {
                         if (childUrl[i] != null
-                                && childUrl[i].trim().length() != 0
-                                && childUrl[i].startsWith("file")) {
+                                && childUrl[i].trim().length() != 0) {
                             int index = childUrl[i].indexOf("?");
                             if (index > 0) {
                                 query = childUrl[i].substring(index + 1);
-                                childUrl[i] = childUrl[i].substring(0, index);
-                                popEntry.mUrl = childUrl[i];
+                                if (!childUrl[i].startsWith("http")) {
+                                    childUrl[i] = childUrl[i].substring(0, index);
+                                    popEntry.mUrl = childUrl[i];
+                                }
                             }
                         }
                     }
@@ -2356,6 +2389,14 @@ public class EUExWindow extends EUExBase {
         mBrwView.getBrowserWindow().windowGoBack(animId, duration);
     }
 
+    public void putLocalData(String[] params) {
+        SpManager.getInstance().putString(params[0],params[1]);
+    }
+
+    public String getLocalData(String[] params) {
+        return SpManager.getInstance().getString(params[0], "");
+    }
+
     public void windowForward(String[] parm) {
         Message msg = new Message();
         msg.obj = this;
@@ -2430,6 +2471,10 @@ public class EUExWindow extends EUExBase {
             return;
         }
         mBrwView.notifyBounceEvent(type, status);
+    }
+
+    public String getWindowName(String[] params){
+        return mBrwView.getWindowName();
     }
 
     public void showBounceView(String[] parm) {
@@ -2559,6 +2604,9 @@ public class EUExWindow extends EUExBase {
         task.msg = inMessage;
         task.defaultValue = inDefaultValue;
         task.buttonLables = inButtonLables;
+        if (parm.length>4) {
+            task.hint =parm[4];
+        }
         task.mUexWind = this;
         curWind.addDialogTask(task);
     }
@@ -2741,7 +2789,8 @@ public class EUExWindow extends EUExBase {
         }
     }
 
-    public void private_prompt(String inTitle, String inMessage, String inDefaultValue, String[] inButtonLables) {
+    public void private_prompt(String inTitle, String inMessage, String inDefaultValue, String[] inButtonLables,
+                               String hint) {
 		/*if (!((EBrowserActivity) mContext).isVisable()) {
 			return;
 		}*/
@@ -2750,7 +2799,8 @@ public class EUExWindow extends EUExBase {
         }
         if (inButtonLables != null && inButtonLables.length == 2) {
             final JSONObject jsonObject = new JSONObject();
-            mPrompt = PromptDialog.show(mContext, inTitle, inMessage, inDefaultValue, inButtonLables[0], new OnClickListener() {
+            mPrompt = PromptDialog.show(mContext, inTitle, inMessage, inDefaultValue,hint, inButtonLables[0], new
+                    OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     try {
@@ -3071,7 +3121,7 @@ public class EUExWindow extends EUExBase {
         }
         String channelId = params[0];
         if (TextUtils.isEmpty(channelId)) {
-            Log.e("publishChannelNotificationMsg", "channelId is empty!!!");
+            BDebug.e("channelId is empty!!!");
             return;
         }
         String des = params[1];
@@ -3079,7 +3129,38 @@ public class EUExWindow extends EUExBase {
         if (null == curWind) {
             return;
         }
-        curWind.publishChannelNotification(channelId, des);
+        curWind.publishChannelNotification(channelId, des, false);
+    }
+
+    public void publishChannelNotificationForJson(String[] params) {
+        if (params == null || params.length < 2) {
+            errorCallback(0, 0, "error params!");
+            return;
+        }
+        Message msg = new Message();
+        msg.obj = this;
+        msg.what = MSG_PUBLISH_CHANNEL_NOTIFICATION_FOR_JSON;
+        Bundle bd = new Bundle();
+        bd.putStringArray(TAG_BUNDLE_PARAM, params);
+        msg.setData(bd);
+        mHandler.sendMessage(msg);
+    }
+
+    public void publishChannelNotificationForJsonMsg(String[] params) {
+        if (params.length < 2) {
+            return;
+        }
+        String channelId = params[0];
+        if (TextUtils.isEmpty(channelId)) {
+            BDebug.e("channelId is empty!!!");
+            return;
+        }
+        String des = params[1];
+        EBrowserWindow curWind = mBrwView.getBrowserWindow();
+        if (null == curWind) {
+            return;
+        }
+        curWind.publishChannelNotification(channelId, des, true);
     }
 
     public void setMultilPopoverFlippingEnbaled(String[] params) {
@@ -3118,6 +3199,53 @@ public class EUExWindow extends EUExBase {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    public void setIsSupportSwipeCallback(String[] params) {
+        if (params == null || params.length < 1) {
+            errorCallback(0, 0, "error params!");
+            return;
+        }
+        Message msg = new Message();
+        msg.obj = this;
+        msg.what = MSG_SET_IS_SUPPORT_SWIPE_CALLBACK;
+        Bundle bd = new Bundle();
+        bd.putStringArray(TAG_BUNDLE_PARAM, params);
+        msg.setData(bd);
+        mHandler.sendMessage(msg);
+    }
+
+    private void setIsSupportSwipeCallbackMsg(String[] params) {
+        String json = params[0];
+        try {
+            JSONObject jsonObject = new JSONObject(json);
+            boolean isSupport = Boolean.valueOf(jsonObject.getString("isSupport"));
+            View bv = (View) mBrwView.getParent();
+            if (bv != null && bv instanceof EBounceView) {
+                ((EBounceView) bv).setIsSupportSwipeCallback(isSupport);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void disturbLongPressGesture(String[] params) {
+        if (params == null || params.length < 1) {
+            errorCallback(0, 0, "error params!");
+            return;
+        }
+        Message msg = new Message();
+        msg.obj = this;
+        msg.what = MSG_DISTURB_LONG_PRESS_GESTURE;
+        Bundle bd = new Bundle();
+        bd.putStringArray(TAG_BUNDLE_PARAM, params);
+        msg.setData(bd);
+        mHandler.sendMessage(msg);
+    }
+
+    private void disturbLongPressGestureMsg(String[] params) {
+        int disturb = Integer.parseInt(params[0]);
+        mBrwView.setDisturbLongPressGesture(disturb == 0 ? false : true);
     }
 
     public void createPluginViewContainer(String[] parm) {
@@ -3190,6 +3318,96 @@ public class EUExWindow extends EUExBase {
         }
     }
 
+    public void showPluginViewContainer(String[] parm) {
+        Message msg = mHandler.obtainMessage();
+        msg.what = MSG_PLUGINVIEW_CONTAINER_SHOW;
+        msg.obj = this;
+        Bundle bd = new Bundle();
+        bd.putStringArray(TAG_BUNDLE_PARAM, parm);
+        msg.setData(bd);
+        mHandler.sendMessage(msg);
+    }
+
+    /**
+     * 显示隐藏的容器
+     *
+     * @param params
+     */
+    private void showPluginViewContainerMsg(String[] params) {
+        if (params == null || params.length < 1) {
+            errorCallback(0, 0, "error params!");
+            return;
+        }
+        try {
+            JSONObject json = new JSONObject(params[0]);
+            String opid = json.getString("id");
+
+            EBrowserWindow mWindow = mBrwView.getBrowserWindow();
+            int count = mWindow.getChildCount();
+            for (int i = 0; i < count; i++) {
+                View view = mWindow.getChildAt(i);
+                if (view instanceof ContainerViewPager) {
+                    ContainerViewPager pager = (ContainerViewPager) view;
+                    if (opid.equals(pager.getContainerVO().getId())) {
+                        pager.setVisibility(View.VISIBLE);
+                        String js = SCRIPT_HEADER + "if(" + function_cbShowPluginViewContainer + "){"
+                                + function_cbShowPluginViewContainer + "(" + opid + "," + EUExCallback.F_C_TEXT + ",'"
+                                + "success" + "'" + SCRIPT_TAIL;
+                        onCallback(js);
+                        return;
+                    }
+                }//end instance
+            }//end for
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void hidePluginViewContainer(String[] parm) {
+        Message msg = mHandler.obtainMessage();
+        msg.what = MSG_PLUGINVIEW_CONTAINER_HIDE;
+        msg.obj = this;
+        Bundle bd = new Bundle();
+        bd.putStringArray(TAG_BUNDLE_PARAM, parm);
+        msg.setData(bd);
+        mHandler.sendMessage(msg);
+    }
+
+    /**
+     * 隐藏显示的容器
+     *
+     * @param params
+     */
+    private void hidePluginViewContainerMsg(String[] params) {
+        if (params == null || params.length < 1) {
+            errorCallback(0, 0, "error params!");
+            return;
+        }
+        try {
+            JSONObject json = new JSONObject(params[0]);
+            String opid = json.getString("id");
+
+            EBrowserWindow mWindow = mBrwView.getBrowserWindow();
+            int count = mWindow.getChildCount();
+            for (int i = 0; i < count; i++) {
+                View view = mWindow.getChildAt(i);
+                if (view instanceof ContainerViewPager) {
+                    ContainerViewPager pager = (ContainerViewPager) view;
+                    if (opid.equals(pager.getContainerVO().getId())) {
+                        pager.setVisibility(View.GONE);
+                        String js = SCRIPT_HEADER + "if(" + function_cbHidePluginViewContainer + "){"
+                                + function_cbHidePluginViewContainer + "(" + opid + "," + EUExCallback.F_C_TEXT + ",'"
+                                + "success" + "'" + SCRIPT_TAIL;
+                        onCallback(js);
+                        return;
+                    }
+                }//end instance
+            }//end for
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public void closePluginViewContainer(String[] parm) {
         Message msg = mHandler.obtainMessage();
         msg.what = MSG_PLUGINVIEW_CONTAINER_CLOSE;
@@ -3211,7 +3429,7 @@ public class EUExWindow extends EUExBase {
             return;
         }
         try {
-            JSONObject json = new JSONObject(params[0].toString());
+            JSONObject json = new JSONObject(params[0]);
             String opid = json.getString("id");
 
             EBrowserWindow mWindow = mBrwView.getBrowserWindow();
@@ -3220,7 +3438,7 @@ public class EUExWindow extends EUExBase {
                 View view = mWindow.getChildAt(i);
                 if (view instanceof ContainerViewPager) {
                     ContainerViewPager pager = (ContainerViewPager) view;
-                    if (opid.equals((String) pager.getContainerVO().getId())) {
+                    if (opid.equals(pager.getContainerVO().getId())) {
                         removeViewFromCurrentWindow(pager);
                         ContainerAdapter adapter = (ContainerAdapter) pager.getAdapter();
                         Vector<FrameLayout> views = adapter.getViewList();
@@ -3347,6 +3565,23 @@ public class EUExWindow extends EUExBase {
         }
     }
 
+
+    public void share(String[] params){
+        String jsonStr=params[0];
+        ShareInputVO inputVO=DataHelper.gson.fromJson(jsonStr,ShareInputVO.class);
+        if (!TextUtils.isEmpty(inputVO.getImgPath())){
+            inputVO.setImgPath(BUtility.getRealPathWithCopyRes(mBrwView,inputVO.getImgPath()));
+        }
+        if (inputVO.getImgPaths()!=null){
+            List<String> realImagePaths=new ArrayList<String>();
+            for (String path:inputVO.getImgPaths()){
+                realImagePaths.add(BUtility.getRealPathWithCopyRes(mBrwView,path));
+            }
+            inputVO.setImgPaths(realImagePaths);
+        }
+        EUtil.share(mContext,inputVO);
+    }
+
     @Override
     public void onHandleMessage(Message msg) {
         if (mBrwView == null || mBrwView.getBrowserWindow() == null || msg == null) {
@@ -3458,6 +3693,9 @@ public class EUExWindow extends EUExBase {
             case MSG_FUNCTION_SETORIENTATION:
                 if (param != null) setOrientationMsg(param);
                 break;
+            case MSG_FUNCTION_SETAUTOROTATEENABLE:
+                if(param != null) setAutorotateEnableMsg(param);
+                break;
             case MSG_FUNCTION_SETSLIDINGWIN:
                 handleSetSlidingWin(param);
                 break;
@@ -3482,9 +3720,6 @@ public class EUExWindow extends EUExBase {
                 break;
             case MSG_FUNCTION_RELOAD:
                 mBrwView.reload();
-                break;
-            case MSG_FUNCTION_RELOAD_WIDGET_BY_APPID:
-                if (param != null) reloadWidgetByAppIdMsg(param);
                 break;
             case MSG_SET_WINDOW_HIDDEN:
                 setWindowHiddenMsg(param);
@@ -3516,8 +3751,17 @@ public class EUExWindow extends EUExBase {
             case MSG_PUBLISH_CHANNEL_NOTIFICATION:
                 publishChannelNotificationMsg(param);
                 break;
+            case MSG_PUBLISH_CHANNEL_NOTIFICATION_FOR_JSON:
+                publishChannelNotificationForJsonMsg(param);
+                break;
             case MSG_SET_IS_SUPPORT_SLIDE_CALLBACK:
                 setIsSupportSlideCallbackMsg(param);
+                break;
+            case MSG_SET_IS_SUPPORT_SWIPE_CALLBACK:
+                setIsSupportSwipeCallbackMsg(param);
+                break;
+            case MSG_DISTURB_LONG_PRESS_GESTURE:
+                disturbLongPressGestureMsg(param);
                 break;
             case MSG_PLUGINVIEW_CONTAINER_CREATE:
                 createPluginViewContainerMsg(param);
@@ -3527,6 +3771,12 @@ public class EUExWindow extends EUExBase {
                 break;
             case MSG_PLUGINVIEW_CONTAINER_SET:
                 setPageInContainerMsg(param);
+                break;
+            case MSG_PLUGINVIEW_CONTAINER_SHOW:
+                showPluginViewContainerMsg(param);
+                break;
+            case MSG_PLUGINVIEW_CONTAINER_HIDE:
+                hidePluginViewContainerMsg(param);
                 break;
             default:
                 break;

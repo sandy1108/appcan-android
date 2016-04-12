@@ -29,6 +29,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Message;
@@ -45,12 +46,15 @@ import org.zywx.wbpalmstar.base.BUtility;
 import org.zywx.wbpalmstar.base.JsConst;
 import org.zywx.wbpalmstar.base.ResoureFinder;
 import org.zywx.wbpalmstar.base.vo.AppInstalledVO;
+import org.zywx.wbpalmstar.base.vo.StartAppVO;
 import org.zywx.wbpalmstar.engine.DataHelper;
 import org.zywx.wbpalmstar.engine.EBrowserActivity;
 import org.zywx.wbpalmstar.engine.EBrowserAnimation;
 import org.zywx.wbpalmstar.engine.EBrowserView;
+import org.zywx.wbpalmstar.engine.EBrowserWidget;
 import org.zywx.wbpalmstar.engine.EBrowserWindow;
 import org.zywx.wbpalmstar.engine.EWgtResultInfo;
+import org.zywx.wbpalmstar.platform.push.report.PushReportConstants;
 import org.zywx.wbpalmstar.widgetone.WidgetOneApplication;
 import org.zywx.wbpalmstar.widgetone.dataservice.ReData;
 import org.zywx.wbpalmstar.widgetone.dataservice.WDataManager;
@@ -77,11 +81,13 @@ public class EUExWidget extends EUExBase {
     public static final String function_getPushState = "uexWidget.cbGetPushState";
     public static final String function_onSpaceClick = "uexWidget.onSpaceClick";
     public static final String function_loadApp = "uexWidget.cbLoadApp";
+    public static final String function_getMBaaSHost = "uexWidget.cbGetMBaaSHost";
     private static final String BUNDLE_DATA = "data";
     private static final String BUNDLE_MESSAGE = "message";
     private static final String PUSH_MSG_BODY = "0";
     private static final String PUSH_MSG_ALL = "1";
     private static final int MSG_IS_APP_INSTALLED = 0;
+    private static final int MSG_RELOAD_WIDGET_BY_APPID= 1;
 
     public EUExWidget(Context context, EBrowserView inParent) {
         super(context, inParent);
@@ -198,6 +204,9 @@ public class EUExWidget extends EUExBase {
             e.printStackTrace();
         }
         widgetData.m_appdebug = debug;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            mBrwView.setWebContentsDebuggingEnabled(debug == 1 ? true : false);
+        }
     }
 
     public void delPushInfo(String[] params) {
@@ -222,10 +231,16 @@ public class EUExWidget extends EUExBase {
         String startMode = params[0];
         Intent intent = null;
         String extraJson = null;
+        // 是否通过NEW_TASK启动第三方Activity的开关_by_waka
+        boolean switchNewTask = true;// 默认为使用NEW_TASk启动
         if (!TextUtils.isEmpty(startMode)) {
             if ("0".equals(startMode)) {
                 String pkgName = params[1];
                 String clsName = null;
+                StartAppVO extraVO=null;
+                if (params.length>4) {
+                    extraVO = DataHelper.gson.fromJson(params[4],StartAppVO.class);
+                }
                 if (TextUtils.isEmpty(pkgName)) {
                     Log.e(tag, "startApp has error params!!!");
                     callBackPluginJs(JsConst.CALLBACK_START_APP, "error params");
@@ -245,6 +260,14 @@ public class EUExWidget extends EUExBase {
                 }
                 ComponentName component = new ComponentName(pkgName, clsName);
                 intent = new Intent();
+                if (extraVO!=null&&extraVO.getData()!=null){
+                    Uri contentUrl=Uri.parse(extraVO.getData());
+                    intent.setData(contentUrl);
+                }
+                // 如果isNewTask.equals("0") by waka
+                if (extraVO != null && "0".equals(extraVO.getIsNewTask())) {
+                    switchNewTask = false;// NEW_TASK开关置为false
+                }
                 intent.setComponent(component);
             } else if ("1".equals(startMode)) {
                 String action = params[1];
@@ -274,7 +297,10 @@ public class EUExWidget extends EUExBase {
             }
         }
         try {
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            // 如果NEW_TASK开关打开
+            if (switchNewTask) {
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);// 添加NEW_TASK_FLAG
+            }
             startActivity(intent);
         } catch (ActivityNotFoundException e) {
             callBackPluginJs(JsConst.CALLBACK_START_APP, e.getMessage());
@@ -347,10 +373,12 @@ public class EUExWidget extends EUExBase {
     }
 
     private Intent setIntentExtras(Intent intent, String extraJson) {
-        String[] list = extraJson.split(",");
-        for (int i = 0; i < list.length; i++) {
-            try {
-                JSONObject json = new JSONObject(list[i]);
+        String arrayString = "[" + extraJson + "]";
+        try {
+            JSONArray array = new JSONArray(arrayString);
+            int length = array.length();
+            for (int i = 0; i < length; i++) {
+                JSONObject json = array.getJSONObject(i);
                 Iterator<?> keys = json.keys();
                 while (keys.hasNext()) {
                     String key = (String) keys.next();
@@ -359,9 +387,9 @@ public class EUExWidget extends EUExBase {
                         intent.putExtra(key, value);
                     }
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return intent;
     }
@@ -644,7 +672,8 @@ public class EUExWidget extends EUExBase {
 
     public void setPushNotifyCallback(String[] parm) {
         mBrwView.getBrowserWindow().getEBrowserWidget()
-                .setPushNotify(mBrwView.getWindowName(), parm[0]);
+                .setPushNotify(mBrwView.getWindowName(), parm[0],
+                mBrwView.getCurrentWidget().m_appId);
     }
 
     public void checkUpdate(String[] parm) {
@@ -749,9 +778,14 @@ public class EUExWidget extends EUExBase {
         });
     }
 
+    public void getMBaaSHost(String[] parm) {
+        String mbaas_host = ResoureFinder.getInstance().getString(mContext, "mbaas_host");
+        jsCallback(function_getMBaaSHost, 0, EUExCallback.F_C_TEXT, mbaas_host);
+    }
+
     public void getPushState(String[] parm) {
         SharedPreferences sp = mContext.getSharedPreferences("saveData",
-                Context.MODE_PRIVATE);
+                Context.MODE_MULTI_PROCESS);
         String pushMes = sp.getString("pushMes", "0");
         String localPushMes = sp.getString("localPushMes", pushMes);
         jsCallback(function_getPushState, 0, EUExCallback.F_C_INT,
@@ -763,21 +797,22 @@ public class EUExWidget extends EUExBase {
         if (parm.length >= 1) {
             type = parm[0];
         }
+        SharedPreferences sp = mContext.getSharedPreferences(
+                PushReportConstants.PUSH_DATA_SHAREPRE, Context.MODE_PRIVATE);
         String userInfo = null;
-        try {
-            if (PUSH_MSG_ALL.equals(type)) {
-                // 获取推送消息所有内容
-                userInfo = ((EBrowserActivity) mContext).getIntent()
-                        .getStringExtra(BUNDLE_MESSAGE);
-            } else {
-                userInfo = ((EBrowserActivity) mContext).getIntent()
-                        .getStringExtra(BUNDLE_DATA);
-            }
-        } catch (Exception e) {
+        if (PUSH_MSG_ALL.equals(type)) {
+            // 获取推送消息所有内容
+            userInfo = sp.getString(
+                    PushReportConstants.PUSH_DATA_SHAREPRE_MESSAGE, "");
+        } else {
+            userInfo = sp.getString(
+                    PushReportConstants.PUSH_DATA_SHAREPRE_DATA, "");
         }
-        ((WidgetOneApplication) mContext.getApplicationContext()).getPushInfo(
-                userInfo, System.currentTimeMillis() + "");
-        jsCallback(function_getPushInfo, 0, EUExCallback.F_C_TEXT, userInfo);
+        if (!TextUtils.isEmpty(userInfo)) {
+            ((WidgetOneApplication) mContext.getApplicationContext()).getPushInfo(
+                    userInfo, System.currentTimeMillis() + "");
+            jsCallback(function_getPushInfo, 0, EUExCallback.F_C_TEXT, userInfo);
+        }
     }
 
     public void share(String inShareTitle, String inSubject, String inContent) {
@@ -866,6 +901,39 @@ public class EUExWidget extends EUExBase {
         callBackPluginJs(JsConst.CALLBACK_IS_APP_INSTALLED, jsonObject.toString());
     }
 
+    public void reloadWidgetByAppId(String[] params){
+        if (params.length < 1) {
+            return;
+        }
+        Message msg = mHandler.obtainMessage();
+        msg.what = MSG_RELOAD_WIDGET_BY_APPID;
+        msg.obj = this;
+        Bundle bd = new Bundle();
+        bd.putStringArray(BUNDLE_DATA, params);
+        msg.setData(bd);
+        mHandler.sendMessage(msg);
+    }
+
+    private void reloadWidgetByAppIdMsg(String[] params) {
+        if (params == null || params.length < 1){
+            errorCallback(0, 0 , "error params!");
+            return;
+        }
+        String appId = params[0];
+        if (TextUtils.isEmpty(appId)) {
+            Log.e("reloadWidgetByAppId", "appId is empty!!!");
+            return;
+        }
+        EBrowserWindow curWind = mBrwView.getBrowserWindow();
+        if (null == curWind) {
+            return;
+        }
+        EBrowserWidget widget = curWind.getWGT(appId);
+        if (null == widget) {
+            return;
+        }
+        widget.reloadWidget();
+    }
     private void callBackPluginJs(String methodName, String jsonData) {
         String js = SCRIPT_HEADER + "if(" + methodName + "){"
                 + methodName + "('" + jsonData + "');}";
@@ -887,6 +955,9 @@ public class EUExWidget extends EUExBase {
         switch (message.what) {
             case MSG_IS_APP_INSTALLED:
                 isAppInstalledMsg(bundle.getStringArray(BUNDLE_DATA));
+                break;
+            case MSG_RELOAD_WIDGET_BY_APPID:
+                reloadWidgetByAppIdMsg(bundle.getStringArray(BUNDLE_DATA));
                 break;
             default:
                 super.onHandleMessage(message);

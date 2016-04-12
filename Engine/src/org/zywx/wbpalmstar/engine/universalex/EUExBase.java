@@ -35,6 +35,7 @@ import android.webkit.CookieSyncManager;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
+import org.zywx.wbpalmstar.base.BDebug;
 import org.zywx.wbpalmstar.base.view.BaseFragment;
 import org.zywx.wbpalmstar.engine.EBrowserActivity;
 import org.zywx.wbpalmstar.engine.EBrowserAnimation;
@@ -121,6 +122,34 @@ public abstract class EUExBase {
                 + inData + "'" + SCRIPT_TAIL;
         // mBrwView.loadUrl(js);
         callbackToJs(js);
+    }
+
+    public void callBackJs(String methodName, String jsonData) {
+        callBackJs(mBrwView,methodName,jsonData);
+    }
+
+    public void callBackJsObject(String methodName,Object object){
+        callBackJsObject(mBrwView,methodName,object);
+    }
+
+    public static void callBackJs(EBrowserView eBrowserView,String methodName, String jsonData){
+        if (eBrowserView == null) {
+            BDebug.e("mBrwView is null...");
+            return;
+        }
+        String js = SCRIPT_HEADER + "if(" + methodName + "){"
+                + methodName + "('" + jsonData + "');}else{console.log('function "+methodName +" not found.')}";
+        eBrowserView.loadUrl(js);
+    }
+
+    public static void callBackJsObject(EBrowserView eBrowserView,String methodName, Object value){
+        if (eBrowserView == null) {
+            BDebug.e("mBrwView is null...");
+            return;
+        }
+        String js = SCRIPT_HEADER + "if(" + methodName + "){"
+                + methodName + "(" + value + ");}else{console.log('function "+methodName +" not found.')}";
+        eBrowserView.loadUrl(js);
     }
 
     public final void errorCallback(int inOpCode, int InErrorCode,
@@ -375,6 +404,28 @@ public abstract class EUExBase {
     public final void addViewToWebView(View child,
                                        android.widget.AbsoluteLayout.LayoutParams params,
                                        String id) {
+        float nowScale = 1.0f;
+        int versionA = Build.VERSION.SDK_INT;
+
+        if (versionA <= 18) {
+            nowScale = mBrwView.getScale();
+        }
+        float sc = nowScale;
+        int x = (int) (params.x * sc);
+        int y = (int) (params.y * sc);
+        int w = params.width;
+        int h = params.height;
+        if (w > 0) {
+            w = (int) (params.width * sc);
+        }
+        if (h > 0) {
+            h = (int) (params.height * sc);
+        }
+        params.x = x;
+        params.y = y;
+        params.width = w;
+        params.height = h;
+
         if (mBrwView == null) {
             return;
         }

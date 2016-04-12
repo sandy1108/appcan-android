@@ -18,7 +18,6 @@
 
 package org.zywx.wbpalmstar.engine.universalex;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
 import android.webkit.WebView;
@@ -59,9 +58,11 @@ public class EUExManager {
 //		brwView.addJavascriptInterface(window, EUExWindow.tag);
 //		brwView.addJavascriptInterface(widget, EUExWidget.tag);
 //		brwView.addJavascriptInterface(appCenter, EUExAppCenter.tag);
-        brwView.removeJavascriptInterface("searchBoxJavaBridge_");
-        brwView.removeJavascriptInterface("accessibility");
-        brwView.removeJavascriptInterface("accessibilityTraversal");
+        if (Build.VERSION.SDK_INT >= 11) {
+            brwView.removeJavascriptInterface("searchBoxJavaBridge_");
+            brwView.removeJavascriptInterface("accessibility");
+            brwView.removeJavascriptInterface("accessibilityTraversal");
+        }
 //		brwView.addJavascriptInterface(dataAnalysis, EUExDataAnalysis.tag);
         mThirdPlugins.add(widgetOne);
         mThirdPlugins.add(window);
@@ -78,10 +79,9 @@ public class EUExManager {
             EUExBase objectIntance = null;
             try {
 
-                if (scriptObj.isGlobal == true && scriptObj.pluginObj != null) {
+                if (scriptObj.isGlobal && scriptObj.pluginObj != null) {
 
                     objectIntance = scriptObj.pluginObj;
-                    objectIntance.mBrwView = brwView;
 
                 } else {
                     Constructor<?> init = scriptObj.jobject;
@@ -96,7 +96,7 @@ public class EUExManager {
                 objectIntance.setUexName(uName);
 //				brwView.addJavascriptInterface(objectIntance, uexName);
 
-                if (scriptObj.isGlobal == true) {
+                if (scriptObj.isGlobal) {
                     scriptObj.pluginObj = objectIntance;
                 } else {
                     mThirdPlugins.add(objectIntance);
@@ -112,30 +112,26 @@ public class EUExManager {
         return tpm.getPlugins();
     }
 
-    public void callMethod(final EUExBase plugin, final String methodName, final String[] params) {
+    public Object callMethod(final EUExBase plugin, final String methodName, final String[] params) {
         if (plugin.mDestroyed) {
             BDebug.e("plugin", plugin.getUexName(), " has been destroyed");
-            return;
+            return null;
         }
-        ((Activity) mContext).runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Method targetMethod = plugin.getClass().getMethod(methodName,
-                            String[].class);
-                    targetMethod.invoke(plugin, (Object) params);
-                } catch (NoSuchMethodException e) {
-                    BDebug.e(methodName, " NoSuchMethodException");
-                } catch (IllegalAccessException e) {
-                    BDebug.e(plugin.getUexName(), methodName, e.toString());
-                } catch (InvocationTargetException e) {
-                    BDebug.e(plugin.getUexName(), methodName, " InvocationTargetException");
-                    if (BDebug.DEBUG) {
-                        e.printStackTrace();
-                    }
-                }
+        try {
+            Method targetMethod = plugin.getClass().getMethod(methodName,
+                    String[].class);
+            return targetMethod.invoke(plugin, (Object) params);
+        } catch (NoSuchMethodException e) {
+            BDebug.e(methodName, " NoSuchMethodException");
+        } catch (IllegalAccessException e) {
+            BDebug.e(plugin.getUexName(), methodName, e.toString());
+        } catch (InvocationTargetException e) {
+            BDebug.e(plugin.getUexName(),methodName, " InvocationTargetException");
+            if (BDebug.DEBUG) {
+            e.printStackTrace();
             }
-        });
+        }
+        return null;
     }
 
     public void notifyReset() {

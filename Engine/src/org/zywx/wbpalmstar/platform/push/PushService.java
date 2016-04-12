@@ -26,6 +26,7 @@ import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.text.TextUtils;
 import android.util.Log;
@@ -139,7 +140,7 @@ public class PushService extends Service implements PushDataCallback {
         // mamPush_port = host_and_port.split(":")[1];
         // }
         SharedPreferences sp = this.getSharedPreferences("saveData",
-                Context.MODE_PRIVATE);
+                Context.MODE_MULTI_PROCESS);
         String pushMes = sp.getString("pushMes", "0");
         String localPushMes = sp.getString("localPushMes", pushMes);
         if ("1".equals(localPushMes) && "1".equals(pushMes)) {
@@ -164,8 +165,14 @@ public class PushService extends Service implements PushDataCallback {
                 pushGetData = new MQTTService(this, url_push, this, softToken);
                 ((MQTTService) pushGetData).init();
             } else {
-                ((MQTTService) pushGetData).onDestroy();
-                ((MQTTService) pushGetData).init();
+                /**推送连接时，若已连接，由原来的断开重连，改为发送心跳，若心跳失败，会重连 。
+                 * wanglei 20160314 modify*/
+                Context ctx = getApplicationContext();
+                Intent mQttPingIntent = new Intent(MQTTService.MQTT_PING_ACTION);
+                mQttPingIntent.setPackage(ctx.getPackageName());
+                ctx.sendBroadcast(mQttPingIntent);
+//                ((MQTTService) pushGetData).onDestroy();
+//                ((MQTTService) pushGetData).init();
             }
 
         } catch (Exception e) {
@@ -317,7 +324,6 @@ public class PushService extends Service implements PushDataCallback {
         Intent intent = new Intent(PushRecieveMsgReceiver.ACTION_PUSH);
         intent.putExtra("data", value);
         intent.putExtra("title", tickerText);
-        intent.putExtra("packg", packg);
         intent.putExtra("widgetName", widgetName);
         intent.setPackage(packg);
         intent.putExtra("message", pushMessage);
@@ -521,4 +527,51 @@ public class PushService extends Service implements PushDataCallback {
         }
     }
 
+    @Override
+    public void pushDataInfo(JSONObject data) {
+        PushDataInfo dataInfo = new PushDataInfo();
+        dataInfo.setPushDataString(data.toString());
+        dataInfo.setContentAvailable(data
+                .optInt(PushReportConstants.PUSH_DATA_JSON_KEY_CONTENT_AVAILABLE));
+        dataInfo.setAppId(data
+                .optString(PushReportConstants.PUSH_DATA_JSON_KEY_APPID));
+        dataInfo.setTaskId(data
+                .optString(PushReportConstants.PUSH_DATA_JSON_KEY_TASKID));
+        dataInfo.setTitle(data
+                .optString(PushReportConstants.PUSH_DATA_JSON_KEY_TITLE));
+        dataInfo.setAlert(data
+                .optString(PushReportConstants.PUSH_DATA_JSON_KEY_ALERT));
+        dataInfo.setBadge(data
+                .optInt(PushReportConstants.PUSH_DATA_JSON_KEY_BADGE));
+        dataInfo.setTenantId(data
+                .optString(PushReportConstants.PUSH_DATA_JSON_KEY_TENANTID));
+        String remindStrs = data
+                .optString(PushReportConstants.PUSH_DATA_JSON_KEY_REMINDTYPE);
+        if (!TextUtils.isEmpty(remindStrs)) {
+            dataInfo.setRemindType(remindStrs.split(","));
+        }
+
+        JSONObject styleJsonObject = data
+                .optJSONObject(PushReportConstants.PUSH_DATA_JSON_KEY_STYLE);
+        if (null != styleJsonObject) {
+            dataInfo.setIconUrl(styleJsonObject
+                    .optString(PushReportConstants.PUSH_DATA_JSON_KEY_ICON));
+            dataInfo.setFontColor(styleJsonObject
+                    .optString(PushReportConstants.PUSH_DATA_JSON_KEY_RGB));
+        }
+
+        JSONObject behaviorJsonObject = data
+                .optJSONObject(PushReportConstants.PUSH_DATA_JSON_KEY_BEHAVIOR);
+        if (null != behaviorJsonObject) {
+            dataInfo.setBehavior(behaviorJsonObject
+                    .optString(PushReportConstants.PUSH_DATA_JSON_KEY_BEHAVIOR));
+        }
+
+        Intent intent = new Intent(PushRecieveMsgReceiver.ACTION_PUSH);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(PushReportConstants.PUSH_DATA_INFO_KEY, dataInfo);
+        intent.putExtras(bundle);
+        intent.setPackage(getPackageName());
+        sendBroadcast(intent);
+    }
 }

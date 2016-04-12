@@ -20,11 +20,8 @@ package org.zywx.wbpalmstar.engine;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
@@ -42,10 +39,10 @@ import org.json.JSONObject;
 import org.zywx.wbpalmstar.acedes.ACEDes;
 import org.zywx.wbpalmstar.acedes.EXWebViewClient;
 import org.zywx.wbpalmstar.base.BDebug;
-import org.zywx.wbpalmstar.base.BUtility;
 import org.zywx.wbpalmstar.engine.EBrowserHistory.EHistoryEntry;
 import org.zywx.wbpalmstar.engine.universalex.EUExCallback;
 import org.zywx.wbpalmstar.engine.universalex.EUExManager;
+import org.zywx.wbpalmstar.engine.universalex.EUExUtil;
 import org.zywx.wbpalmstar.engine.universalex.EUExWindow;
 import org.zywx.wbpalmstar.widgetone.dataservice.WWidgetData;
 
@@ -95,19 +92,20 @@ public class EBrowserView extends WebView implements View.OnLongClickListener,
     private boolean mIsNeedScroll = false;
     private boolean isMultilPopoverFlippingEnbaled = false;
     private boolean isSupportSlideCallback = false;//is need callback,set by API interface.
-
+    private boolean disturbLongPressGesture = false;
+    private int mThreshold = 5;
     private OnEBrowserViewChangeListener mBrowserViewChangeListener;
 
     public static boolean sHardwareAccelerate = true;//配置全部WebView是否硬件加速,默认开启，config.xml 配置关闭
 
-    protected EBrowserView(Context context, int inType, EBrowserWindow inParent) {
+    public EBrowserView(Context context, int inType, EBrowserWindow inParent) {
         super(context);
         mMyCountId = EBrowser.assignCountID();
         mBroWind = inParent;
         mContext = context;
         mType = inType;
         initPrivateVoid();
-//		setOnLongClickListener(this);
+        setOnLongClickListener(this);
         setDownloadListener(this);
         setACEHardwareAccelerate();
     }
@@ -120,13 +118,17 @@ public class EBrowserView extends WebView implements View.OnLongClickListener,
         this.callback = callback;
     }
 
-    protected void init() {
+    public void init() {
         setInitialScale(100);
         setVerticalScrollbarOverlay(true);
         setHorizontalScrollbarOverlay(true);
         setLayoutAnimation(null);
         setAnimation(null);
         setNetworkAvailable(true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            int debug = mBroWind.getWidget().m_appdebug;
+            setWebContentsDebuggingEnabled(debug == 1 ? true : false);
+        }
         if (Build.VERSION.SDK_INT <= 7) {
             if (mBaSetting == null) {
                 mBaSetting = new EBrowserSetting(this);
@@ -152,16 +154,39 @@ public class EBrowserView extends WebView implements View.OnLongClickListener,
     private void setACEHardwareAccelerate() {
         if (!sHardwareAccelerate) {
             setLayerType(LAYER_TYPE_SOFTWARE, null);
+        } else {
+            closeHardwareForSpecificString();
         }
     }
 
     @Override
     protected void onAttachedToWindow() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB && !isHardwareAccelerated()) {
-            setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-            BDebug.i("setLayerType", "LAYER_TYPE_SOFTWARE");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            if (!isHardwareAccelerated()) {
+                setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+                BDebug.i("setLayerType","LAYER_TYPE_SOFTWARE");
+            } else {
+                closeHardwareForSpecificString();
+            }
         }
         super.onAttachedToWindow();
+    }
+
+    private void closeHardwareForSpecificString() {
+        String[] strs = EUExUtil.getStringArray("platform_close_hardware");
+        if (strs != null) {
+            for (int i = 0; i < strs.length; i++) {
+                String str = strs[i].trim();
+                // 手机型号、Android系统定制商、硬件制造商
+                if (Build.MODEL.trim().equals(str)
+                        || Build.BRAND.trim().equals(str)
+                        || Build.MANUFACTURER.trim().equals(str)) {
+                    setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+                    BDebug.i("setLayerType", "LAYER_TYPE_SOFTWARE");
+                    break;
+                }
+            }
+        }
     }
 
     @Override
@@ -490,6 +515,7 @@ public class EBrowserView extends WebView implements View.OnLongClickListener,
 
     public void setIsMultilPopoverFlippingEnbaled(boolean isEnabled) {
         isMultilPopoverFlippingEnbaled = isEnabled;
+        setMultilPopoverFlippingEnbaled();
     }
 
     private void setMultilPopoverFlippingEnbaled() {
@@ -543,8 +569,11 @@ public class EBrowserView extends WebView implements View.OnLongClickListener,
 
     @Override
     public boolean onLongClick(View v) {
+        return disturbLongPressGesture;
+    }
 
-        return true;
+    public void setDisturbLongPressGesture(boolean disturbLongPress) {
+        disturbLongPressGesture = disturbLongPress;
     }
 
     @SuppressLint("NewApi")
@@ -581,14 +610,18 @@ public class EBrowserView extends WebView implements View.OnLongClickListener,
         if (!checkType(EBrwViewEntry.VIEW_TYPE_MAIN)) {
             return;
         }
-        mBroWind.onPageStarted(view, url);
+        if (mBroWind!=null) {
+            mBroWind.onPageStarted(view, url);
+        }
     }
 
     protected void onPageFinished(EBrowserView view, String url) {
         if (mDestroyed) {
             return;
         }
-        mBroWind.onPageFinished(view, url);
+        if (mBroWind!=null){
+            mBroWind.onPageFinished(view, url);
+        }
         if (mBrowserViewChangeListener != null) {
             mBrowserViewChangeListener.onPageFinish();
         }
@@ -722,11 +755,13 @@ public class EBrowserView extends WebView implements View.OnLongClickListener,
             return;
         }
         if (Build.VERSION.SDK_INT >= 11) {
-            if (url.startsWith("file")) {
+            if (url != null) {
                 int index = url.indexOf("?");
                 if (index > 0) {
                     setQuery(url.substring(index + 1));
-                    url = url.substring(0, index);
+                    if (!url.startsWith("http")) {
+                        url = url.substring(0, index);
+                    }
                 }
             }
         }
@@ -764,11 +799,13 @@ public class EBrowserView extends WebView implements View.OnLongClickListener,
             }
         } else {
             if (Build.VERSION.SDK_INT >= 11) {
-                if (url.startsWith("file")) {
+                if (url != null) {
                     int index = url.indexOf("?");
                     if (index > 0) {
                         setQuery(url.substring(index + 1));
-                        url = url.substring(0, index);
+                        if (!url.startsWith("http")) {
+                            url = url.substring(0, index);
+                        }
                     }
                 }
             }
@@ -1017,32 +1054,33 @@ public class EBrowserView extends WebView implements View.OnLongClickListener,
         }
     }
 
-    public void setBrwViewBackground(boolean flag, String bgColor, String baseUrl) {
-        if (flag) {
-            if (bgColor.startsWith("#") || bgColor.startsWith("rgb")) {
-                int color = BUtility.parseColor(bgColor);
-                setBackgroundColor(color);
-            } else {
-                String path = BUtility.makeRealPath(BUtility.makeUrl(getCurrentUrl(baseUrl), bgColor),
-                        getCurrentWidget().m_widgetPath, getCurrentWidget().m_wgtType);
-                Bitmap bitmap = BUtility.getLocalImg(mContext, path);
-                Drawable d = null;
-                if (bitmap != null) {
-                    d = new BitmapDrawable(mContext.getResources(), bitmap);
-                }
-                int version = Build.VERSION.SDK_INT;
-                if (version < 16) {
-                    setBackgroundDrawable(d);
-                    setBackgroundColor(Color.argb(0, 0, 0, 0));
-                } else {
-                    setBackground(d);
-                    setBackgroundColor(Color.argb(0, 0, 0, 0));
-                }
-            }
-        } else {
-            setBackgroundColor(Color.TRANSPARENT);
-        }
-    }
+    /**wanglei del 20151124*/
+//    public void setBrwViewBackground(boolean flag, String bgColor, String baseUrl) {
+//        if (flag) {
+//            if(bgColor.startsWith("#") || bgColor.startsWith("rgb")){
+//                int color = BUtility.parseColor(bgColor);
+//                setBackgroundColor(color);
+//            }else{
+//                String path = BUtility.makeRealPath(BUtility.makeUrl(getCurrentUrl(baseUrl),bgColor),
+//                        getCurrentWidget().m_widgetPath, getCurrentWidget().m_wgtType);
+//                Bitmap bitmap = BUtility.getLocalImg(mContext, path);
+//                Drawable d = null;
+//                if(bitmap != null){
+//                    d = new BitmapDrawable(mContext.getResources(), bitmap);
+//                }
+//                int version = Build.VERSION.SDK_INT;
+//                if(version < 16){
+//                    setBackgroundDrawable(d);
+//                    setBackgroundColor(Color.argb(0, 0, 0, 0));
+//                }else{
+//                    setBackground(d);
+//                    setBackgroundColor(Color.argb(0, 0, 0, 0));
+//                }
+//            }
+//        } else {
+//            setBackgroundColor(Color.TRANSPARENT);
+//        }
+//    }
 
     public void setWebApp(boolean flag) {
         mWebApp = flag;
@@ -1366,6 +1404,7 @@ public class EBrowserView extends WebView implements View.OnLongClickListener,
         mWebApp = false;
         mSupportZoom = false;
         isSupportSlideCallback = false;
+        disturbLongPressGesture = false;
         eClearHistory();
         resumeCore();
         mUExMgr.notifyReset();
@@ -1441,7 +1480,10 @@ public class EBrowserView extends WebView implements View.OnLongClickListener,
             if (versionA <= 18) {
                 nowScale = getScale();
             }
-            if ((int) (getContentHeight() * nowScale) == (getHeight() + getScrollY())) {
+            float contentHeight = getContentHeight() * nowScale;
+            boolean isSlipedDownEdge = t != oldt && t > 0
+                    && contentHeight <= t + getHeight() + mThreshold;
+            if (isSlipedDownEdge) {
                 callback.jsCallback(EUExWindow.function_cbslipedDownEdge, 0,
                         EUExCallback.F_C_INT, 0);
 

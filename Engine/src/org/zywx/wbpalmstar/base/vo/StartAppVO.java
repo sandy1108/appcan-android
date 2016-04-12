@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015.  The AppCan Open Source Project.
+ * Copyright (c) 2016.  The AppCan Open Source Project.
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published by
@@ -17,14 +17,33 @@
  *
  */
 
-package org.zywx.wbpalmstar.engine.callback;
+package org.zywx.wbpalmstar.base.vo;
 
+import java.io.Serializable;
 
 /**
- * Created by ylt on 15/9/15.
+ * Created by ylt on 16/1/29.
  */
-public interface EUExDispatcherCallback {
+public class StartAppVO implements Serializable {
 
-    Object onDispatch(String pluginName,String methodName,String[] params);
+    private static final long serialVersionUID = -644923159386862574L;
 
+    private String data;
+    private String isNewTask;// 是否通过NEW_TASK启动第三方Activity的开关
+
+    public String getData() {
+        return data;
+    }
+
+    public void setData(String data) {
+        this.data = data;
+    }
+
+    public String getIsNewTask() {
+        return isNewTask;
+    }
+
+    public void setIsNewTask(String isNewTask) {
+        this.isNewTask = isNewTask;
+    }
 }

@@ -25,7 +25,7 @@ import java.text.DecimalFormat;
 
 public class BConstant {
 
-    public static final String ENGINE_VERSION = "3.2.2";
+    public static final String ENGINE_VERSION="3.3.1";
 
     public static final String F_URL = "url";
     public static final String F_WIDGET = "widget";
@@ -38,6 +38,7 @@ public class BConstant {
     public static final String F_DIALOG_TYPE = "dialogType";
     public static final String F_ASSETS_ROOT = "android_asset/";
     public static final String F_SDCARD_ROOT = "file:///sdcard/";
+    public static final String F_PUSH_APPID = "appId";
     public static final String F_PUSH_WIN_NAME = "winName";
     public static final String F_PUSH_NOTI_FUN_NAME = "funName";
 
