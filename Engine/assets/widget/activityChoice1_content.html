@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+    <head>
+        <title></title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="target-densitydpi=device-dpi, width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <link rel="stylesheet" href="css/fonts/font-awesome.min.css">
+        <link rel="stylesheet" href="css/ui-box.css">
+        <link rel="stylesheet" href="css/ui-base.css">
+        <link rel="stylesheet" href="css/ui-color.css">
+        <link rel="stylesheet" href="css/appcan.icon.css">
+        <link rel="stylesheet" href="css/appcan.control.css">
+        <link rel="stylesheet" href="css/new_file.css">
+        <link rel="stylesheet" href="css/detailStyle.css">
+    </head>
+    <body class="um-vp bc-bg f-f" ontouchstart>
+        <div id="begin" class="ub ub-f1 ub-ver">
+            <!--<div class="ub umar-t uinn" style="font-size:1.1em;line-height: 1.3em;max-height: 2.1em;overflow: hidden;color:#464646">稳增长政策20天稳增长政策20天</div>
+            <div class="ub uinn1 ulev-1" style="color:#8d8d8d">活动时间：2015.04.30-2015.04.30</div>-->
+            <!--div class="ub ub-f1">
+                <div id="pic" class="ub ub-img7 ub-pe" style="height:10em;width:100%;background-image: url('image/actvBanner.png')">
+                    <!--div class="ub ub-img res-actEnd iconSpace40 umar-a"></div->
+                </div>
+            </div-->
+            <!--div class="ub ub-f1 ubb" style="padding:0.5em 0.825em 0.5625em 0.825em;border-color:#e0e0e0">
+                <div id="showIntro" class="ub ub-f1 ub-pc ub-ac uinn" style="margin-right:0.375em;width:30%;background-color: #eeeeee;color:#9f9283">
+                    <div class="ub" style="font-size:0.90625em">
+                        活动简介
+                    </div>
+                </div>
+                <div class="ub ub-f1 ub-pc ub-ac uinn" style="margin-right:0.375em;width:30%;background-color: #eeeeee;color:#fe8c04">
+                    <div class="ub ub-img iconSpace15 res-praiseIcon"></div>
+                    <div id="prsnum" class="ub" style="font-size:0.90625em;margin-left:0.15625em">
+                        12
+                    </div>
+                </div>
+                <div class="ub ub-f1 ub-pc uinn ub-ac" style="width:30%;background-color: #eeeeee">
+                    <div class="ub ub-img iconSpace15 res-shareIcon"></div>
+                </div>
+            </div-->
+        </div>
+        <div class="ub-ver ub-f1 ubb b-dd" id="loding" style="padding:0.5em 0.825em 0.5625em 0.825em;display: none;">
+            <div class="c-a5">当前活动阶段：</div>
+            <img src="image/actvJD-1.png" id="picBanner" style="margin-top: .5em" width="100%" />
+        </div>
+        <div id="stageNo1" class="ub-f1 ub-ver" style="margin:0.68125em 0.825em;display: none">
+            <div class="c-46">
+                点击上方“活动简介”了解活动详情，在下方参加活动
+            </div>
+            <div class="fz-8" style="margin: .5em 0">
+                <span class="c-88">欢迎你：</span>
+                <span class="c-ff" id="nickname">逝水年华</span>
+            </div>
+            <div class="uba bc-border uinput ub ub-f1 uinn fz-8">
+                <textarea placeholder="请输入您的评语，限50字数内…" maxlength='50' id="commValue" type="text" class="ub-f1"></textarea>
+            </div>
+            <div class="ub ub-ac ub-pc ub-f1" style="margin-top: 1em">
+                <div class="ub bg-ff uc-a1 c-wh subActvPL" style="padding: .5em 5em">提　交</div>
+            </div>
+        </div>
+        <div id="stageNo2" class="ub-f1 ub-ver" style="margin:0.68125em 0.825em;display: none">
+            <div class="c-46">
+                目前是线下进行的入围评语评选阶段，将从用户评语中评选出50名。
+            </div>
+            <div class="fz-68 c-88" style="margin-top: 1em">
+                评选时间：2015年7月18日——2015年7月20日
+            </div>
+        </div>
+        <div id="stageNo3" class="ub-f1 ub-ver" style="display: none">
+            <!--
+            <div class="ub uinn fz-8" style="margin:0 0.825em;">
+                <div class="ub ub-f1 ub-ac">
+                    <span class="c-ff">用户名：</span>
+                    <span class="">啦啦啦啦啦</span>
+                </div>
+                <div class="ub uc-a1 bg-ff c-wh" style="padding: .3em .5em;margin-left: .2em;">投票</div>
+            </div>
+            <div class="ubb b-dd"></div>
+        -->
+        </div>
+        <div id="stageNo4" class="ub-f1 ub-ver" style="margin:0.68125em 0.825em;display: none">
+            <div class="c-46">
+                获奖名单
+            </div>
+            <div class="ub ub-ver ub-f1 fz-8 c-88" style="margin-top: 1em">
+                <div class="ub c-ff">
+                    <span>特等奖</span>
+                    <span class="c-88">——</span>
+                    <div class="ub ub-f1 mar-l05">
+                        <span class="wrap">13982****852,13982****852</span>
+                    </div>
+                </div>
+                <div class="ub c-ff mar-t05">
+                    <span>一等奖</span>
+                    <span class="c-88">——</span>
+                    <div class="ub ub-f1 mar-l05">
+                        <span class="wrap">13982****852,13982****852</span>
+                    </div>
+                </div>
+                <div class="ub mar-t05">
+                    <span>二等奖</span>
+                    <span class="c-88">——</span>
+                    <div class="ub ub-f1 mar-l05">
+                        <span class="wrap">13982****852,13982****852</span>
+                    </div>
+                </div>
+                <div class="ub mar-t05">
+                    <span class="">三等奖</span>
+                    <span class="c-88">——</span>
+                    <div class="ub ub-f1 mar-l05">
+                        <span class="wrap">13982****852,13982****852,13982****852</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="stageNo5" class="ub-f1 ub-ver" style="margin:0.68125em 0.825em;display: none">
+            <div class="c-46">
+                2015年8月5日在新华社八楼进行颁奖仪式,我们会通知各位获奖人员，请莅临参加。
+            </div>
+            <div class="fz-8 c-88" style="margin-top: 1em">
+                奖项和奖品：奖品为Iphone6手机、Iwacth手表、华为手机、小米手机、星级酒店自助餐券等。
+            </div>
+        </div>
+        
+        <div id="actTitle" class="ub-f1" style="font-size:1.2em;color:#464646;display:none;margin:1.28125em 0.825em 1.28125em 0.825em"></div>
+        <div id="contents"class="ub-f1" style="display:none;margin:0.68125em 0.825em">
+            <!--div class="c-46">
+                妙语评重庆：聆听您的心声和情怀
+            </div>
+            <div class="c-88 fz-8 b-c9" style="margin-top: .5em;padding-bottom: 1em;border-bottom:1px dashed;">
+                2015年6月18日，是重庆直辖市18岁生日。作为中国最年轻的直辖市，18年来风雨兼程，在各个领域创造出了一个又一个奇迹。在这里，天天都在发生令人鼓舞的巨变，3000多万重庆人，直接或间接地感受着重庆从一个新时代走进另一个更新的时代，他们是重庆变化的第一见证者。在重庆直辖纪念日之际，以“妙语评重庆”为主题开展线上活动，既能最大限度调动起大众的积极性、唤起大家的情感共鸣，还能从另种途径了解到民众的心声和情怀。进而也将为新版“看重庆”塑造积极、正面的品牌形象奠定坚实的基础。
+            </div>
+            <div class="" style="color: #998b7b;margin:.7em 0">
+                活动阶段
+            </div>
+            <div class="ub ub-ver c-88 fz-8 b-c9" style="padding-bottom: 1em;border-bottom:1px dashed;">
+                <div class="ub">
+                    <span class="c-ff">用户提交评语：</span>2015年6月18日——2015年7月17日
+                </div>
+                <div class="ub">
+                    <span class="c-ff">选出入围评语：</span>2015年7月18日——2015年7月20日
+                </div>
+                <div class="ub">
+                    <span class="c-ff">专家评定：</span>2015年7月21日——2015年7月23日 
+                </div>
+                <div class="ub">
+                    <span class="c-ff">大众投票：</span>2015年7月24日——2015年7月29日
+                </div>
+                <div class="ub">
+                    <span class="c-ff">获奖名单公示：</span>2015年7月30日——2015年8月3日
+                </div>
+                <div class="ub">
+                   <span class="c-ff"> 颁奖仪式：</span>2015年8月5日于新华社八楼
+                </div>
+            </div>
+            <div class="" style="color: #998b7b;margin:.7em 0">
+                奖项设置
+            </div>
+            <div class="ub ub-ver c-88 fz-8 b-c9" style="padding-bottom: 1em;border-bottom:1px dashed;">
+                特等奖1名，一等奖1名，二等奖2名，三等奖3名奖品为Iphone6手机、Iwacth手表、华为手机、小米手机、星级酒店自助餐券等。
+            </div>
+            <div class="" style="color: #998b7b;margin:.7em 0">
+                活动说明
+            </div>
+            <div class="ub ub-ver c-88 fz-8" style="">
+                <div class="ub">
+                    1、用户提交评语字数不超过50个字，内容健康原创。
+                </div>
+                <div class="ub">
+                    2、大众投票阶段，游客以及注册用户均可参与投票，在投票有效期内只能参与一次投票，每次投票可投3个评语。
+                </div>
+            </div-->
+        </div>
+    </body>
+    <script src="js/appcan.js"></script>
+    <script src="js/appcan.control.js"></script>
+    <script src="js/common.js"></script>
+    </body>
+    <script>
+        var showTag = 0;
+        var showId = 'stageNo1';
+        var objId='';
+        var actId='';
+        var title='';
+        appcan.ready(function() {
+            appcan.initBounce();
+            getInfoSSS();
+            appcan.window.subscribe('actvName',function(str){
+                $("#nickname").html(str);
+            })
+        });
+        
+         function getInfoSSS(){
+           var objData = {
+                  "ifno" : "CMS-ACTV-0005", 
+                  "condition" : {
+                   },
+                   "content" : {}
+                }
+            appcan.request.ajax({
+                type : 'POST',
+                appVerify:true,
+                //offline:true,
+                url : chongqingUrl,
+                headers : {
+                    token : appcan.locStorage.val("token")||'',
+                    deviceId : appcan.locStorage.val("deviceId")||''
+                },
+                data : objData,
+                contentType : "application/json",
+                dataType : 'json',
+                timeout : "15000",
+                success : function(data) {
+                    if(data.dispose.status != '000'){
+                        appcan.window.openToast(data.dispose.msg,2000);
+                        return false;
+                    }
+                    var info = data.info;
+                    displayDiv(info.nowtime);
+                    $("#actTitle").html(info.maintile);
+                    appcan.locStorage.setVal("actvCommentId", data.info.actvId);
+                    var strTmpl = '';
+                    for(var i = 0;i < info.phase.length;i++){
+                        strTmpl += '<div class="ub">'
+                                        +'<span class="c-ff">'+info.phase[i].phaseName+'：</span>'+info.phase[i].phaseinfo
+                                    +'</div>';
+                    }
+                    var strTmpl1 = '';
+                    for(var i = 0;i < info.explan.length;i++){
+                        strTmpl1 += '<div class="ub">'
+                                        +info.explan[i].explaninfo
+                                    +'</div>';
+                    }
+                    var tmpl = '<div class="c-46">'
+                                +info.sontitle
+                            +'</div>'
+                            +'<div class="c-88 fz-8 b-c9" style="margin-top: .5em;padding-bottom: 1em;border-bottom:1px dashed;">'
+                                +info.summary
+                            +'</div>'
+                            +'<div class="" style="color: #998b7b;margin:.7em 0">'
+                                +'活动阶段'
+                            +'</div>'
+                            +'<div class="ub ub-ver c-88 fz-8 b-c9" style="padding-bottom: 1em;border-bottom:1px dashed;">'
+                                +strTmpl
+                            +'</div>'
+                            +'<div class="" style="color: #998b7b;margin:.7em 0">'
+                                +'奖项设置'
+                            +'</div>'
+                            +'<div class="ub ub-ver c-88 fz-8 b-c9" style="padding-bottom: 1em;border-bottom:1px dashed;">'
+                                +info.awards
+                            +'</div>'
+                            +'<div class="" style="color: #998b7b;margin:.7em 0">'
+                                +'活动说明'
+                            +'</div>'
+                            +'<div class="ub ub-ver c-88 fz-8" style="">'
+                                +strTmpl1
+                            +'</div>';
+                    $("#contents").html(tmpl);
+                },
+                error : function(e) {
+                    alert("查询出错！！！");
+                }
+            })
+       }
+       
+        function displayDiv(myDate){
+            myDate = new Date(2015,7,28,0,0,1).getTime();
+            var myDate717 = new Date(2015,7,17,0,0,1).getTime();
+            var myDate720 = new Date(2015,7,20,0,0,1).getTime();
+            var myDate723 = new Date(2015,7,23,0,0,1).getTime();
+            var myDate729 = new Date(2015,7,29,0,0,1).getTime();
+            var myDate83 = new Date(2015,8,3,0,0,1).getTime();
+            var myDate85 = new Date(2015,8,5,0,0,1).getTime();
+            if(myDate < myDate717){
+                //提交评语
+                // $("#stageNo1").show();
+                var nickname = getLocVal('nickname');
+                if(isDefine(nickname)){
+                    $("#nickname").html(nickname);
+                }else{
+                    $("#nickname").html('游客');
+                }
+            }else if(myDate < myDate720){
+                //选出入围评语
+                // $("#stageNo2").show();
+                $("#picBanner").attr("src","image/actvJD-2.png");
+                showId = 'stageNo2';
+            }else if(myDate < myDate723){
+                //专家评定
+                // $("#stageNo2").show();
+                $("#picBanner").attr("src","image/actvJD-3.png");
+                showId = 'stageNo2';
+            }else if(myDate < myDate729){
+                //大众投票
+                $("#stageNo3").show();
+                showId = 'stageNo3';
+                $("#picBanner").attr("src","image/actvJD-4.png");
+            }else if(myDate < myDate83){
+                //获奖名单公布
+                // $("#stageNo4").show();
+                showId = 'stageNo4';
+                $("#picBanner").attr("src","image/actvJD-5.png");
+            }else{// if(myDate < myDate85)
+                //颁奖仪式
+                // $("#stageNo5").show();
+                showId = 'stageNo5';
+                $("#picBanner").attr("src","image/actvJD-6.png");
+            }
+            showdata();
+        }
+        
+       function showdata() {
+            appcan.window.openToast("");
+            objId = appcan.locStorage.val("objectId");
+            actId = appcan.locStorage.val("actvId");
+            var data_str = {
+                "ifno" : "CMS-ACTV-0002",
+                "condition" : {
+                    "dmnId" : "cq",
+                    "grpId" : "",
+                    "roleId" : "",
+                    "chnlId" : "",
+                    "objectId" : objId,
+                    "actvId" : actId
+                },
+                "content" : {}
+            };
+            appcan.request.ajax({
+                type : 'POST',
+                appVerify:true,
+                //offline:true,
+                url : chongqingUrl,
+                headers : {
+                    token : appcan.locStorage.val("token")||'',
+                    deviceId : appcan.locStorage.val("deviceId")||''
+                },
+                data : data_str,
+                contentType : "application/json",
+                dataType : 'json',
+                timeout : "15000",
+                success : function(data) {
+                    appcan.window.closeToast();
+                    title=data.info.actvTtl;
+                    var cont=data.info.actvCtt;
+                    //$("#content").html(cont);
+                    $("#actTitle").html(title);
+                    var prasenum=data.info.prseCnt;
+                    var picId=data.info.attachment[0].attcId; 
+                    var toTime=data.info.toTime;
+                    var currentTime=new Date().getTime();
+                    var isEnd=currentTime-toTime>0?true:false;
+                    var endIcon="";
+                    if(isEnd){
+                        endIcon='<div class="ub ub-img res-actEnd iconSpace40 umar-a"></div>';
+                    }
+                    
+                    var beginstr='<div class="ub ub-f1">'
+                                +'<div id="pic" class="ub ub-img7 ub-pe" style="height:10em;width:100%;background-image:url(\'image/actvBanner.png\')">'
+                                    +endIcon
+                                +'</div>'
+                                +'</div>'
+                                +'<div class="ub ub-f1 ubb" style="padding:0.5em 0.825em 0.5625em 0.825em;border-color:#e0e0e0">'
+                                +'<div id="showIntro" class="ub ub-f1 ub-pc ub-ac uinn" style="margin-right:0.375em;width:30%;background-color: #eeeeee;color:#9f9283">'
+                                    +'<div class="ub" style="font-size:0.90625em">活动简介'
+                                    +'</div>'
+                                +'</div>'
+                                +'<div id="prsnum" class="ub ub-f1 ub-pc ub-ac uinn" style="margin-right:0.375em;width:30%;background-color: #eeeeee;color:#fe8c04">'
+                                    +'<div class="ub ub-img iconSpace15 res-praiseIcon" id="praiseIcon" style="height:1.35em;width:1.35em;"></div>'
+                                    +'<div class="ub" style="margin-left:.4em;color:#999CA5;">'
+                                    +prasenum
+                                    +'</div>'
+                                +'</div>'
+                                +'<div class="ub ub-f1 ub-pc uinn ub-ac" id="Share" style="width:30%;background-color: #eeeeee">'
+                                    +'<div class="ub ub-img iconSpace15 res-shareIcon" style="height:1.35em;width:1.35em;"></div>'
+                                +'</div>'
+                            +'</div>';
+                    if(showId != 'stageNo3'){
+                        $("#begin").html(beginstr);
+                        $("#"+showId).show();
+                        $("#loding").show();
+                        loadOnc();      //初始化点击按钮
+                        return false;
+                    }
+                    var tmpl = '';
+                    var choice=data.info.items;
+                    //var sumCount = data.info.actvVoteCount;     //活动总票数
+                    var sumCount = data.info.prtkMax;     //活动总票数
+                    for(var i=0;i<choice.length;i++){
+                        var title=choice[i].itemTitle;
+                        var choiceId=choice[i].itemImg;
+                        var choicePicUrl=getPictureUrl("0",choiceId,1);
+                        var votenum=choice[i].itemVoteCount;
+                        var actvTick = choice[i].itemVoteCount;
+                        var numPer = (parseInt(actvTick) / parseInt(sumCount)).toFixed(2)*100;
+                        tmpl += '<div class="ub uinn fz-8" style="margin:0 0.825em;">'
+                                +'<div class="ub ub-f1 ub-ac">'
+                                    //+'<span class="c-ff">用户名：</span>'
+                                    +'<span class="">'+title+'</span>'
+                                +'</div>'
+                                +'<div class="ub ub-ac ub-pc">'
+                                    +'<div class="ub uc-a1 ub-ac ub-pc bg-ff c-wh" style="padding: .3em 1em;margin-left: .2em;" onclick="myVote(\''+choice[i].itemNo+'\')">投票</div>'
+                                +'</div>'
+                            +'</div>'
+                            +'<div class="ub uinn" style="margin:0 0.825em;">'
+                                +'<div class="ub ub-f1 ub-ac">'
+                                    +'<div class="ub-f1 uc-a" style="background-color:#e1e4e9;height:10px;">'
+                                        +'<div class="uc-a" style="width:'+numPer+'%;background-color:#a0d468;height:10px"></div>'
+                                    +'</div>'
+                                +'</div>'
+                                +'<div class="" style="color:#a0d468;font-size:.875em;margin-left: .2em;text-align: center;min-width: 4em;">'
+                                    +choice[i].itemVoteCount
+                                +'票</div>'
+                            +'</div>'
+                            +'<div class="ubb b-dd"></div>';
+                          /*  
+                        tmpl+='<div class="ub ub-ver ub-pc umar-b" style="width:100%;background-color: #eeeeee">'
+                                +'<div class="ub ub-img7 ub-f1" style="margin:0.1825em;height:6em;background-image:url(\''+choicePicUrl+'\')"></div>'
+                                +'<div class="ub ub-f1 ub-pc uinn">'
+                                +title
+                                +'</div>'
+                                +'<div class="ub ub-f1 ub-pc ub-ac ubb" style="padding:0em 1.1875em 0.6875em 1.1875em;border-color: #dddddd;">'
+                                    +'<div class="ub uc-a tx-c ub-pc ub-ac ub-f1" style="color:white;height:1.875em;background-color:#ff8a00;">点击投票'
+                                    +'</div>'
+                                +'</div>'
+                                +'<div class="ub ub-f1 umar-a ub-pj ub-ac">'
+                                    +'<div class="ub ub-ac">'
+                                        +'<div class="ub ub-img iconSpace15 res-choiceIcon umar-r"></div>'
+                                        +'<div class="ub" style="color:#b3b3b3">'
+                                            +'<span style="color:#998b7b;margin-right:0.4em">'+(i+1)+'</span>号'
+                                        +'</div>'
+                                    +'</div>'
+                                    +'<div class="ub ub-ac">'
+                                        +'<div class="ub">'
+                                            +'<span style="color:#ff8a00">'+votenum+'</span>票'
+                                        +'</div>'
+                                    +'</div>'
+                                +'</div>'
+                            +'</div>';
+                            */
+                    }
+                    $("#begin").html(beginstr); 
+                    $("#stageNo3").html(tmpl);
+                    $("#stageNo3").show();
+                    $("#loding").show();
+                    loadOnc();      //初始化点击按钮
+                    
+                },
+                error : function(xhr, type) {
+                    alert("查询出错！！！");
+                }
+            })
+
+        }
+        
+   function loadOnc(){
+        appcan.button("#Share","btn-act",function(){
+            appcan.locStorage.setVal('shareId',objId+"_"+actId);
+            appcan.locStorage.setVal('shareTitle',title);
+            appcan.locStorage.setVal('shareSummary','');
+            appcan.locStorage.setVal('share_type','active');
+            createActionSheet();
+        })
+        appcan.button("#showIntro", "btn-act", function() {
+            if (showTag == 0) {
+                showTag = 1;
+                $("#actTitle").show();
+                $("#contents").show();
+                $("#"+showId).hide();
+            } else {
+                showTag = 0;
+                $("#actTitle").hide();
+                $("#contents").hide();
+                $("#"+showId).show();
+            }
+        })
+        appcan.button("#prsnum","btn-act",function(){
+            var actvId=appcan.locStorage.val("actvId");
+            dianzan(actvId);
+        })
+   }
+   
+   function createActionSheet() {//调用actionsheet分享
+        appcan.window.evaluateScript('','shareTypeChoose()');
+    }
+
+    appcan.button(".subActvPL",'btn-act',function(){
+        subComm();
+        //appcan.window.openToast('改功能努力开发中...',2000);
+    })
+//提交评语
+function subComm(){
+    var logStra = getLocVal('loginState');
+    if(logStra != 'yes'){
+        appcan.window.open('login','login.html',10);
+        return false;
+    }
+    var actId = appcan.locStorage.val("actvId");
+    var attcId = appcan.locStorage.val('userIcon1');
+    var phone = appcan.locStorage.val('mobilePhone');
+    var content = $("#commValue").val();
+    var userId = appcan.locStorage.val('userIdValue');
+    if(!isDefine(content)){
+        appcan.window.openToast('请填写内容!',2000);
+        return false;
+    }
+    var dataObj = {
+            "ifno": "CMS-ACTIVITY-0003",
+            "condition": {
+               "dmnId": "",
+               "oprTypeId": "02",
+               "entityId": actId,
+               "userId": userId,
+               "vrsnNo": 1
+            },
+            "content": {
+                "acTime": "2015-06-02",
+                "attachment": [{
+                    "attcIcon": "",
+                    "attcId": attcId || '',
+                    "attcTypeId": "01"
+                    }],
+                "acPhone": phone || '',
+                "acComent": content
+            }
+        }
+    appcan.request.ajax({
+        type : 'POST',
+        appVerify:true,
+        //offline:true,
+        url : chongqingUrl,
+        headers : {
+            token : appcan.locStorage.val("token")||"",
+            deviceId : appcan.locStorage.val("deviceId")||""
+        },
+        data : dataObj,
+        contentType : "application/json",
+        dataType : 'json',
+        timeout : "15000",
+        success : function(data) {
+            //console.log(JSON.stringify(data))
+            if(data.dispose.status == '001'){
+                appcan.window.openToast('您已经提交过评语了!',2000);
+                return false;
+            }
+            if(data.dispose.status == '000'){
+                appcan.window.openToast("提交成功，谢谢参与，请耐心等待评选结果!",2000);
+                $("#commValue").val('');
+                return false;
+            }
+        },
+        error:function(e){
+            
+        }
+    })
+}
+
+//投票
+function myVote(itemNo){
+    var logStra = getLocVal('loginState');
+    if(logStra != 'yes'){
+        appcan.window.open('login','login.html',10);
+        return false;
+    }
+    var actId = appcan.locStorage.val("actvId");
+    var dataObj = {
+        "ifno": "CMS-ACTV-0004",
+        "condition": {
+            "dmnId": "cq",
+            "grpId": "",
+            "roleId": "",
+            "chnlId": "",
+            "oprTypeId": "21",
+            "enttTypeId": "14",
+            "enttId": actId,
+            "itemNo": itemNo
+        },
+        "content": {}
+    }
+    appcan.request.ajax({
+        type : 'POST',
+        appVerify:true,
+        //offline:true,
+        url : chongqingUrl,
+        headers : {
+            token : appcan.locStorage.val("token") || '',
+            deviceId : appcan.locStorage.val("deviceId") || ''
+        },
+        data : dataObj,
+        contentType : "application/json",
+        dataType : 'json',
+        timeout : "15000",
+        success : function(data) {
+            //console.log("------------->>>>>>>>>>>>>>"+JSON.stringify(data))
+            if(data.dispose.status == '003'){
+                appcan.window.openToast('您已经投过一票了!',2000);
+                return false;
+            }
+            if(data.dispose.status == '004'){
+                appcan.window.openToast('您的投票数已达上限!',2000);
+                return false;
+            }
+            if(data.dispose.status == '000'){
+                appcan.window.openToast('投票成功!',2000);
+                return false;
+            }else{
+                appcan.window.openToast(data.dispose.msg,2000);
+            }
+        },
+        error:function(e){
+            
+        }
+    })
+}
+function dianzan(id){
+    var list={
+                "ifno": "CMS-NEWS-0003",
+                "condition": {
+                    "dmnId": "cq",
+                    "grpId": "",
+                    "roleId": "",
+                    "chnlId": ""
+                },
+                "content": {
+                    "entity": [
+                        {
+                            "oprTypeId": "17",
+                            "enttTypeId": "14",
+                            "enttId": id
+                        }
+                    ]
+                }
+            };
+            
+     appcan.request.ajax({
+                url:chongqingUrl,
+                headers : {
+                    token : appcan.locStorage.val("token")||"",
+                    deviceId:appcan.locStorage.val("deviceId")||""
+                },
+                data : list,
+                type : "POST",
+                appVerify:true,
+                timeout : "15000",
+                dataType:"json",
+                contentType : "application/json",
+                success : function(data) {
+                    // alert(JSON.stringify(data));
+                    if(data.info.entity[0].status=="000")
+                    {
+                        var num=parseInt($("#"+id).find(".numprs").html());
+                        $("#"+id).find(".numprs").html(num+1);
+                        $("#praiseIcon").removeClass("res-praiseIcon");
+                        $("#praiseIcon").addClass('dogood');
+                        
+                        appcan.window.evaluatePopoverScript('home_activity','content','actvDianzan()');
+                        return;
+                    }
+                    if(data.info.entity[0].status=="001"){
+                        uexWindow.toast(0,5,"你已点过赞",2000);
+                        return;
+                    }
+                    uexWindow.toast(0,5,"网络出错，请稍后重试",2000);
+
+                },
+                error : function() {
+                }
+            });       
+    }
+
+    function getTops(data1, idx, no, callback) {
+        if (idx >= data1.length) {
+            callback(false);
+            return;
+        } else if (data1[idx].attcTypeId == no) {
+            var attcId = data1[idx].attcId;
+            callback(attcId);
+            return;
+        }
+        getTops(data1, ++idx, no, callback);
+    }
+       
+    function goTop(){
+        window.scrollTo(0,0);
+    }
+    
+ </script>
+</html>

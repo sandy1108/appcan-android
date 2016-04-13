@@ -1,17 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<widget widgetId="" appId="11352882" channelCode="000" height="480" sreensize="3.5" version="00.00.0002" width="320"> 
-  <name>插件整合</name>  
-  <description>管理widget应用</description>  
-  <author email="3g2win@mail.com">3g2win</author>  
+<widget appId="sdk10394" channelCode="0000" height="480" pid="" sreensize="4.5" version="00.00.0066" viewmode="application" widgetId="" width="320"> 
+  <name>重庆</name>  
+  <description/>  
+  <author email=""></author>  
   <icon src="icon.png"/>  
-  <license href="http://3g2win.com"/>  
-  <content src="index.html" encoding="utf-8"/>  
-  <logserverip>192.168.1.28</logserverip>  
-  <obfuscation>false</obfuscation>  
-  <updateurl>http://192.168.1.28:8080/widget/update</updateurl>  
+  <license href=""/>  
+  <content encoding="utf-8" src="index.html"/>  
+  <updateurl>192.168.2.87</updateurl>  
+  <logserverip>125.87.130.81</logserverip>  
   <showmyspace>false</showmyspace>  
+  <obfuscation>false</obfuscation>  
+  <EMMConfig AutoStartReport="true"/>  
+  <EMMConfig ShowUpgradeAuto="true" ShowUpgradeManual="true"/>  
   <bgcolor>#fefefe</bgcolor>  
-  <widgetOne version="[widgetOneVersion]"/>  
-  <orientation>15</orientation> 
+  <orientation>1</orientation>  
+  <config desc="whiteList" type="AUTHORITY"> 
+    <permission info="urlSchemeWhiteList" platform="iOS"> 
+      <string>wechat</string>  
+      <string>weixin</string>  
+      <string>sinaweibohd</string>  
+      <string>sinaweibo</string>  
+      <string>sinaweibosso</string>  
+      <string>weibosdk</string>  
+      <string>weibosdk2.5</string>  
+      <string>mqqapi</string>  
+      <string>mqq</string>  
+      <string>mqqOpensdkSSoLogin</string>  
+      <string>mqqconnect</string>  
+      <string>mqqopensdkdataline</string>  
+      <string>mqqopensdkgrouptribeshare</string>  
+      <string>mqqopensdkfriend</string>  
+      <string>mqqopensdkapi</string>  
+      <string>mqqopensdkapiV2</string>  
+      <string>mqqopensdkapiV3</string>  
+      <string>mqzoneopensdk</string>  
+      <string>wtloginmqq</string>  
+      <string>wtloginmqq2</string>  
+      <string>mqqwpa</string>  
+      <string>mqzone</string>  
+      <string>mqzonev2</string>  
+      <string>mqzoneshare</string>  
+      <string>wtloginqzone</string>  
+      <string>mqzonewx</string>  
+      <string>mqzoneopensdkapiV2</string>  
+      <string>mqzoneopensdkapi19</string>  
+      <string>mqzoneopensdkapi</string>  
+      <string>mqzoneopensdk</string>  
+      <string>alipay</string>  
+      <string>alipayshare</string> 
+    </permission> 
+  </config>  
+  <debug>true</debug>  
+  <partobfuscation/>  
+  <webapp/> 
 </widget>

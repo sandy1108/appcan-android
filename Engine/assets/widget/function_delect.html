@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+    <head>
+        <title></title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="target-densitydpi=device-dpi, width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <link rel="stylesheet" href="css/fonts/font-awesome.min.css">
+        <link rel="stylesheet" href="css/ui-box.css">
+        <link rel="stylesheet" href="css/ui-base.css">
+        <link rel="stylesheet" href="css/ui-color.css">
+        <link rel="stylesheet" href="css/appcan.icon.css">
+        <link rel="stylesheet" href="css/appcan.control.css">
+    </head>
+    <style type="text/css">
+        .box {
+            width: 60%;
+            background-color: #FFF;
+            border: 1px solid #e9e9e9;
+            border-radius: 0.8em;
+        }
+        .ubt {
+            border-color: #e9e9e9;
+            height: 2.3em; 
+        }
+        .head {
+            color: #FF8A00;
+            padding: 0em 0.5em
+        }
+        .ub-img{
+            height: 10em;width:10em;
+        }
+    </style>
+    <body class="um-vp" ontouchstart style="background-color: rgba(0,0,0,0.4)">
+        <div id="page_0" class="up ub ub-ver ub-ac" tabindex="0">
+            <div class="closebtn bbody" style="-webkit-box-flex:1;width:100%;" ></div>
+            <div class="box ub ub-ver ub-pc " style="padding:0em 0.7em">
+                <div class="ub ub-ver ub-pc ub-ac">
+                    <div class="ub-img uhide pic"></div>
+                    <div class="uinn">是否确认删除评论？</div>
+                </div>
+                <div class="ubt ub ub-ac ub-pj head">
+                    <div id="quit" class="ub button">
+                        取消
+                    </div>
+                    <div id="ok" class="ub button">
+                        确定
+                    </div>
+                </div>
+
+            </div>
+            <div style=" -webkit-box-flex:1;width:100%;" ></div>
+        </div>
+        <script src="js/appcan.js"></script>
+        <script src="js/appcan.control.js"></script>
+        <script src="js/common.js"></script>
+    </body>
+    <script>
+        var msg = "";
+        var wordNum = "";
+        appcan.ready(function() {
+            if(appcan.locStorage.val("delCommentPic")!=""){
+                $(".pic").css({
+                    "background-image":"url("+appcan.locStorage.val("delCommentPic").split(',')[0]+"?imageView2/2/w/330/h/260)"
+                });
+                $(".pic").removeClass("uhide");
+            }
+        })
+        appcan.button(".button", "btn-act", function() {
+            if (this.id == "quit") {
+                uexWindow.closePopover("function_delect");
+            } else {
+                appcan.frame.evaluateScript('my_comment', "content", 'delectComment("' + appcan.locStorage.val("delCommentId") + '")');
+                uexWindow.closePopover("function_delect");
+            }
+        })
+
+    </script>
+</html>

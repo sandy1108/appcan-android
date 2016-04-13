@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+    <head>
+        <title></title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="target-densitydpi=device-dpi, width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <link rel="stylesheet" href="css/fonts/font-awesome.min.css">
+        <link rel="stylesheet" href="css/ui-box.css">
+        <link rel="stylesheet" href="css/ui-base.css">
+        <link rel="stylesheet" href="css/ui-color.css">
+        <link rel="stylesheet" href="css/new_file.css">
+        <link rel="stylesheet" href="css/appcan.icon.css">
+        <link rel="stylesheet" href="css/appcan.control.css">
+        <link rel="stylesheet" href="css/new_file.css">
+    </head>
+    <body class="um-vp " ontouchstart>
+        <div id="page_0" class="up ub ub-ver bc-bg" tabindex="0">
+            <div id="header" class="uh bc-text-head ub oc_header">
+                <div class="nav-btn" id="nav-left">
+                    <div class="ub-img oback"></div>
+                </div>
+                <h1 class="ut ub-f1 ulev-3 ut-s tx-c" id="goTop" tabindex="0">活动</h1>
+                <div class="nav-btn nav-bt" id="nav-right">
+                    
+                </div>
+            </div>
+            <div id="content" class="ub-f1 tx-l">
+
+            </div>
+            <!--content结束-->
+            <div id="footer" class="ub ub-ac ub-pc uhide" style="height:3em;background-color: #998b7b">
+                <div class="ub ub-img res-commentIcon1 iconSpace15 umar-r"></div>
+                <div id="checkmore" class="ub umar-l" style="color:white">查看评论</div>
+            </div>
+        </div>
+        <script src="js/appcan.js"></script>
+        <script src="js/appcan.control.js"></script>
+        <script src="js/common.js"></script>
+    </body>
+    <script>
+        var acData = JSON.parse(appcan.locStorage.getVal('acData'));
+        appcan.ready(function() {
+            var titHeight = $('#header').offset().height;
+            appcan.frame.open("content", acData.linkUrl, 0, titHeight);
+            window.onorientationchange = window.onresize = function() {
+                appcan.frame.resize("content", 0, titHeight);
+            }
+        });
+        appcan.button("#nav-left", "btn-act", function() {
+            appcan.window.close(-1);
+        })
+        appcan.button("#footer","btn-act",function(){
+            appcan.window.open("actComment","actComment.html",10);
+        })
+        
+        function shareTypeChoose() {//弹出分享第三方选择(只有footer处调用)
+            uexWindow.openPopover("share_content",0,'share_content.html','',0,0,document.body.clientWidth,document.body.clientHeight,32,0,0);
+        }
+        function sceneChoose() {//弹出分享场景选择
+             uexWindow.openPopover("scene_content",0,'scene_content.html','',0,0,document.body.clientWidth,document.body.clientHeight,32,0,0);
+        }
+        
+         //双击回到顶部测试
+        $("#goTop").on("doubleTap",function(){
+            appcan.window.evaluatePopoverScript("","content","goTop()");
+        })
+    </script>
+</html>

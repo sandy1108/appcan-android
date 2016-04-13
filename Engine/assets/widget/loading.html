@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html class="loader-um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+    <head>
+        <title></title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="target-densitydpi=device-dpi, width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <link rel="stylesheet" href="css/fonts/font-awesome.min.css">
+        <link rel="stylesheet" href="css/ui-box.css">
+        <link rel="stylesheet" href="css/ui-base.css">
+        <link rel="stylesheet" href="css/ui-color.css">
+        <link rel="stylesheet" href="css/appcan.icon.css">
+        <link rel="stylesheet" href="css/appcan.control.css">
+        <link rel="stylesheet" href="css/new_file.css">
+        <link rel="stylesheet" href="css/loader.css">
+    </head>
+    <body class="um-vp ub ub-ac ub-pc f-f"ontouchstart>
+      <div class="ub ub-ver ub-ac ub-pc loader" id="loader">
+          
+      </div>
+    </body>
+    <script src="js/appcan.js"></script>
+    <script src="js/appcan.control.js"></script>
+    <script src="js/common.js"></script>
+    <script>
+        var $loader=document.querySelector('#loader');
+        var $loaderDom;
+        appcan.ready(function() {
+             var animationId=appcan.locStorage.val("loaderAnimationId");
+             switch(animationId){
+                 case '1':
+                    $loaderDom='<div class="ub ub-ver loader1"></div>';
+                    break;
+                 case '2':
+                    $loaderDom='<div class="ub ub-ver loader2"></div>';
+                    break;
+                 case '3':
+                    $loaderDom='<div class="ub ub-ac ub-pc loader3"><div class="ub bounce1"></div><div class="ub bounce2"></div><div class="ub bounce3"></div></div>';
+                    break;
+                 case '4':
+                    $loaderDom='<div class="ub ub-ac ub-pc loader4"><div class="ub double-bounce1"></div><div class="ub double-bounce2"></div></div>';
+                    break;
+                 case '5':
+                    $loaderDom='<div class="loader5">'
+                                  +'<div class="loader5-container container1">'
+                                    +'<div class="circle1"></div>'
+                                    +'<div class="circle2"></div>'
+                                    +'<div class="circle3"></div>'
+                                    +'<div class="circle4"></div>'
+                                  +'</div>'
+                                  +'<div class="loader5-container container2">'
+                                    +'<div class="circle1"></div>'
+                                    +'<div class="circle2"></div>'
+                                    +'<div class="circle3"></div>'
+                                    +'<div class="circle4"></div>'
+                                  +'</div>'
+                                  +'<div class="loader5-container container3">'
+                                    +'<div class="circle1"></div>'
+                                    +'<div class="circle2"></div>'
+                                    +'<div class="circle3"></div>'
+                                    +'<div class="circle4"></div>'
+                                  +'</div>'
+                                +'</div>';
+                    break;
+                case '6':
+                    $loaderDom='<div class="ub ub-ac ub-pc loader6"></div>';
+                    break;
+                case '7':
+                    $loaderDom='<div class="loader7"><div class="cube1"></div><div class="cube2"></div></div>';
+                    break;
+             }
+          $loader.innerHTML=$loaderDom;
+    });
+    </script>
+</html>

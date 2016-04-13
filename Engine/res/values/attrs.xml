@@ -1,5 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- appstoremgr xb use -->
+    <declare-styleable name="plugin_appstoremgr_circle_progress">  
+        <attr name="plugin_appstoremgr_round_color" format="color"/>
+        <attr name="plugin_appstoremgr_round_progress_color" format="color"/>
+        <attr name="plugin_appstoremgr_round_width" format="dimension"></attr>
+        <attr name="plugin_appstoremgr_text_color" format="color" />  
+        <attr name="plugin_appstoremgr_text_size" format="dimension" /> 
+        <attr name="plugin_appstoremgr_max_value" format="integer"></attr> 
+        <attr name="plugin_appstoremgr_text_is_displayable" format="boolean"></attr>
+        <attr name="plugin_appstoremgr_style">
+        <enum name="STROKE" value="0"></enum>
+        <enum name="FILL" value="1"></enum>
+        </attr>
+    </declare-styleable> 
+	
+
 
     <declare-styleable name="PullToRefresh">
 

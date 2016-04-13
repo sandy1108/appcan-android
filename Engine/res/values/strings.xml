@@ -1,8 +1,193 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
+    <string name="plugin_uex_image_choose">选择</string>
+    <string name="plugin_uex_image_at_least_choose">请至少选择%s张图片</string>
+    <string name="plugin_uex_image_share">分享</string>
+    <string name="plugin_uex_image_list">列表</string>
+
+     <!--  uexIM -->
+     <string name="im_tcp_host"/>
+     <string name="im_http_host"/>
+
+    
+	<!-- audio plugin use string -->
+    <string name="plugin_audio_recoreder_recorder">录音机</string>
+    <string name="plugin_audio_recorder_prepare_record">准备录音</string>
+    <string name="plugin_audio_recorder_now_recording">正在录音...</string>
+    <string name="plugin_audio_recorder_now_saving_record">正在保存录音...</string>
+    <string name="plugin_audio_recorder_sdcard_free_space_not_enough">内存卡剩余空间不足!</string>
+    <string name="plugin_audio_play_pause">暂停</string>
+    <string name="plugin_audio_recorder_record_audio">录音</string>
+    <string name="plugin_audio_recorder_start_record_fail">启动录音失败!</string>
+    <string name="plugin_audio_recorder_init_audio_player_fail">初始化播放器失败!</string>
+    <string name="plugin_audio_recorder_can_not_play_this_audio_file">无法播放此音频文件!</string>
+    <string name="plugin_audio_recorder_please_stop_record_before_select_clip">请先停止录音再选择!</string>
+    <string name="plugin_audio_no_open_error">文件未打开错误</string>
+    <string name="plugin_audio_parameter_error">参数错误</string>
+    <string name="plugin_audio_info_nofile">文件不支持</string>
+    <string name="plugin_audio_can_not_mount_sdcard">无法加载存储卡</string>
+    <string name="plugin_audio_music_name">无法加载存储卡</string>
+
+
+     <string name="plugin_sms_are_you_sure_to_send_sms">确定发送短信吗?</string>
+
+
+
+    <string name="plugin_email_attchment_path_params_error">附件路径参数错误！</string>
+    <string name="plugin_uexEmail_select_app_to_send_email">选择发送邮件程序</string>
+
+
+    <string name="plugin_uexpicker_confirm">完成</string>
+
+    <string name="plugin_uexpicker_cancel">取消</string>
+
+
+	<!-- concact use string -->
+    <string name="plugin_contact_add_prompt">是否添加联系人</string>
+    <string name="plugin_contact_delete_prompt">是否删除联系人</string>
+    <string name="plugin_contact_modify_prompt">是否修改联系人</string>
+    <string name="plugin_contact_add_succeed">添加成功</string>
+    <string name="plugin_contact_add_fail">添加失败</string>
+    <string name="plugin_contact_delete_succeed">删除成功</string>
+    <string name="plugin_contact_delete_fail">删除失败</string>
+    <string name="plugin_contact_find_succeed">查找成功</string>
+    <string name="plugin_contact_find_fail">查找失败</string>
+    <string name="plugin_contact_modify_succeed">修改成功</string>
+    <string name="plugin_contact_modify_fail">修改失败</string>
+    <string name="plugin_contact_linkman_all">全部联系人</string>
+    <string name="plugin_contact_open_fail">打开通讯录失败!</string>
+
+ 
+   <string name="plugin_control_date_input_error">日期输入错误！</string>
+   <string name="plugin_control_time_input_error">时间输入错误！</string> 
+
+
+    <string name="plugin_fileMgr_folder">文件夹</string>
+    <string name="plugin_file_now_loading_folder">正在读取文件夹</string>
+    <string name="plugin_file_can_not_open_this_folder">无法打开此目录!</string>
+    <string name="plugin_file_not_exist">文件不存在!</string>
+    <string name="plugin_file_file_path_error">文件路径错误!</string>
+    <string name="plugin_file_can_not_mount_sdcard">无法加载存储卡</string>
+    <string name="plugin_file_are_you_sure_to_exit_file_explorer">确定退出文件管理器吗</string>
+    <string name="plugin_file_target_directory_is_not_exist_auto_redirect_to_sdcard">目前文件夹不存在,自动定位到SD卡目录!</string>
+    <string name="plugin_file_input_path_is_not_valid_path_redirect_to_sdcard">传入路径不是一个有效的目录,自动定位到SD卡目录!</string>
+    <string name="plugin_fileMgr_invalid_params">Invalid Params!</string>
+    <string name="plugin_fileMgr_json_format_error">JSON Format Error!</string>
+    <string name="plugin_fileMgr_need_keywords">Need Keywords</string>
+
+
+
+    <!-- uexCamera -->
+    <string name="plugin_camera_cancel">取消</string>
+    <string name="plugin_camera_complete">完成</string>
+    <string name="plugin_camera_location">传入的地理位置</string>
+    <string name="plugin_camera_take_photo_again">重拍</string>
+    <string name="plugin_camera_submit">提交</string>
+    <string name="plugin_camera_title_activity_second">uexCameraSecondActivity</string>
+
+
+    <string name="plugin_downloadermgr_error_parameter">参数错误</string>
+
+
+    <!-- plugin emm use start -->
+    <string name="app_sign">BA9841B30D957CAA1B6CB2F2D5D1C8054E4DE116F29FEAF2624DA3E8D116B538</string>
+    <!--20150829 add-->
+    <string name="plugin_uexemm_query_ueser_cert_hint_str">本次登录需要验证用户证书，请输入证书授权码，申请证书。</string>
+    <string name="plugin_uexemm_auth_code_et_hint_str">证书授权码</string>
+    <string name="plugin_uexemm_query_ueser_cert_str">申请证书</string>
+    <!--20150914 add-->
+    <string name="plugin_uexemm_get_cert_file">获取证书失败！</string>
+    <!--20151009 add-->
+    <string name="plugin_uexemm_network_error">请检查您的网络状态</string>
+    <string name="plugin_uexemm_network_error_title">无可用网络</string>
+    <string name="plugin_uexemm_network_error_msg">您的应用只能访问离线资源</string>
+    <string name="plugin_uexemm_exit_app">退出应用</string>
+    <string name="plugin_uexemm_exit_sub_app">退出子应用</string>
+    <string name="plugin_uexemm_continue">进入应用</string>
+    <string name="plugin_uexemm_prompt_title">提示</string>
+    <string name="plugin_uexemm_mamfail_msg">网络异常或服务器异常，请检查网络或服务器！</string>
+    <string name="plugin_uexemm_mamforbidden_msg">您的应用功能将会受到限制</string>
+    <string name="plugin_uexemm_app_sign_error_msg">应用签名非法</string>
+    <string name="plugin_uexemm_warning_title">警告</string>
+    <string name="plugin_uexemm_parm_error">参数错误</string>
+    <string name="plugin_uexemm_offline_login_error">离线登录失败</string>
+    <string name="plugin_uexemm_msg_network_error">无法连接至服务器，请检查网络</string>
+    <string name="plugin_uexemm_not_root_prompt">本应用仅适用于未Root机，即将关闭。</string>
+    <string name="plugin_uexemm_new_app_default_prompt">发现新版本,是否升级?</string>
+    <string name="plugin_uexemm_app_upgrade">更新</string>
+    <string name="plugin_uexemm_button_cancel">取消</string>
+    <string name="plugin_uexemm_sub_app_suspend_service">该子应用暂停服务</string>
+    <string name="plugin_uexemm_downloading_file">正在下载文件</string>
+    <string name="plugin_uexemm_download_fail">下载失败</string>
+    <string name="plugin_uexemm_no_sd_card">您的手机未安装SD卡!</string>
+    <string name="plugin_uexemm_connect_error">连接失败,请重试!</string>
+    <string name="plugin_uexemm_download_error">下载出错,请重试!</string>
+    <string name="plugin_uexemm_download_again">重新下载</string>
+    <string name="plugin_uexemm_upgrade_later">暂不更新</string>
+    <string name="plugin_uexemm_install_upgrade">安装更新</string>
+    <string name="plugin_uexemm_download_completed">更新包下载完成</string>
+    <string name="plugin_uexemm_not_found_app">未找到可执行的应用</string>
+    <string name="plugin_uexemm_upgrade_msg">部分内容更新优化，请更新后使用</string>
+    <string name="plugin_uexemm_upgrade_prompt">更新提示</string>
+    <string name="plugin_uexemm_problems_msg">可能网络传输或其他问题造成，请点击重试</string>
+    <string name="plugin_uexemm_upgrade_fail">更新失败</string>
+    <string name="plugin_uexemm_retry">重试</string>
+    <string name="plugin_uexemm_continue_upgrade_msg">上次更新未完成，请继续更新</string>
+    <string name="plugin_uexemm_continue_upgrade_prompt">继续更新</string>
+    <string name="plugin_uexemm_restart_prompt">更新完成，请重新启动！</string>
+    <string name="plugin_uexemm_confirm">确定</string>
+    <string name="plugin_uexemm_suspend_server">该应用暂停服务</string>
+    <!--20151203 add-->
+    <string name="plugin_uexemm_erase_data_msg">应用数据擦除中，请稍候重启！</string>
+    <!--20151222 add-->
+    <string name="plugin_uexemm_update_later">以后再说</string>
+    <string name="plugin_uexemm_update_now">立即升级</string>
+    <string name="plugin_uexemm_downloading_app">更新中...</string>
+    <string name="plugin_uexemm_downloading_app_msg">请勿关闭或离开当前界面，以免造成更新失败！</string>
+    <!--20160107 add-->
+    <string name="plugin_uexemm_get_soft_token_error_info">MAC和IMEI号获取失败。</string>
+    <!-- plugin emm use end -->
+
+
+    <!--appstore use start-->
+    <string name="appstore_host"/>
+    <string name="plugin_app_market_update_file_default_msg">发现新版本，立即升级体验吧！</string>
+    <string name="plugin_app_market_update_patch_default_msg">发现新数据包，点击下载后，下次应用启动时启用！</string>
+    <!-- xlistview -->
+    <string name="xlistview_header_hint_normal">下拉可以刷新</string>
+    <string name="xlistview_header_hint_ready">松开刷新数据</string>
+    <string name="xlistview_header_hint_loading">正在加载数据...</string>
+    <string name="xlistview_header_last_time">上次更新时间：</string>
+    <string name="xlistview_footer_hint_normal">查看更多</string>
+    <string name="xlistview_footer_hint_ready">松开载入更多</string>
+    
+    <!--20150921 add-->
+    <string name="plugin_appstore_display_error_title">提示</string>
+    <string name="plugin_appstore_display_button_sub_exit">退出子应用</string>
+    <!--20151105 add-->
+    <string name="plugin_appstore_load_app_list">加载应用列表...</string>
+    <string name="plugin_appstore_hint_error_network">网络故障</string>
+    <string name="plugin_appstore_hint_no_data">没有数据</string>
+    <string name="plugin_appstore_hint_no_more_data">没有更多数据</string>
+    <string name="plugin_appstore_app_refresh_fail">刷新失败</string>
+    <!--20151208 add tile use-->
+    <string name="plugin_appstore_del_default_prompt">推荐磁贴，不允许删除！</string>
+    <!--20151210 add tile use-->
+    <string name="plugin_appstore_load_tile_prompt">正在加载磁贴列表...</string>
+    <string name="plugin_appstore_hint_no_tile_data">没有磁贴数据</string>
+    <string name="plugin_appstore_download_fail">下载失败</string>
+    <!--20151214 add tile use-->
+    <string name="plugin_appstore_not_install">未安装</string>
+    <string name="plugin_appstore_installed">已安装</string>
+    <!--20151216 add tile use-->
+    <string name="plugin_appstore_not_force">网络不给力</string>
+    <string name="plugin_appstore_installing">正在安装, 请稍候...</string>
+    <!--appstore use end-->
+
+
 
     <!-- common use通用字符串 -->
-    <string name="app_name">appcantemplate</string>
+    <string name="app_name">电建通</string>
     <string name="back">返回</string>
     <string name="confirm">确定</string>
     <string name="cancel">取消</string>
@@ -37,16 +222,16 @@
     <string name="browser_init_error">程序不完整</string>
     <!-- 3000.1.02.000.00.00.9999.000 -->
 	<!-- Analytics config -->
-    <string name="appkey" translatable="false">38c2a32f-999b-2cf3-3971-71bb074b2f27</string>
-    <string name="appstatus" translatable="false">6E4E99740100CFB7447DAB9CCC55DD75F7D658</string>
+    <string name="appkey" translatable="false">9c1c2e35-c78b-194b-3f91-5e77f8564192</string>
+    <string name="appstatus" translatable="false">8E62612160122E2A13AC8A41E5A0EF03554D366C411CA0745F08AA</string>
     <string name="push" translatable="false">true</string>
     <string name="certificate_psw" translatable="false"/>
-    <string name="widget_startup_report_host" translatable="false">http://newdc.appcan.cn/</string>
-    <string name="push_host" translatable="false">newpush.appcan.cn:1883</string>
-    <string name="bindUser_host" translatable="false">http://newpush.appcan.cn/</string>
-    <string name="analytics_host" translatable="false">http://newdc.appcan.cn/</string>
-    <string name="mam_host" translatable="false">http://newdc.appcan.cn/</string>
-    <string name="mam_push_host_and_port" translatable="false">newpush.appcan.cn:1883</string>
+    <string name="widget_startup_report_host" translatable="false">https://10.1.239.80:18443/appIn/</string>
+    <string name="push_host" translatable="false">10.1.239.80:1883</string>
+    <string name="bindUser_host" translatable="false">https://10.1.239.80:18443/push/</string>
+    <string name="analytics_host" translatable="false">https://10.1.239.80:18443/analyIn/4.0/service/</string>
+    <string name="mam_host" translatable="false"/>
+    <string name="mam_push_host_and_port" translatable="false"/>
 
     <!-- platform myspace  use -->
     <string name="platform_myspace_app_center">应用中心</string>
@@ -95,10 +280,20 @@
 
     <string name="widget_not_exist_id_path">在%1$s目录下的 appId 是%2$s的widget不存在</string>
     <string name="not_any_widget">该应用下没有任何widget</string>
-    <string-array name="platform_close_hardware">
+    <string-array name="platform_no_hardware_phone">
         <item>MI 2S</item>
         <item>Letv</item>
         <item>GEM-703L</item>
     </string-array>
-    <string name="mbaas_host"></string>
+    <string name="tenant_id"/>
+    <string name="mbaas_host"/>
+
+    <!-- 华为UC -->
+    <string name="plugin_uex_espacevoip_androidversion">V2.5.0</string>
+    <string name="plugin_uex_espacevoip_login_on_pc_desc">This account has logged in to a PC client. Log in from the current terminal?</string>
+    <string name="plugin_uex_espacevoip_login_on_mobile_desc">This account has logged in to a mobile client. Log in from the current terminal?</string>
+    <string name="plugin_uex_espacevoip_login_on_web_desc">This account has logged in to a web client. Log in from the current terminal?</string>
+    <string name="plugin_uex_espacevoip_login_on_pad_desc">This account has logged in to a tablet client. Log in from the current terminal?</string>
+    <string name="plugin_uex_espacevoip_login_on_ipphone_desc">This account has logged in to an IP phone client. Log in from the current terminal?</string>
+    <string name="plugin_uex_espacevoip_tip_taking">Has been conducting a call!</string>
 </resources>

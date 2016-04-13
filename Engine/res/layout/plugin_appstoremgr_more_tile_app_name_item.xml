@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/plugin_appstoremgr_tile_grid_item_bg" >
+    
+    <TextView
+        android:id="@+id/more_tile_app_name"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/plugin_appstoremgr_tile_text_view_height"
+        android:clickable="false"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:text="OA"
+        android:singleLine="true"
+        android:paddingLeft="@dimen/plugin_appstoremgr_tile_app_name_left_padding"
+        android:gravity="center_vertical"
+        android:textSize="@dimen/plugin_appstoremgr_grid_item_text_size" 
+        android:background="@color/plugin_appstoremgr_sub_app_list_view_bg_color" />
+
+</RelativeLayout>

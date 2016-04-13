@@ -1,9 +1,43 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <resources>
-    <!-- contactfromjson use -->
-    <color name="green">#7CFC00</color>
-    
-	<color name="start_bg_color">#FFFFFF</color>
+	<color name="plugin_uex_image_gray_3">#333333</color>
+	<color name="plugin_uex_image_gray_4">#2E3334</color>
+	<color name="plugin_uex_image_green_common">#15C7CB</color>
+	<color name="plugin_uex_image_green_1">#45C01A</color>
+	<color name="plugin_uex_image_green_2">#86D8FF</color>
+	<color name="plugin_uex_image_gray_9">#d9d9d9</color>
+	<color name="plugin_uex_image_black_1">#e0111222</color>
+
+		<!-- Audio use -->
+	<color name="plugin_audio_half_transparent">#30000000</color>
+
+
+    <color name="plugin_uexpicker_layout_background">#ffffff</color>
+
+	<color name="plugin_uexpicker_layout_color">#bdbdbd</color>
+
+
+    <!-- EMM use -->
+    <color name="plugin_uexemm_dialog_left_btn_normal_color">#DDE5E5E5</color>
+    <color name="plugin_uexemm_dialog_left_btn_press_color">#99E5E5E5</color>
+    <color name="plugin_uexemm_dialog_right_btn_normal_color">#DD3966B9</color>
+    <color name="plugin_uexemm_dialog_right_btn_press_color">#993966B9</color>
+    <color name="plugin_uexemm_load_app_progress_bar_bg_color">#A2A2A2</color>
+	
+    <!--appstoremgr use-->
+    <color name="plugin_appstoremgr_translucent">#7f000000</color>
+    <color name="plugin_appstoremgr_light_gray">#A6C2DE</color>
+    <color name="plugin_appstoremgr_main_color">#C30013</color>
+    <!--appstoremgr tile  use-->
+    <color name="plugin_appstoremgr_sub_app_download_btn_text_color">#686868</color>
+    <color name="plugin_appstoremgr_sub_app_list_view_bg_color">#EDEDF3</color>
+    <color name="plugin_appstoremgr_tile_view_stroke_color">#00EDEDF3</color>
+    <color name="plugin_appstoremgr_circle_progress_round_color">#FFD1D1D1</color>
+    <color name="plugin_appstoremgr_download_main_color">#FF007AFF</color>
+    <color name="plugin_appstoremgr_download_installed_color">#FF686868</color>
+	
+
+	<color name="start_bg_color">#000000</color>
 	<color name="red">#FFFF0000</color>
 	<color name="orange">#FFFF9900</color>
 	<color name="gray">#FF717171</color>
@@ -21,5 +55,4 @@
 	<color name="widget_dialog_title_line_color">#666666</color>
 	<color name="widget_bg_color">#333333</color>
 	<color name="activity_window_background_color">#60000000</color>
-
 </resources>

@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+    <head>
+        <title></title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="target-densitydpi=device-dpi, width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <link rel="stylesheet" href="css/fonts/font-awesome.min.css">
+        <link rel="stylesheet" href="css/ui-box.css">
+        <link rel="stylesheet" href="css/ui-base.css">
+        <link rel="stylesheet" href="css/ui-color.css">
+        <link rel="stylesheet" href="css/appcan.icon.css">
+        <link rel="stylesheet" href="css/appcan.control.css">
+        <link rel="stylesheet" href="css/new_file.css">
+        <link rel="stylesheet" href="css/detailStyle.css">
+        <link rel="stylesheet" href="css/common.css">
+        <link rel="stylesheet" href="css/loader.css">
+        <style>
+            .img {
+                width: 90%;
+            }
+            .vodeoLogo {
+                height: 3em;
+                width: 3em;
+                background-image: url('image/Play.png');
+            }
+        </style>
+    </head>
+    <body class="um-vp f-f1" ontouchstart>
+        <div class="ub-ver" style="display: none;" id="showContent">
+            <div id="text" class="ub ub-ver uinn">
+                <div class="ub ub-ver ub-f1 ubb b-dd">
+                    <div class="ub ub-f1 f-s12 wrap" style="font-size:1.5em;" id="titles"></div>
+                    <div class="ub ub-f1 uinn50 fz-8 c-b3" style="margin-top:1.2em;" id="TextTime">
+                        <span class="ub-f1" style="">新浪</span>
+                        <span class="mar-l1">2015-05-05 09:09:53</span>
+                    </div>
+                </div>
+                <div class="ub ub-ac ub-pc ub-img uhide" id="video" style="width:100%;height:12.5em;">
+                    <div class="ub ub-img vodeoLogo"></div>
+                </div>
+                <div id="content" class="ub ub-ver ub-f1 c-66 uinn-t05 wrap" style="line-height: 1.8em;word-break:normal;">
+
+                </div>
+            </div>
+            <!--相关阅读  -->
+            <div class="ub-ver" id="relevant" style="display:none">
+                <div class="ubb ubt bg-ee h-1em b-c6"></div>
+                <div class="ub uinn-t1" style="margin-left: 0.5em;">
+                    <div class="ub bg-ff w-06em"></div>
+                    <span class="ub ub-ac c-66 mar-l05" id="relatedTitle">相关阅读</span>
+                </div>
+                <div class="ub ub-ver uinn" id="newsLabel">
+
+                </div>
+            </div>
+            <div class=" bg-ee h-1em b-c6"></div>
+            <div class="ub ub-ver uinn" style="padding-bottom: 1.5em;">
+                <div class="ub ub-ac uinn-t1 c-b9" style="width:100%;">
+                    <div class="ub" style="width:35%;">
+                        <div class="ub ub-ac uc-a1 uba b-d5" id="support" style="padding: 0.5em 1em  0.5em 1em;border-radius:1.35em;">
+                            <div class="ub-img wh-praise" id="picZan" style="background-image: url('image/praise.png');"></div>
+                            <div class="ub ub-ac" style="margin-left: .35em;margin-top: .2em" id="praiseText">
+                                0
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ub ub-pe" style="width:60%;">
+                        <div class="ub ub-ac uc-a1 uba b-d5 oc_s" style="padding: 0.5em 0.8em  0.5em 0.8em;border-radius:1.35em;" id="s_0">
+                            <div class="ub-img wh-praise" style="background-image: url('image/weixin.png');"></div>
+                            <div class="ub ub-ac" style="margin-left: .35em;margin-top: .2em;color:#AFAFAF;">
+                                微信
+                            </div>
+                        </div>
+                        <div class="ub ub-ac uc-a1 uba b-d5 oc_s" style="padding: 0.5em 0.8em  0.5em 0.8em;border-radius:1.35em;margin-left:0.5em;" id="s_1">
+                            <div class="ub-img wh-praise" style="background-image: url('image/QQ.png');"></div>
+                            <div class="ub ub-ac" style="margin-left: .35em;margin-top: .2em;color:#AFAFAF;">
+                                QQ
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="ub-ver" id="wordsText" style="display:none; border-top: 1px solid #ccc;padding-top:0.5em;">
+                <div class="ub ub-ver" id="wordsText1"></div>
+                <div class="ub ub-ver" id="wordsText2"></div>
+                <div class="ub ub-ver" id="wordsText3"></div>
+            </div>
+        </div>
+        <script src="js/newAppcan.js"></script>
+        <script src="js/appcan.control.js"></script>
+        <script src="js/common.js"></script>
+        <script src="js/interface.js"></script>
+        <script src="js/common.dom.js"></script>
+        <script src="js/share.js"></script>
+    </body>
+    <script>
+        var icache;
+        var newsItemInfo = isDefine(getLocVal('newsItemInfo')) ? getLocVal('newsItemInfo') : "";
+        newsItemInfo = JSON.parse(newsItemInfo);
+        var newDetailInfo = isDefine(getLocVal('newDetailInfo')) ? getLocVal('newDetailInfo') : {};
+        var newsId = newsItemInfo.newsId;
+        var objectType = 1;
+        var shareTitle = '';
+        var shareSummary = '';
+        var pageNum = 1;
+        var pageCon = 1;
+        var newsTag = "";
+        var videoPath = "";
+        //视频路径
+        var newsContent = "";
+        //文章内容
+        var userInfo = isDefine(getLocVal('userInfo')) ? getLocVal('userInfo') : "";
+        var userId = "";
+        var userCommentId = "";
+        //对评论的点赞
+        var shareTopicId = "";
+        appcan.ready(function() {
+            appcan.initBounce();
+            icache = appcan.icache({
+                maxtask : 5
+            });
+            userId = isDefine(userInfo) ? JSON.parse(userInfo).userId : "";
+            //监听评论更新
+            appcan.window.subscribe('changeCommentCount', function(msg) {
+                if (msg == newsId) {
+                    showComment(1, 1);
+                    //最新评论
+                    $("#wordsText").show();
+                }
+            })
+            setCacheData();
+            showComment(1, 1);
+            //最新评论
+            //showComment(1,2);     //名家评论
+            //showComment(1,3);     //热门评论
+            uexQQ.cbShareQQ = cbShareQQ_qq;
+            var contentFontSize=appcan.locStorage.val("fontSize");
+            isDefine(contentFontSize)?refreshFont(contentFontSize):"";
+        })
+        //字体设置
+        function refreshFont(index) {
+            switch(index) {
+                case"1":
+                    $("#text").css({
+                        "font-size" : "150%"
+                    });
+                    break;
+                case"2":
+                    $("#text").css({
+                        "font-size" : "120%"
+                    });
+                    break;
+                case"3":
+                    $("#text").css({
+                        "font-size" : "100%"
+                    });
+                    break;
+                default:
+                    $("#text").css({
+                        "font-size" : "100%"
+                    });
+                    break;
+            }
+        }
+
+        //缓存加载数据
+        function setCacheData() {
+            if (isDefine(newDetailInfo)) {
+                newDetailInfo = JSON.parse(newDetailInfo);
+                if (isDefine(newDetailInfo[newsId])) {
+                    var writeTime = new Date(newDetailInfo[newsId].time);
+                    var dateTimeNow = new Date();
+                    var timeLag = dateBetween(writeTime, dateTimeNow);
+                    //alert(writeTime+" "+dateTimeNow+" "+JSON.stringify(timeLag));
+                    if (timeLag.minutes > 0) {//过期
+                        //alert("再次获取==>");
+                        getData();
+                        //显示详情
+                    } else {
+                        //alert("使用缓存==>");
+                        showData(newDetailInfo[newsId].detail);
+                        //缓存显示
+                    }
+                } else {//首次加载此条新闻
+                    getData();
+                    //显示详情
+                }
+            } else {//直接获取详情并建立缓存
+                getData();
+                //显示详情
+            }
+        }
+
+        //获取展示新闻详情的方法
+        function getData() {
+            if (isAndroid) {
+                uexWindow.toast(1, 5, "", "");
+            } else {
+                loader.open();
+            }
+            var conditions = {
+                "userId" : userId
+            };
+            var if_list = getInterface('newsInfoGetOne', newsId, 1, conditions);
+            //接口封装配置函数
+            console.log(JSON.stringify(if_list));
+            appcan.request.ajax({
+                url : chongqingUrl,
+                headers : {
+                    token : appcan.locStorage.val("token") || '',
+                    deviceId : appcan.locStorage.val("deviceId") || ''
+                },
+                appVerify : true,
+                data : JSON.stringify(if_list),
+                type : "POST",
+                timeout : "15000",
+                contentType : "application/json",
+                dataType : "json",
+                success : function(res) {
+                    console.log("资讯详情返回====>");
+                    console.log(res);
+                    uexWindow.closeToast();
+                    loader.close();
+                    if (res.status != '000') {
+                        $("#showContent").html(res.msg);
+                        $("#showContent").addClass('ub ub-ac ub-pc');
+                        $("#showContent").show();
+                        return false;
+                    }
+                    var info = res.data;
+                    //存入缓存
+                    var writeTime = new Date();
+                    var newDetailInfoTemp = {
+                        "time" : writeTime,
+                        "detail" : info
+                    };
+                    newDetailInfo[newsId] = newDetailInfoTemp;
+                    //alert(JSON.stringify(newDetailInfo));
+                    if (isDefine(info)) {
+                        appcan.locStorage.setVal("newDetailInfo", JSON.stringify(newDetailInfo));
+                    }
+                    //显示详情数据
+                    showData(info);
+                },
+                error : function() {
+                    uexWindow.closeToast();
+                    loader.close();
+                }
+            });
+        }
+
+        function showData(data) {
+            var info = data;
+            //是否是视频新闻
+            if (info.newsTypeId == 3) {
+                var picUrl = getImgUrl("0", newsItemInfo.picturesUrls, 1);
+                if (isDefine(newsItemInfo.picturesUrls) && (newsItemInfo.picturesUrls).length > 0) {
+                    $("#video").css("background-image", "url(" + picUrl + ")");
+                    if (isDefine(info.content)) {
+                        videoContent = JSON.parse(info.content);
+                        //alert(typeof(videoContent));
+                        console.log(videoContent);
+                        videoPath = videoContent.videoUrl;
+                        $("#video").removeClass("uhide");
+                        newsContent = videoContent.text;
+                    }
+                }
+            } else {
+                newsContent = info.content;
+            }
+
+            shareTitle = isDefine(info.newsTitle) ? info.newsTitle : '';
+            shareSummary = isDefine(info.summary) ? (info.summary).substring(0, 25) : '';
+            shareTopicId = info.topicId;
+            $("#titles").html(info.newsTitle);
+            //来源和时间
+            var dateTime = UnixToDate(info.publishTime, true);
+
+            $("#TextTime").html('<span class="ub-f1" style="display:block;text-overflow: ellipsis;overflow: hidden;white-space: nowrap;">' + info.resourceName + '</span><span class="mar-l1" style="display:block;">' + dateTime + '</span>');
+            $("#content").html(newsContent);
+            //内容
+            //loader.close();
+            //是否已经点赞
+            if (info.isSupport == 1) {
+                $("#picZan").attr('style', 'background-image: url(\'image/praise-1.png\');');
+            }
+            $("#praiseText").html(info.supportNum);
+            //显示点赞数
+            if (info.commentNum == 0) {
+                $("#wordsText").hide();
+            } else {
+                $("#wordsText").show();
+            }
+            //如果是android平台就修改其图片样式 && $("img").length>0
+            if (isAndroid) {
+                $("img").addClass("img");
+            }
+            if (info.isCheck != undefined) {
+                var isCheck = info.isCheck;
+                appcan.locStorage.setVal('isCheck', isCheck);
+            }
+            //判断是否收藏
+            appcan.window.publish('isCollect', info.isCollect);
+            appcan.window.publish('detailCommentNum', info.commentNum);
+            appcan.window.publish('detailIsAllowComment', info.isAllowComment);
+            $("#showContent").show();
+
+            //获取相关阅读
+            getRelatedReading(newsId);
+
+        }
+
+        //获得资讯相关阅读
+        function getRelatedReading(newsId) {
+            var conditions = {
+                "listType" : 2 //0名家新闻  专题新闻；1：栏目新闻；2：相关新闻
+            };
+            var list = getInterface('newsInfoGetList', newsId, 1, conditions);
+            //接口封装配置函数
+            console.log("相关阅读接口====>" + JSON.stringify(list));
+            appcan.request.ajax({
+                url : chongqingUrl,
+                headers : {
+                    token : appcan.locStorage.val("token") || '',
+                    deviceId : appcan.locStorage.val("deviceId") || ''
+                },
+                appVerify : true,
+                data : list,
+                type : "POST",
+                contentType : "application/json",
+                dataType : "json",
+                timeout : "15000",
+                success : function(res) {
+                    console.log("新闻资讯相关阅读列表===>");
+                    console.log(res);
+                    uexWindow.closeToast();
+                    if (res.status != '000') {
+                        uexWindow.toast(1, 5, res.msg, 2000);
+                        return false;
+                    }
+                    var info = res.data;
+                    var str_html = "";
+                    var ralationInfo = {};
+                    if (info.length > 0) {
+                        if (info.isRelation == 0) {
+                            $("#relatedTitle").html("热点新闻");
+                        }
+                        $("#relevant").show();
+                        var ralationNewsId = "";
+                        var len = info.length > 3 ? 3 : info.length;
+                        for (var n = 0; n < len; n++) {
+                            ralationNewsId = info[n].newsId;
+                            ralationInfo[ralationNewsId] = info[n];
+                            //根据ID保存列表信息，以便后续操作
+                            str_html += '<div class="ub ub-f1 uinn50 ubb b-c6 ralRead" id="' + ralationNewsId + '">' + info[n].newsTitle + '</div>';
+                        }
+                        $("#newsLabel").html(str_html);
+                        var btn_key = 1;
+                        appcan.button(".ralRead", "btn-act", function() {
+                            if (btn_key == 1) {
+                                btn_key = 0;
+                                var newsIdVal = this.id;
+                                //alert(ralationInfo[newsIdVal].newsTypeId);
+                                //传递点击列表信息
+                                appcan.locStorage.setVal('newsItemInfo', JSON.stringify(ralationInfo[newsIdVal]));
+                                //console.log(JSON.stringify(itemInfo[newsIdVal]));
+                                if (ralationInfo[newsIdVal].newsTypeId == 2) {
+                                    //跳转图片新闻展示页面
+                                    appcan.window.open('home_DetailsPictures', 'home_DetailsPictures.html', 10);
+                                } else if (ralationInfo[newsIdVal].newsTypeId == 5) {
+                                    //跳转专题列表
+                                    appcan.window.open('spe_page', 'spe_page.html', 10, 1024);
+                                } else if (ralationInfo[newsIdVal].newsTypeId == 6) {
+                                    //跳转栏目
+                                    var goColumnId = ralationInfo[newsIdVal].columnId;
+                                    //alert(goColumnId);
+                                    uexWindow.evaluateScript("home_page", 0, "openFrame(" + goColumnId + ")");
+                                    uexWindow.evaluateScript("", 0, "appcan.window.close()");
+                                    // appcan.locStorage.setVal("govermentColumnDomIndex","id_"+goColumnId);
+                                    // uexWindow.evaluateScript("", 0, "goGoverment("+goColumnId+")");
+                                } else {
+                                    //跳转新闻详细页面
+                                    appcan.window.open(newsIdVal, 'home_Details.html', 10, 1024);
+                                }
+                                setTimeout(function() {
+                                    btn_key = 1;
+                                }, 2000);
+                            }
+                        })
+                    }
+                },
+                error : function(xhr, errorType, error, msg) {
+                    uexWindow.closeToast();
+                }
+            });
+        }
+
+        //获取评论的方法
+        function showComment(page, index) {
+            pageNum = page;
+            if (index == 1) {
+                var titleVal = "最新评论";
+                var conditions = {
+                    "userId" : userId
+                };
+                var list1 = getInterface('commentInfoGetList', newsId, pageNum, conditions);
+                //接口封装配置函数
+            } else if (index == 2) {
+                var titleVal = "名家评论";
+                var conditions = {
+                    "isFamous" : 1,
+                    "userId" : userId
+                };
+                var list1 = getInterface('commentInfoGetList', newsId, pageNum, conditions);
+                //接口封装配置函数
+            } else {
+                var titleVal = "最热评论";
+                var conditions = {
+                    "isHot" : 1,
+                    "userId" : userId
+                };
+                var list1 = getInterface('commentInfoGetList', newsId, pageNum, conditions);
+                //接口封装配置函数
+            }
+            console.log(JSON.stringify(list1));
+            appcan.request.ajax({
+                url : chongqingUrl,
+                headers : {
+                    token : appcan.locStorage.val("token") || '',
+                    deviceId : appcan.locStorage.val("deviceId") || ''
+                },
+                appVerify : true,
+                data : list1,
+                type : "POST",
+                contentType : "application/json",
+                dataType : "json",
+                timeout : "15000",
+                success : function(res) {
+                    console.log("评论接口返回=====>");
+                    console.log(res);
+                    var list = res.data.list;
+                    pageCon = res.data.totalNum;
+                    var tmpl = '',
+                        tmpl1 = '',
+                        time = "",
+                        nickName = "",
+                        nickedName="",
+                        content="",
+                        commentNickName="",
+                        commentedNickName="",
+                        commentLoginName="",
+                        commentedLoginName="",
+                        userIconUrl = "",
+                        picPrse = '',
+                        isSupport = 0;
+
+                    if (list.length > 0) {
+                        $("#wordsText").show();
+                    }
+
+                    for (var i = 0; i < list.length; i++) {
+                        time = timePoor(list[i].mTime);
+                        commentNickName = list[i].commentNickName;
+                        if(list[i].commentLoginName!="游客"){
+                            commentLoginName=(list[i].commentLoginName).substring(0,3)+'***'+(list[i].commentLoginName).substring(8,11);
+                        }else{
+                            commentLoginName=list[i].commentLoginName;
+                        }
+                        nickName = isDefine(commentNickName) ? commentNickName : commentLoginName;
+                        
+                        if (isDefine(list[i].commentedUserId)) {
+                            commentedNickName = list[i].commentedNickName;
+                            if(list[i].commentLoginName!="游客"){
+                                commentedLoginName=(list[i].commentedLoginName).substring(0,3)+'***'+(list[i].commentedLoginName).substring(8,11);
+                            }else{
+                                commentedLoginName=list[i].commentedLoginName;
+                            }
+                            nickedName = isDefine(commentedNickName) ? commentedNickName : commentedLoginName;
+                            nickName = nickName + ' 对  ' + nickedName + ' 的评论';
+                        }
+                        userIconUrl = isDefine(list[i].commentAvatar) ? getImgUrl("1", list[i].commentAvatar, 2) : 'css/img/oheadpic.png';
+                        isSupport = isDefine(list[i].isSupport) ? list[i].isSupport : 0;
+                        if (isSupport == 1) {
+                            picPrse = 'praise2';
+                        } else {
+                            picPrse = 'praise1';
+                        }
+                        content=list[i].content
+                        if(list[i].userDel==1){
+                            content="该评论已删除";
+                        }
+                        tmpl1 += '<div class="ub uinn uinn-t1">' 
+                                + '<div class="ub-img7 wh-2em bor-yuan" style="background-image:url(\'' + userIconUrl + '\')"></div>' 
+                                + '<div class="ub ub-f1 mar-l1">' + '<div class="ub ub-f1 ub-ver">' 
+                                + '<div class="c-70 fz-8">' + nickName 
+                                + '</div>' 
+                                + '<div class="uinn02 c-46 wrap">' 
+                                + content
+                                + '</div>' 
+                                + '<div class="ub ub-pj">' 
+                                + '<div class="ub c-99 fz-68">' 
+                                + time
+                                + '</div>' 
+                                + '<div class="ub ub-ac">' 
+                                + '<div class="wh-1em ' 
+                                + picPrse 
+                                + ' ub-img userSupport" id="' 
+                                + list[i].commentId 
+                                + '"></div>' 
+                                + '<div class="c-3c fz-8 umar-lr">' 
+                                + list[i].supportNum 
+                                + '</div>&nbsp;&nbsp;&nbsp;&nbsp;' 
+                                + '<div class="wh-1em discuss ub-img" onclick="plComment(\'' + list[i].commentId + '\',\'' + list[i].commentUserId + '\')"></div>' 
+                                + '</div>' 
+                                + '</div>' 
+                                + '</div>' 
+                                + '</div>' 
+                                + '</div>' 
+                                + '<div class="ubb b-dd" style="height: 1px"></div>';
+                    }
+
+                    tmpl = '<div class="ub ub-f1 uinn-t1" style="margin-left:.5em">' + '<div class="ub bg-ff w-06em"></div>' + '<span class="ub ub-ac c-66 mar-l05">' + titleVal + '</span>' + '</div>' + tmpl1;
+
+                    if (!isDefine(tmpl1)) {
+                        tmpl = '';
+                    }
+                    if (index == 1) {
+                        if (pageCon > 0) {
+                            $("#wordsText").show();
+                            $("#wordsText3").empty();
+                            $("#wordsText3").append(tmpl);
+                        }
+                    } else if (index == 2) {
+                        //点赞数超过100才会显示
+                        (pageCon > 0) ? $("#wordsText1").html(tmpl) : "";
+                    } else {
+                        //点赞数超过100才会显示
+                        (pageCon > 0) ? $("#wordsText2").html(tmpl) : "";
+                    }
+
+                    appcan.button(".userSupport", "btn-act", function() {
+                        userCommentId = this.id;
+                        userAction(userCommentId, 4, 1, '', userId, userSupportCallBack);
+                    })
+                },
+                error : function() {
+
+                }
+            })
+        }
+
+        //资讯点赞
+        appcan.button("#support", "btn-act", function() {
+            loader.open();
+            userAction(newsId, 1, 1, '', userId, supportCallBack);
+        })
+        //资讯点赞结果回调callback
+        function supportCallBack(res) {
+            console.log("点赞结果返回给页面====>");
+            console.log(res);
+            loader.close();
+            if (res.status == "000") {
+                var str = $("#praiseText").html();
+                $("#praiseText").html(parseInt(str) + 1);
+                $("#picZan").attr('style', 'background-image: url(\'image/praise-1.png\');');
+                //修改缓存数据
+                newDetailInfo[newsId].detail.isSupport = 1;
+                newDetailInfo[newsId].detail.supportNum = parseInt(newDetailInfo[newsId].detail.supportNum) + 1;
+                //alert(JSON.stringify(newDetailInfo));
+                appcan.locStorage.setVal("newDetailInfo", JSON.stringify(newDetailInfo));
+            } else if (res.status == "4060") {
+                uexWindow.toast(0, 5, "您已经点过赞了", 2000);
+            } else {
+                uexWindow.toast(0, 5, data.dispose.msg, 2000);
+            }
+        }
+
+        //评论点赞结果回调callback
+        function userSupportCallBack(res) {
+            console.log("对评论的点赞结果返回给页面====>");
+            console.log(res);
+            if (res.status == "000") {
+                $("#" + userCommentId).removeClass('praise1').addClass('praise2');
+                var supportNum = parseInt($("#" + userCommentId).next().html()) + 1;
+                $("#" + userCommentId).next().html(supportNum);
+            } else if (res.status == "4060") {
+                uexWindow.toast(0, 5, "您已经点过赞了", 2000);
+            } else {
+                uexWindow.toast(0, 5, res.msg, 2000);
+            }
+        }
+
+        //对评论进行评论
+        function plComment(parentCommentId, commentedUserId) {
+            //传入评论参数
+            var commentParameter = {
+                "objId" : newsId,
+                "objType" : 1,
+                "parentCommentId" : parentCommentId, //被评论的id
+                "commentedUserId" : commentedUserId //被评论者id
+            }
+            setLocVal("commentParameter", JSON.stringify(commentParameter));
+            appcan.window.open('home_Comment', 'home_Comment.html', 10);
+        }
+
+        //分享
+        appcan.button(".oc_s", "btn-act", function() {
+            var arrSid = {
+                's_0' : '0',
+                's_1' : '1',
+                's_2' : '2'
+            };
+            var sid = arrSid[this.id];
+            appcan.locStorage.setVal('shareType', sid);
+            appcan.locStorage.setVal('shareId', newsId + "_" + objectType);
+            appcan.locStorage.setVal('shareTitle', shareTitle);
+            appcan.locStorage.setVal('shareTopicId', shareTopicId);
+            appcan.locStorage.setVal('shareSummary', shareSummary);
+            appcan.locStorage.setVal('share_type', '');
+            if (sid == 0) {
+                appcan.window.evaluateScript('', 'sceneChoose()');
+            } else {
+                oncSheet(sid, '0');
+            }
+        })
+        //视频新闻响应事件
+        appcan.button("#video", "btn-act", function() {
+            uexVideo.open(videoPath, 1);
+        })
+        function goTop() {
+            window.scrollTo(0, 0);
+        }
+
+    </script>
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+    <head>
+        <title></title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="target-densitydpi=device-dpi, width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <link rel="stylesheet" href="css/fonts/font-awesome.min.css">
+        <link rel="stylesheet" href="css/ui-box.css">
+        <link rel="stylesheet" href="css/ui-base.css">
+        <link rel="stylesheet" href="css/ui-color.css">
+        <link rel="stylesheet" href="css/appcan.icon.css">
+        <link rel="stylesheet" href="css/appcan.control.css">
+        <link rel="stylesheet" href="css/new_file.css">
+    </head>
+    <body class="um-vp " ontouchstart>
+        <div id="page_0" class="up ub ub-ver bc-bg" tabindex="0">
+            <!--header开始-->
+             <div id="header" class="uh bc-text-head ub oc_header" style="height:3em">
+                <!-- <div class="ub ub-ac" id="nav-left" style="margin-left:1em;min-width:4.5em">
+                    <div class="fa fa-angle-left fa-2x"></div>
+                </div>
+                <h1 class="ut ub-f1 ulev-3 ut-s tx-c" tabindex="0">详情</h1>
+                <div class="ub ub-pe nav-bt" id="nav-right" style="min-width:5.5em">
+                    <div class=" ub ub-ac ub-pc umar-a">
+                    <div id="share" class="ub ub-ac ub-pc ub-img res-wfenxiang"></div>
+                </div>
+                <div class=" ub ub-ac ub-pc umar-a">
+                    <div id="collect" class="ub ub-ac ub-pc ub-img iconSpace res-wshoucang"></div>
+                </div>
+                </div> -->
+            </div> 
+            <!--header结束--><!--content开始-->
+            <div id="content" class="ub-f1 tx-l ub ub-ver" style="overflow-y: hidden">
+                <!-- <div id="content1" class="ub-f1"></div>
+                <div id="content2" style="height:4em">123</div> -->
+            </div>
+            <!--content结束-->
+            <div id="footer" class="ubt bc-border oc_header ub ub-ac ub-pc  uinn3" style="height:3em">
+
+                <div class="uinn4 ub ub-f1" style="margin-left:1em;margin-right: .7em">
+                    <div class="uinput ub  bc-border uba uc-a1 ub-f1" style="width:82%;background-color: white">
+                        <input placeholder="评论内容" type="text" class="ub-f1" id="input_content">
+                    </div>
+                </div>
+                 <div id="handout" class="ub ub-pc uc-a1" style="padding-top:.4em;padding-bottom:0.4em;color:white;margin-right:1em;width: 22%;background-color:#ff8a00">写评论</div>
+                
+
+            </div>
+        </div>
+        <script src="js/appcan.js"></script>
+        <script src="js/appcan.control.js"></script>
+        <script src="js/common.js"></script>
+    </body>
+    <script>
+        var actvId=appcan.locStorage.val("actvCommentId");
+        appcan.ready(function() {
+            appcan.window.subscribe("closeCommentWindow",function(){
+                appcan.window.close(-1);
+            })
+            appcan.frame.open("header","actComment_header.html",0,0);
+            var titHeight = $('#header').offset().height;
+            var s = window.getComputedStyle($("#content")[0], null);
+            var fh = $("#footer").offset().height;
+            uexWindow.openPopover("content", "0", "actComment_content.html", "", 0, titHeight, parseInt($('#content').offset().width), "", parseInt(s.fontSize), "0", parseInt(fh));
+             //appcan.frame.open("header","aNewsDetail_input.html",0,0);
+            // appcan.frame.open("content2","aNewsDetail_input.html",0,titHeight+$("#content1").offset().height);
+            window.onorientationchange = window.onresize = function() {
+            }
+            id = appcan.locStorage.val("newsId");
+        });
+        appcan.button("#nav-left", "btn-act", function() {
+            appcan.window.close(-1);
+
+        })
+        var id;
+        //按钮功能设置
+        var commentStatus=1;
+        appcan.button("#handout", "btn-act", function() {
+             // if(appcan.locStorage.val("loginState")!="yes"){
+                 // appcan.window.open("login","login.html",10);
+             // }else{
+               //alert(actvId);
+               if( commentStatus==0){
+                   appcan.window.openToast('评论正在提交...',1000);
+               }else{
+                    commentStatus=0;
+                    pinglun(actvId);
+               }
+               
+             // }
+        });
+
+        //编辑评论方法
+        function pinglun(s) {
+            var text = $("#input_content").val();
+            if (text != "") {
+                appcan.request.ajax({
+                    url:chongqingUrl,
+                    headers : {
+                        token : appcan.locStorage.val("token")||'',
+                        deviceId:appcan.locStorage.val("deviceId")||''
+                    },
+                    appVerify:true,
+                    data : {
+                        "ifno" : "CMS-WORD-0002",
+                        "condition" : {
+                            "dmnId" : "cq",
+                            "grpId" : "",
+                            "roleId" : "",
+                            "chnlId" : "",
+                            "oprTypeId" : "06",
+                            "objectId" : "",
+                            "wordId" : ""
+                        },
+                        "content" : {
+                            "enttTypeId" : "14",
+                            "enttId" : s,
+                            "rcvUserId" : "",
+                            "content" : text
+                        }
+                    },
+                    type : "POST",
+                    //appVerify:true,
+                    //offline:true,
+                    timeout : "15000",
+                    contentType : "application/json",
+                    dataType:"json",
+                    success : function(data) {
+                        if(data.dispose.status=="000"){
+                            appcan.window.publish("actCommentOk",s);
+                            appcan.window.openToast("评论成功",2000);
+                            commentStatus=1;
+                        }else{
+                            commentStatus=1;
+                            appcan.window.openToast("评论失败",1500);
+                        }
+                    },
+                    error : function() {
+                        commentStatus=1;
+                        appcan.window.closeToast();
+                    }
+                });
+             document.getElementById('input_content').value = "";
+            }else{
+                appcan.window.openToast("请输入内容",1500);
+                commentStatus=1;
+            }
+        }
+        
+        //双击回到顶部测试
+        $("#header").on("doubleTap",function(){
+            appcan.window.evaluatePopoverScript("","content","goTop()");
+        })
+    </script>
+</html>

@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+    <head>
+        <title></title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="target-densitydpi=device-dpi, width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <link rel="stylesheet" href="css/fonts/font-awesome.min.css">
+        <link rel="stylesheet" href="css/ui-box.css">
+        <link rel="stylesheet" href="css/ui-base.css">
+        <link rel="stylesheet" href="css/ui-color.css">
+        <link rel="stylesheet" href="css/appcan.icon.css">
+        <link rel="stylesheet" href="css/appcan.control.css">
+        <link rel="stylesheet" href="css/new_file.css">
+    </head>
+    <body class="um-vp bg-e8 f-f" ontouchstart>
+        <div id="page_0" class="up ub ub-ver bc-bg ub-img1" tabindex="0" style="background-image: url('image/loginBG.png')">
+            <!--header开始-->
+            <div id="header" class="uh bc-text-head ub oc_header">
+                <div class="nav-btn" id="nav-left">
+                    <div class="ub-img oback"></div>
+                </div>
+                <h1 class="ut ub-f1 ulev-3 ut-s tx-c" tabindex="0" id="titText">娱乐</h1>
+                <div class="nav-btn nav-bt" id="nav-right"></div>
+            </div>
+            <!--header结束--><!--content开始-->
+            <div id="content" class="ub-f1 tx-l">
+
+            </div>
+            <!--content结束-->
+        </div>
+    </body>
+    <script src="js/appcan.js"></script>
+    <script src="js/appcan.control.js"></script>
+    <script src="js/common.js"></script>
+    <script>
+        appcan.ready(function(){
+            loadLife();
+        })
+        
+        function loadLife(){ 
+            var titHeight = $('#header').offset().height;
+            var life_id = getLocVal('life_ID');
+            //alert(life_id);
+            switch(life_id){
+                //餐饮美食
+                case "food":
+                    $("#titText").html("餐饮美食");
+                    uexWindow.toast(1, 5, "", "");
+                    openPop512("content","http://m.dianping.com/shoplist/9/r/0/c/10/s/s_-1", 0,titHeight,"content");
+                    //appcan.frame.open("content", 'http://m.dianping.com/shoplist/9/r/0/c/10/s/s_-1', 0, titHeight);
+                    break;
+                case "hotPot":
+                case "hg":
+                    $("#titText").html("餐饮美食-火锅");
+                    uexWindow.toast(1, 5, "", "");
+                    openPop512("content","http://m.dianping.com/shoplist/9/r/0/c/110/s/s_-1", 0,titHeight,"content");
+                    //appcan.frame.open("content", 'http://m.dianping.com/shoplist/9/r/0/c/110/s/s_-1', 0, titHeight);
+                    break;
+                case "buffet":
+                case "zzc":
+                    $("#titText").html("餐饮美食-自助餐");
+                    uexWindow.toast(1, 5, "", "");
+                    openPop512("content","http://m.dianping.com/shoplist/9/r/0/c/111/s/s_-1", 0,titHeight,"content");
+                    //appcan.frame.open("content", 'http://m.dianping.com/shoplist/9/r/0/c/111/s/s_-1', 0, titHeight);
+                    break;
+                case "sichuanCuisine":
+                    $("#titText").html("餐饮美食-川菜");
+                    uexWindow.toast(1, 5, "", "");
+                    openPop512("content","http://m.dianping.com/shoplist/9/r/0/c/102/s/s_-1", 0,titHeight,"content");
+                    //appcan.frame.open("content", 'http://m.dianping.com/shoplist/9/r/0/c/102/s/s_-1', 0, titHeight);
+                    break;
+                case "japaneseCuisine":
+                    $("#titText").html("餐饮美食-日本料理");
+                    uexWindow.toast(1, 5, "", "");
+                    openPop512("content","http://m.dianping.com/shoplist/9/r/0/c/224/s/s_-1", 0,titHeight,"content");
+                    //appcan.frame.open("content", 'http://m.dianping.com/shoplist/9/r/0/c/224/s/s_-1', 0, titHeight);
+                    break;
+                case "western-styleFood":
+                    $("#titText").html("餐饮美食-西餐");
+                    uexWindow.toast(1, 5, "", "");
+                    openPop512("content","http://m.dianping.com/shoplist/9/r/0/c/116/s/s_-1", 0,titHeight,"content");
+                    //appcan.frame.open("content", 'http://m.dianping.com/shoplist/9/r/0/c/116/s/s_-1', 0, titHeight);
+                    break;
+                case "coffeeHouse":
+                    $("#titText").html("餐饮美食-咖啡厅");
+                    uexWindow.toast(1, 5, "", "");
+                    openPop512("content","http://m.dianping.com/shoplist/9/r/0/c/132/s/s_-1", 0,titHeight,"content");
+                    //appcan.frame.open("content", 'http://m.dianping.com/shoplist/9/r/0/c/132/s/s_-1', 0, titHeight);
+                    break;
+                 
+                 //休闲娱乐
+                case "movie":
+                case "dy":
+                    $("#titText").html("休闲娱乐-电影");
+                    uexWindow.toast(1, 5, "", "");
+                    openPop512("content","http://m.dianping.com/shoplist/9/r/0/c/25/s/s_-1", 0,titHeight,"content");
+                    //appcan.frame.open("content", 'http://m.dianping.com/shoplist/9/r/0/c/25/s/s_-1', 0, titHeight);
+                    break;
+                case "ktv":
+                case "KTV":
+                    $("#titText").html("休闲娱乐-KTV");
+                    uexWindow.toast(1, 5, "", "");
+                    openPop512("content","http://m.dianping.com/shoplist/9/r/0/c/135/s/s_-1", 0,titHeight,"content");
+                    //appcan.frame.open("content", 'http://m.dianping.com/shoplist/9/r/0/c/135/s/s_-1', 0, titHeight);
+                    break;
+                case "bar":
+                    $("#titText").html("休闲娱乐-酒吧");
+                    uexWindow.toast(1, 5, "", "");
+                    openPop512("content","http://m.dianping.com/shoplist/9/r/0/c/133/s/s_-1", 0,titHeight,"content");
+                    //appcan.frame.open("content", 'http://m.dianping.com/shoplist/9/r/0/c/133/s/s_-1', 0, titHeight);
+                    break;
+                case "footMassage":
+                    $("#titText").html("休闲娱乐-足疗按摩");
+                    uexWindow.toast(1, 5, "", "");
+                    openPop512("content","http://m.dianping.com/shoplist/9/r/0/c/141/s/s_-1", 0,titHeight,"content");
+                    //appcan.frame.open("content", 'http://m.dianping.com/shoplist/9/r/0/c/141/s/s_-1', 0, titHeight);
+                    break;
+                case "internetCafe":
+                    $("#titText").html("休闲娱乐-网吧");
+                    uexWindow.toast(1, 5, "", "");
+                    openPop512("content","http://m.dianping.com/shoplist/9/r/0/c/20042/s/s_-1", 0,titHeight,"content");
+                    //appcan.frame.open("content", 'http://m.dianping.com/shoplist/9/r/0/c/20042/s/s_-1', 0, titHeight);
+                    break;
+                case "chessRoom":
+                    $("#titText").html("休闲娱乐-棋牌室");
+                    uexWindow.toast(1, 5, "", "");
+                    openPop512("content","http://m.dianping.com/shoplist/9/r/0/c/32732/s/s_-1", 0,titHeight,"content");
+                    //appcan.frame.open("content", 'http://m.dianping.com/shoplist/9/r/0/c/32732/s/s_-1', 0, titHeight);
+                    break;
+                
+                 //丽人
+                case "salon":
+                case "mf":
+                    $("#titText").html("丽人-美发");
+                    uexWindow.toast(1, 5, "", "");
+                    openPop512("content","http://m.dianping.com/shoplist/9/r/0/c/157/s/s_-1", 0,titHeight,"content");
+                    //appcan.frame.open("content", 'http://m.dianping.com/shoplist/9/r/0/c/157/s/s_-1', 0, titHeight);
+                    break;
+                case "manicure":
+                    $("#titText").html("丽人-美甲");
+                    uexWindow.toast(1, 5, "", "");
+                    openPop512("content","http://m.dianping.com/shoplist/9/r/0/c/160/s/s_-1", 0,titHeight,"content");
+                    //appcan.frame.open("content", 'http://m.dianping.com/shoplist/9/r/0/c/160/s/s_-1', 0, titHeight);
+                    break;
+                case "cosmetology":
+                case "mr":
+                    $("#titText").html("丽人-美容");
+                    uexWindow.toast(1, 5, "", "");
+                    openPop512("content","http://m.dianping.com/shoplist/9/r/0/c/158/s/s_-1", 0,titHeight,"content");
+                    //appcan.frame.open("content", 'http://m.dianping.com/shoplist/9/r/0/c/158/s/s_-1', 0, titHeight);
+                    break;
+                case "slim":
+                    $("#titText").html("丽人-瘦身纤体");
+                    uexWindow.toast(1, 5, "", "");
+                    openPop512("content","http://m.dianping.com/shoplist/9/r/0/c/159/s/s_-1", 0,titHeight,"content");
+                    //appcan.frame.open("content", 'http://m.dianping.com/shoplist/9/r/0/c/159/s/s_-1', 0, titHeight);
+                    break;
+                case "plastic":
+                    $("#titText").html("丽人-整形");
+                    uexWindow.toast(1, 5, "", "");
+                    openPop512("content","http://m.dianping.com/shoplist/9/r/0/c/183/s/s_-1", 0,titHeight,"content");
+                    //appcan.frame.open("content", 'http://m.dianping.com/shoplist/9/r/0/c/183/s/s_-1', 0, titHeight);
+                    break;
+                case "personalPhoto":
+                    $("#titText").html("丽人-个性写真");
+                    uexWindow.toast(1, 5, "", "");
+                    openPop512("content","http://m.dianping.com/shoplist/9/r/0/c/6700/s/s_-1", 0,titHeight,"content");
+                    //appcan.frame.open("content", 'http://m.dianping.com/shoplist/9/r/0/c/6700/s/s_-1', 0, titHeight);
+                    break;
+                
+                //运动健身
+                case "yoGa":
+                case "yj":
+                    $("#titText").html("运动健身-瑜伽");
+                    uexWindow.toast(1, 5, "", "");
+                    openPop512("content","http://m.dianping.com/shoplist/9/r/0/c/148/s/s_-1", 0,titHeight,"content");
+                    //appcan.frame.open("content", 'http://m.dianping.com/shoplist/9/r/0/c/148/s/s_-1', 0, titHeight);
+                    break;
+                case "dance":
+                    $("#titText").html("运动健身-舞蹈");
+                    uexWindow.toast(1, 5, "", "");
+                    openPop512("content","http://m.dianping.com/shoplist/9/r/0/c/149/s/s_-1", 0,titHeight,"content");
+                    //appcan.frame.open("content", 'http://m.dianping.com/shoplist/9/r/0/c/149/s/s_-1', 0, titHeight);
+                    break;
+                case "bodyBuilding":
+                case "js":
+                    $("#titText").html("运动健身-健身中心");
+                    uexWindow.toast(1, 5, "", "");
+                    openPop512("content","http://m.dianping.com/shoplist/9/r/0/c/147/s/s_-1", 0,titHeight,"content");
+                    //appcan.frame.open("content", 'http://m.dianping.com/shoplist/9/r/0/c/147/s/s_-1', 0, titHeight);
+                    break;
+                case "swimming":
+                    $("#titText").html("运动健身-游泳馆");
+                    uexWindow.toast(1, 5, "", "");
+                    openPop512("content","http://m.dianping.com/shoplist/9/r/0/c/151/s/s_-1", 0,titHeight,"content");
+                    //appcan.frame.open("content", 'http://m.dianping.com/shoplist/9/r/0/c/151/s/s_-1', 0, titHeight);
+                    break;
+                case "badmintonHall":
+                    $("#titText").html("运动健身-羽毛球馆");
+                    uexWindow.toast(1, 5, "", "");
+                    openPop512("content","http://m.dianping.com/shoplist/9/r/0/c/152/s/s_-1", 0,titHeight,"content");
+                    //appcan.frame.open("content", 'http://m.dianping.com/shoplist/9/r/0/c/152/s/s_-1', 0, titHeight);
+                    break;
+                case "football":
+                    $("#titText").html("运动健身-足球场");
+                    uexWindow.toast(1, 5, "", "");
+                    openPop512("content","http://m.dianping.com/shoplist/9/r/0/c/6702/s/s_-1", 0,titHeight,"content");
+                    //appcan.frame.open("content", 'http://m.dianping.com/shoplist/9/r/0/c/6702/s/s_-1', 0, titHeight);
+                    break;
+                
+                //酒店
+                case "economicType":
+                case "jj":
+                    $("#titText").html("酒店-经济型");
+                    uexWindow.toast(1, 5, "", "");
+                    openPop512("content","http://m.dianping.com/shoplist/9/r/0/c/171/s/s_-1", 0,titHeight,"content");
+                    //appcan.frame.open("content", 'http://m.dianping.com/shoplist/9/r/0/c/171/s/s_-1', 0, titHeight);
+                    break;  
+                case "wuXing":
+                    $("#titText").html("酒店-五星");
+                    uexWindow.toast(1, 5, "", "");
+                    openPop512("content","http://m.dianping.com/shoplist/9/r/0/c/168/s/s_-1", 0,titHeight,"content");
+                    //appcan.frame.open("content", 'http://m.dianping.com/shoplist/9/r/0/c/168/s/s_-1', 0, titHeight);
+                    break;
+                case "holidayResort":
+                case "djc":
+                    $("#titText").html("酒店-度假村");
+                    uexWindow.toast(1, 5, "", "");
+                    openPop512("content","http://m.dianping.com/shoplist/9/r/0/c/60/s/s_-1", 0,titHeight,"content");
+                    //appcan.frame.open("content", 'http://m.dianping.com/shoplist/9/r/0/c/60/s/s_-1', 0, titHeight);
+                    break;
+                case "apartmentType":
+                    $("#titText").html("酒店-公寓式");
+                    uexWindow.toast(1, 5, "", "");
+                    openPop512("content","http://m.dianping.com/shoplist/9/r/0/c/6693/s/s_-1", 0,titHeight,"content");
+                    //appcan.frame.open("content", 'http://m.dianping.com/shoplist/9/r/0/c/6693/s/s_-1', 0, titHeight);
+                    break; 
+                 default:
+                    return false;
+                    break;  
+            }
+        }
+        appcan.button("#nav-left", "btn-act", function() {
+            appcan.window.close(-1);
+        })
+    </script>
+</html>

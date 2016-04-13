@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+    <head>
+        <title></title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="target-densitydpi=device-dpi, width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <link rel="stylesheet" href="css/fonts/font-awesome.min.css">
+        <link rel="stylesheet" href="css/ui-box.css">
+        <link rel="stylesheet" href="css/ui-base.css">
+        <link rel="stylesheet" href="css/ui-color.css">
+        <link rel="stylesheet" href="css/appcan.icon.css">
+        <link rel="stylesheet" href="css/appcan.control.css">
+        <link rel="stylesheet" href="css/new_file.css">
+        <link rel="stylesheet" href="css/common.css">
+        <link rel="stylesheet" href="css/loader.css">
+    </head>
+    <body class="um-vp bc-bg" ontouchstart>
+        <div id="content" class="ub ub-f1 ub-ver">
+             
+        </div>
+        <script src="js/appcan.js"></script>
+        <script src="js/appcan.control.js"></script>
+        <script src="js/common.js"></script>
+        <script src="js/common.dom.js"></script>
+     </body>
+    <script>
+    var newslist="";
+    var pageNum=1;
+    var pageCount=1;
+    var oldnum;
+    var userInfo=isDefine(getLocVal('userInfo')) ? getLocVal('userInfo'):"";
+    var userId="";
+    var status=1;
+    var icache;
+    var itemInfo={}; //根据newsId存放的对应每条列表数据json
+    var arrobjId = [];   //点击过的数组
+    var slideType=1;
+    appcan.ready(function() {
+        icache = appcan.icache({maxtask:5});
+        userId = isDefine(userInfo)?JSON.parse(userInfo).userId:"";
+        appcan.window.subscribe("refreshCollection",function(){
+            newslist="";
+            pageNum=1;
+            showdata(1);
+        });
+        
+        //滑动顶部刷新方式
+        appcan.frame.setBounce([0,1], null, null, function(type) {
+             slideType=type;
+             //判断是否有网
+             GetInfoDevice(function(str){
+                 if(!str){
+                     appcan.frame.resetBounce(slideType);
+                     return false;
+                 }else{
+                     if (type == 0) {//删除缓存文件
+                         pageNum=1;
+                         showdata(1);
+                     }else{
+                         if(status==0){
+                             //uexWindow.toast(0, 5, "正在请求数据...", 2000);
+                             //return false;
+                         }else{
+                            if ((pageNum - 1) * 10 > pageCount) {
+                                appcan.frame.resetBounce(slideType);
+                            } else {
+                                pageNum++;
+                                showdata(pageNum);
+                            }
+                         }
+                     }
+                 }
+             });
+         },bounceBgColor,imgSettingsVal)
+         
+         loader.open();
+         showdata(1);
+    })
+
+    function showdata(pageNumVal){
+        status=0;
+        var if_list = {
+            "transcode": "collectInfo_getList",
+            "content": {
+                "userId": userId,
+                "page": {
+                    "pageNo": pageNumVal,
+                    "pageSize": 10
+                }
+            }
+        };
+        console.log(JSON.stringify(if_list));
+        appcan.request.ajax({
+            url:chongqingUrl,
+            headers : {
+                token : appcan.locStorage.val("token")||'',
+                deviceId:appcan.locStorage.val("deviceId")||''
+            },
+            appVerify:true,
+            data : JSON.stringify(if_list),
+            type : "POST",
+            timeout : "15000",
+            contentType : "application/json",
+            dataType:"json",
+            success : function(res) {
+               console.log("个人收藏列表结果返回=====>");
+               console.log(res);
+                loader.close();
+                uexWindow.closeToast();
+                appcan.frame.resetBounce(slideType);
+                status=1;
+                if(res.status != '000'){
+                    //uexWindow.toast(1, 5, res.msg, 2000);
+                    uexWindow.toast(1, 5, res.msg, 2000);
+                    return false;
+                }
+                var datas=res.data; //后台获取数据
+                pageCount = isDefine(datas.totalNum)?datas.totalNum:pageCount;//新闻资讯列表总条数
+                var conditions={
+                    "isSummary":0,
+                    "isComment":1,
+                    "isPtime":1
+                }
+                if(pageNumVal==1){
+                    //资讯列表首页显示
+                    if(!isDefine(datas)||datas.list.length == 0){
+                        $('#content').html('<div class="ub ub-f1 ub-ac ub-pc c-66" style="margin-top:1em;">暂无信息</div>');
+                        return false;
+                    }else{
+                         newsItem.domShow(1,0,datas.list,newsItemShow,conditions);//新闻列表显示
+                         setLocVal('homeNewsListMyCollect_item',JSON.stringify(datas.list));
+                    }
+                }else{
+                    //翻页资讯列表显示
+                    if(datas.list.length>0){
+                        newsItem.domShow(1,0,datas.list,newsItemShow,conditions);//新闻列表显示
+                    }else{
+                        status=1;
+                    }
+                }
+            },
+            error : function() {
+                console.log("error===>"+msg);
+                status=1;
+                appcan.frame.resetBounce(slideType);
+                loader.close();
+            }
+        });
+    }
+   
+    //callback显示新闻列表数据
+    function newsItemShow(newsItemDatas){
+        var newsItemDom=isDefine(newsItemDatas.dom)?newsItemDatas.dom:"";
+        itemInfo=$.extend(itemInfo,(isDefine(newsItemDatas.itemInfo) ? newsItemDatas.itemInfo:""));
+        //console.log(newsItemDom.html());
+        if(pageNum == 1){
+            $("#content").empty();
+        }
+        $('#content').append(newsItemDom);
+        
+        // for(var j in itemImgList){//对象索引操作 调用图片预加载
+            // preloadImg('img_'+itemImgList[j].imgId,itemImgList[j].imgUrl);
+        // }
+        
+        //校验是否用户已点击过
+        if(getLocVal('arrobjId1')){
+            arrobjId = JSON.parse(getLocVal('arrobjId1'));
+            for(var i = 0;i < arrobjId.length;i++){
+                $("#"+arrobjId[i]).addClass('c-88');
+            }
+        }
+        
+        //列表点击处理
+        appcan.button('.btnDetile','btn-act',function(e){
+            var id=$(this);
+            btn_ink(id,e);
+            
+            var newsIdVal = this.id;
+            $(this).addClass('c-88');
+            arrobjId.push(newsIdVal);
+            setLocVal('arrobjId1',JSON.stringify(arrobjId));
+            //传递点击列表信息
+            appcan.locStorage.setVal('newsItemInfo',JSON.stringify(itemInfo[newsIdVal]));
+            //console.log(JSON.stringify(itemInfo[newsIdVal]));
+            if(itemInfo[newsIdVal].newsTypeId==2){
+                //跳转图片新闻展示页面
+                appcan.window.open('home_DetailsPictures','home_DetailsPictures.html',10);
+            }else if(itemInfo[newsIdVal].newsTypeId==5){
+                //跳转专题列表
+                appcan.window.open('spe_page','spe_page.html',10,1024);
+            }else if(itemInfo[newsIdVal].newsTypeId==6){
+                //跳转栏目
+                var goColumnId=itemInfo[newsIdVal].columnId;
+                //alert(goColumnId);
+                uexWindow.evaluateScript("home_page", 0, "openFrame("+goColumnId+")");
+                // appcan.locStorage.setVal("govermentColumnDomIndex","id_"+goColumnId);
+                // uexWindow.evaluateScript("", 0, "goGoverment("+goColumnId+")");
+            }else{
+                //跳转新闻详细页面
+                appcan.window.open('home_Details','home_Details.html',10,1024);
+            }
+        })                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
+    }  
+
+ function goTop(){
+    window.scrollTo(0,0);
+}
+</script>
+</html>

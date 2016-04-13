@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+    <head>
+        <title></title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="target-densitydpi=device-dpi, width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <link rel="stylesheet" href="css/fonts/font-awesome.min.css">
+        <link rel="stylesheet" href="css/ui-box.css">
+        <link rel="stylesheet" href="css/ui-base.css">
+        <link rel="stylesheet" href="css/ui-color.css">
+        <link rel="stylesheet" href="css/appcan.icon.css">
+        <link rel="stylesheet" href="css/appcan.control.css">
+        <link rel="stylesheet" href="css/new_file.css">
+        <link rel="stylesheet" href="css/loader.css">
+    </head>
+    <body class="um-vp oc_gray" ontouchstart>
+        <div class="ub ub-ver">
+            <div class="ub ub-ac oc_white" style="margin:1em 0;">
+                <div class=" uinput ub ub-f1  bc-border">
+                    <div class="ub ub-ac ubb umh5 bc-border ub-f1">
+                        <div class=" uinput ub ub-f1 uinn">
+                            <div class="uinn fa fa-user sc-text"></div>
+                            <input id="oput" placeholder="请输入邮箱" type="text" class="ub-f1">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+    <script src="js/appcan.js"></script>
+    <script src="js/appcan.control.js"></script>
+    <script src="js/common.js"></script>
+    <script>
+        var userInfo = isDefine(getLocVal('userInfo')) ? getLocVal('userInfo') : "";
+        var userId = "";
+        appcan.ready(function() {
+            userInfo=isDefine(userInfo) ? JSON.parse(userInfo) : "";
+            userId = isDefine(userInfo) ? userInfo.userId : "";
+            var emailVal = isDefine(userInfo) ? userInfo.email : "";
+            $("#oput").val(emailVal);
+        });
+
+        function change() {
+            loader.open();
+            var emailVal = $("#oput").val();
+            if (emailVal == "") {
+                uexWindow.toast(0, 5, "请输入邮箱", 2000);
+                loader.close();
+                return;
+            }
+            var tok = appcan.locStorage.val("token")||'';
+            var dev = appcan.locStorage.val("deviceId")||'';
+            var if_list = {
+                "transcode" : "userInfo_modify",
+                "info" : "changeEmail",
+                "content" : {
+                    "email" : emailVal,
+                    "userId" : userId
+                }
+            };
+            console.log(JSON.stringify(if_list));
+            appcan.request.ajax({
+                url : chongqingUrl,
+                headers : {
+                    token : tok,
+                    deviceId : dev
+                },
+                data : JSON.stringify(if_list),
+                type : "POST",
+                appVerify : true,
+                timeout : "15000",
+                contentType : "application/json",
+                dataType : "json",
+                success : function(res) {//数据请求成功
+                    console.log("修改邮箱结果返回=====>");
+                    console.log(JSON.stringify(res));
+                    loader.close();
+                    if (res.status == "000") {
+                        userInfo.email=emailVal;
+                        appcan.locStorage.setVal("userInfo", JSON.stringify(userInfo));
+                        appcan.window.publish("email", emailVal);
+                        uexWindow.toast(0, 5, "修改成功", 2000);
+                        setTimeout(function() {
+                            appcan.window.evaluateScript('', 'appcan.window.close()');
+                        }, 2000);
+
+                    } else {
+                        uexWindow.toast(0, 5, "修改失败，请稍后重试", 2000);
+                    }
+                },
+                error : function() {
+                    loader.close();
+                }
+            });
+        }
+
+    </script>
+</html>

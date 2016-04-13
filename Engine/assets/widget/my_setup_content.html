@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+    <head>
+        <title></title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="target-densitydpi=device-dpi, width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <link rel="stylesheet" href="css/fonts/font-awesome.min.css">
+        <link rel="stylesheet" href="css/ui-box.css">
+        <link rel="stylesheet" href="css/ui-base.css">
+        <link rel="stylesheet" href="css/ui-color.css">
+        <link rel="stylesheet" href="css/appcan.icon.css">
+        <link rel="stylesheet" href="css/appcan.control.css">
+        <link rel="stylesheet" href="css/common.css">
+        <link rel="stylesheet" href="css/new_file.css">
+    </head>
+    <body class="um-vp oc_gray" ontouchstart>
+        <div class="ub ub-ver">
+
+            <div id="protocol" class="ub ub-ac oc_white uinn ob_bt" style="height:2em;">
+                <div class="ub-f1">
+                    用户协议
+                </div>
+                <div class="ub-img onext"></div>
+            </div>
+            <div class="ub ub-ac oc_white uinn ob_bt" style="height:2em;">
+                <div class="ub-f1">
+                    版本号
+                </div>
+                <div id="versionNumber" class="ub" style="font-size:0.9em;color:#bababa">
+                   
+                </div>
+            </div>
+            <div class="ub ub-ac oc_white uinn ob_bt" style="height:2em;">
+                <div class="ub-f1">
+                    消息推送
+                </div>
+                <div class="ub" id="pushOn" style="margin-left:1.5em;margin-top:0.35em;">
+                    <div id="push" class="switch uba bc-border switch-mini push_bc_ok" data-checked="true" style="min-height:1.35em;min-width:2.65em;">
+                        <div class="switch-btn" style="height:1.35em;width:1.35em;background-color:#FFFFFF;"></div>
+                    </div>
+                </div>
+            </div>
+            <div id="clearStorage" class="ub ub-ac oc_white uinn ob_bt" style="height:2em;">
+                <div class="ub-f1">
+                    清除缓存
+                </div>
+                <div id="storsge" class="ub" style="font-size:0.9em;color:#bababa">
+                    
+                </div>
+                <div class="ub-img onext"></div>
+            </div>
+            <div onclick="changefont()" class="ub ub-ac oc_white uinn ob_bt" style="height:2em;">
+                <div class="ub-f1">
+                    正文字号
+                </div>
+                <div class="fontSize" style="font-size:0.9em;color:#bababa"></div>
+                <div class="ub-img onext"></div>
+            </div>
+            <div onclick="changepass()" class="ub ub-ac oc_white uinn ob_bt" style="height:2em;margin-top: 1em">
+                <div class="ub-f1">
+                    修改密码
+                </div>
+                <div class="ub-img onext"></div>
+            </div>
+            <div onclick="changePhone()" class="ub ub-ac oc_white uinn ob_bt" style="height:2em;">
+                <div class="ub-f1">
+                    更换手机号
+                </div>
+                <div class="phone" style="font-size:0.9em;color:#bababa">
+
+                </div>
+                <div class="ub-img onext"></div>
+            </div>
+            <div class="ub ub-f1 ub-pc" style="margin-top:3em">
+                <div id="exit" class="ub uc-a ub-pc ub-ac uhide" style="color:white;height:2.4em;width:80%;background-color: #ff8a00">
+                    退出登录
+                </div>
+            </div>
+
+        </div>
+        <script src="js/appcan.js"></script>
+        <script src="js/appcan.control.js"></script>
+        <script src="js/common.js"></script>
+    </body>
+    <script>
+        var userInfo = isDefine(getLocVal('userInfo')) ? getLocVal('userInfo') : "";
+        appcan.ready(function() {
+            appcan.initBounce();
+            userInfo=isDefine(userInfo) ? JSON.parse(userInfo) : "";
+            //版本号显示
+            (isAndroid)?$("#versionNumber").html('01.00.0018'):$("#versionNumber").html('01.00.0027');
+            //推送接收状态
+            isPush();
+            //缓存计算(主要计算详情页数据的缓存量)
+            var newsDetailSotorage=appcan.locStorage.val("newDetailInfo"); 
+            if(isDefine(newsDetailSotorage)){
+                var storageSum=sizeof(newsDetailSotorage);
+                storageSum=bytesToSize(parseInt(storageSum));
+                $("#storsge").html(storageSum);
+            }
+            
+            //更新保存详情页字体大小
+            refreshFont(appcan.locStorage.val("fontSize"));
+            
+            //显示用户登录名（即电话号码）
+            var phone = isDefine(userInfo)?userInfo.loginName:"";
+            if(isDefine(phone)){
+                var Num1 = phone.substring(0, 3);
+                var Num2 = phone.substring(7, 11);
+                $(".phone").text(Num1 + "***" + Num2);
+            }
+            
+            //登陆后显示电话号码的监听
+            appcan.window.subscribe("isLogined", function(msg) {
+                userInfo = isDefine(getLocVal('userInfo')) ? getLocVal('userInfo') : "";
+                userInfo=isDefine(userInfo) ? JSON.parse(userInfo) : "";
+                if((msg=="yes") && isDefine(userInfo)){
+                    var phone = isDefine(userInfo)?userInfo.loginName:"";
+                    var Num1 = phone.substring(0, 3);
+                    var Num2 = phone.substring(7, 11);
+                    $(".phone").text(Num1 + "***" + Num2);
+                }
+            })
+            
+            //更改电话号码后的监听
+            appcan.window.subscribe("changePhone", function(msg) {
+                userInfo = isDefine(getLocVal('userInfo')) ? getLocVal('userInfo') : "";
+                userInfo=isDefine(userInfo) ? JSON.parse(userInfo) : "";
+                var phone = isDefine(userInfo)?userInfo.loginName:"";
+                var Num1 = phone.substring(0, 3);
+                var Num2 = phone.substring(7, 11);
+                $(".phone").text(Num1 + "***" + Num2);
+            })
+            
+            //是否显示退出登录按钮
+            if (appcan.locStorage.val('loginState') == "yes") {
+                $("#exit").removeClass("uhide");
+            }
+        });
+        
+        //用户协议
+        appcan.button("#protocol", "btn-act", function() {
+            appcan.window.open("protocol", "protocol.html", 10);
+        })
+        
+        //清除缓存
+        appcan.button("#clearStorage", "btn-act", function() {
+            var newsDetailSotorage=appcan.locStorage.val("newDetailInfo");
+            if(isDefine(newsDetailSotorage)){
+                appcan.window.confirm({
+                    title:'提示',
+                    content:'确定清除本地缓存？',
+                    buttons:['否','是'],
+                    callback:function(err,data,dataType,optId){
+                        if(data==1){
+                            //缓存计算(主要计算详情页数据的缓存量)
+                            appcan.locStorage.setVal("newDetailInfo","");
+                            newsDetailSotorage=appcan.locStorage.val("newDetailInfo");
+                            if(isDefine(newsDetailSotorage)){
+                                var storageSum=sizeof(newsDetailSotorage);
+                                storageSum=bytesToSize(parseInt(storageSum));
+                                //alert(storageSum);
+                                $("#storsge").html(storageSum);
+                            }else{
+                                $("#storsge").html('');
+                            }
+                        }
+                    }
+                });
+            }
+        })
+        
+        //推送开关
+        appcan.button("#pushOn", "btn-bgc-act", function() {
+            if (appcan.locStorage.val("push") == 'yes' || !appcan.locStorage.val("push")) {//变为不接收
+                appcan.locStorage.setVal("push", "no");
+                $('#push').removeClass('push_bc_ok');
+                $('#push').addClass('push_bc_false');
+                $('#push').attr("data-checked", 'false');
+                uexJPush.stopPush();
+            } else {//变为接收
+                appcan.locStorage.setVal("push", "yes");
+                $('#push').removeClass('push_bc_false');
+                $('#push').addClass('push_bc_ok');
+                $('#push').attr("data-checked", 'true');
+                uexJPush.resumePush();
+            }
+         });
+         
+        //退出当前登录用户
+        appcan.button("#exit", "btn-act", function() {
+            appcan.locStorage.setVal("loginState", "no");
+            appcan.locStorage.setVal("userInfo", "");
+            appcan.locStorage.setVal("nickname", "");
+            //appcan.locStorage.setVal("token", "");
+            
+            appcan.window.publish("loginout", "");
+            uexWindow.toast(0, 5, "已退出当前账号", 2000);
+            setTimeout('hideButton()', 2000);
+        })
+        function hideButton() {
+            $("#exit").addClass("uhide");
+            appcan.window.evaluateScript('', 'appcan.window.close()');
+        }
+        
+        //修改用户密码
+        function changepass() {
+            var userStar = getLocVal('loginState');
+            if (userStar == 'yes') {
+                appcan.window.open('change_password', 'change_password.html', '10');
+            } else {
+                appcan.window.open('login', 'login.html', 10);
+            }
+        }
+        
+        //修改用户登录用户名（即电话号码）
+        function changePhone() {
+            var userStar = getLocVal('loginState');
+            if (userStar == 'yes') {
+               appcan.window.open('changeLoginName', 'changeLoginName.html', '10');
+            } else {
+                appcan.window.open('login', 'login.html', 10);
+            }
+        }
+        
+        //修改详情页字体大小
+        function changefont() {
+            appcan.window.evaluateScript('', 'openfont()');
+        }
+        //显示当前详情页字体大小
+        function refreshFont(index) {
+            switch(index) {
+                case"1":
+                    $(".fontSize").text("大");
+                    break;
+                case"2":
+                    $(".fontSize").text("中");
+                    break;
+                case"3":
+                    $(".fontSize").text("小");
+                    break;
+                default:
+                    $(".fontSize").text("小");
+                    break;
+            }
+        }
+        
+        //是否同意推送
+        function isPush() {
+            if (appcan.locStorage.val("push") == 'yes' || !appcan.locStorage.val("push")) {//默认打开
+                $('#push').removeClass('push_bc_false');
+                $('#push').addClass('push_bc_ok');
+                $('#push').attr("data-checked", 'true');
+            } else {//关闭
+               $('#push').removeClass('push_bc_ok');
+               $('#push').addClass('push_bc_false');
+               $('#push').attr("data-checked", 'false');
+            }
+        }
+    </script>
+</html>

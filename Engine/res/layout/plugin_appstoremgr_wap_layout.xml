@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@android:color/transparent" >
+ 
+    <RelativeLayout
+        android:id="@+id/title"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:background="@color/plugin_appstoremgr_main_color" >
+
+        <Button
+            android:id="@+id/title_button_close"
+            android:layout_width="60.0dip"
+            android:layout_height="40.0dip"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10.0dip"
+            android:background="@color/plugin_appstoremgr_main_color"
+            android:text="关闭"
+            android:textSize="15sp"
+            android:textColor="@android:color/white" />
+
+        <TextView
+            android:id="@+id/title_textview"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center_horizontal"
+            android:singleLine="true"
+            android:textColor="@android:color/white"
+            android:textSize="25sp" />
+    </RelativeLayout>
+
+    <WebView
+        android:id="@+id/webview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@+id/bottom_navigation_layout"
+        android:layout_below="@+id/title" />
+
+    <LinearLayout
+        android:id="@+id/bottom_navigation_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="50dip"
+        android:layout_alignParentBottom="true"
+        android:background="@color/plugin_appstoremgr_main_color"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:weightSum="4.0" >
+
+        <ImageView
+            android:id="@+id/bottom_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10.0dip"
+            android:layout_weight="1.0"
+            android:src="@drawable/plugin_appstoremgr_station_back_2x" />
+
+        <ImageView
+            android:id="@+id/bottom_forward"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:src="@drawable/plugin_appstoremgr_station_forward_2x" />
+
+        <ImageView
+            android:id="@+id/bottom_refresh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:src="@drawable/plugin_appstoremgr_station_refresh_2x" />
+
+        <ImageView
+            android:id="@+id/bottom_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:src="@drawable/plugin_appstoremgr_station_close_2x" />
+    </LinearLayout>
+
+</RelativeLayout>

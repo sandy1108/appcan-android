@@ -1,0 +1,404 @@
+.animationAll{
+    -webkit-transition: all 0.5s infinite ease-in-out;
+    transition: all .5s ease;
+}
+.loader-um, .loader-um body {
+    /*height: 100%;*/
+    padding: 0px;
+    margin: 0px;
+    font-family: "Helvetica Neue", Helvetica;
+}
+/*加载效果自定义动画*/
+.loader{
+    height:6em;
+    width:6em;
+    background-color:rgba(0,0,0,0);
+    border-radius: 0.5em;
+}
+/*加载动画---1---*/
+.loader1,
+.loader1:before,
+.loader1:after {
+    background: #21CB64;
+    -webkit-animation: load1 1s infinite ease-in-out;
+    animation: load1 1s infinite ease-in-out;
+    width: 1em;
+    height: 2em;
+}
+.loader1:before,
+.loader1:after {
+    position: absolute;
+    top: 0;
+    content: '';
+}
+.loader1:before {
+    left: -2em;
+}
+.loader1 {
+    text-indent: -9999em;
+    margin: 40% auto;
+    position: relative;
+    font-size: 11px;
+    -webkit-animation-delay: 0.16s;
+    animation-delay: 0.16s;
+}
+.loader1:after {
+    left: 2em;
+    -webkit-animation-delay: 0.32s;
+    animation-delay: 0.32s;
+}
+@-webkit-keyframes load1 {
+    0%,
+    80%,
+    100% {
+      box-shadow: 0 0 #E3FE41;
+      /*height: 4em;*/
+    }
+    40% {
+      box-shadow: 0em -2em #71C189,0em 2em #71C189;
+      /*height: 5em;*/
+    }
+}
+@keyframes load1 {
+    0%,
+    80%,
+    100% {
+      box-shadow: 0 0 #E3FE41;
+      /*height: 4em;*/
+    }
+    40% {
+      box-shadow: 0em -2em #71C189,0em 2em #71C189;
+      /*height: 5em;*/
+    }
+}
+
+/*加载动画---2---*/
+.loader2{
+    width:3em;
+    height:3em;
+    margin:40% auto;
+    background-color: #21CB64;
+    
+    border-radius: 100%;
+    -webkit-animation: load2 1.0s infinite ease-in-out;
+    animation: load2 1.0s infinite ease-in-out;
+}
+@-webkit-keyframes load2{
+    0%{-webkit-transform: scale(0.0)}
+    100%{
+        -webkit-transform: scale(1.0);
+        opacity:0;
+    }
+}
+@keyframes load2{
+    0%{
+        transform: scale(0.0);
+        -webkit-transform: scale(0.0)
+    }
+    100%{
+        transform:scale(1.0);
+        -webkit-transform: scale(1.0);
+        opacity:0;
+    }
+}
+
+/*加载动画---3---*/
+.loader3{
+    /*width:10em;
+    margin:40% auto;
+    text-align:center;*/
+}
+.loader3 > div{
+    width:1em;
+    height:1em;
+    background-color: #21CB64;
+    border-radius: 100%;
+    margin-right:0.35em;
+    display: inline-block;
+    -webkit-animation: load3 1.4s infinite ease-in-out;
+    animation: load3 1.4s infinite ease-in-out;
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode:both;
+}
+.loader3 .bounce1{
+    -webkit-animation-delay: -0.32s;
+    animation-delay: -0.32s;
+}
+.loader3 .bounce2{
+    -webkit-animation-delay: -0.16s;
+    animation-delay: -0.16s;
+}
+@-webkit-keyframes load3{
+    0%,80%,100%{-webkit-transform: scale(0.0)}
+    40%{-webkit-transform: scale(1.0)}
+}
+@keyframes load3{
+    0%,80%,100%{
+        transform: scale(0.0);
+        -webkit-transform: scale(0.0)
+    }
+    40%{
+        transform:scale(1.0);
+        -webkit-transform: scale(1.0);
+    }
+}
+/*加载动画--4--*/
+.loader4{
+    width:3em;
+    height:3em;
+    position: relative;
+    margin: 3em auto;
+}
+.double-bounce1, .double-bounce2{
+    width:100%;
+    height:100%;
+    border-radius: 50%;
+    background-color: #8F8F8F;
+    opacity: 0.6;
+    position: absolute;
+    top:0;
+    left:0;
+    -webkit-animation: load4 2.0s infinite ease-in-out;
+    animation: load4 2.0s infinite ease-in-out;
+}
+.double-bounce2{
+    -webkit-animation-delay: -1.0s;
+    animation-delay: -1.0s;
+}
+@-webkit-keyframes load4{
+    0%,100%{-webkit-transform: scale(0.0)}
+    50%{ -webkit-transform: scale(1.0) }
+}
+@keyframes load4{
+    0%,100%{
+        transform: scale(0.0);
+        -webkit-transform: scale(0.0);
+    }
+    50%{
+        transform: scale(1.0);
+        -webkit-transform: scale(1.0);
+    }
+}
+/*加载动画效果--5--*/
+.loader5{
+    /*margin:0em auto;*/
+    width:2em;
+    height:2em;
+    position: relative;
+}
+.container1 > div, .container2 > div, .container3 > div{
+    width:0.5em;
+    height:0.5em;
+    background-color:#21CB64;
+    border-radius: 100%;
+    position: absolute;
+    -webkit-animation: load5 1.2s infinite ease-in-out;
+    animation:load5 1.2s infinite ease-in-out;
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode:both;
+}
+.loader5 .loader5-container{
+    position:absolute; 
+    width: 100%;
+    height:100%;
+}
+.container2{
+    -webkit-transform: rotateZ(45deg);
+    transform: rotateZ(45deg);
+}
+.container3{
+    -webkit-transform: rotateZ(90deg);
+    transform: rotateZ(90deg);
+}
+.circle1{top:0;left:0;}
+.circle2{top:0;right:0;}
+.circle3{right:0;bottom:0;}
+.circle4{left:0;bottom:0;}
+.container2 .circle1{
+    -webkit-animation-delay: -1.1s;
+    animation-delay: -1.1s;
+}
+.container3 .circle1{
+    -webkit-animation-delay: -1.0s;
+    animation-delay: -1.0s;
+}
+.container1 .circle2{
+    -webkit-animation-delay: -0.9s;
+    animation-delay: -0.9s;
+}
+.container2 .circle2{
+    -webkit-animation-delay: -0.8s;
+    animation-delay: -0.8s;
+}
+.container3 .circle2{
+    -webkit-animation-delay: -0.7s;
+    animation-delay: -0.7s;
+}
+.container1 .circle3{
+    -webkit-animation-delay: -0.6s;
+    animation-delay: -0.6s;
+}
+.container2 .circle3{
+    -webkit-animation-delay: -0.5s;
+    animation-delay: -0.5s;
+}
+.container3 .circle3{
+    -webkit-animation-delay: -0.4s;
+    animation-delay: -0.4s;
+}
+.container1 .circle4{
+    -webkit-animation-delay: -0.3s;
+    animation-delay: -0.3s;
+}
+.container2 .circle4{
+    -webkit-animation-delay: -0.2s;
+    animation-delay: -0.2s;
+}
+.container3 .circle4{
+    -webkit-animation-delay: -0.1s;
+    animation-delay: -0.1s;
+}
+@-webkit-keyframes load5{
+    0%,80%,100%{-webkit-transform: scale(0.0)}
+    40%{-webkit-transform: scale(1.0)}
+}
+@keyframes load5{
+    0%,80%,100%{
+        transform: scale(0.0);
+        -webkit-transform: scale(0.0);
+    }
+    40%{
+        transform: scale(1.0);
+        -webkit-transform: scale(1.0);
+    }
+}
+/*加载动画--6--*/
+.loader6{
+    width:2em;
+    height:2em;
+    background-color: #21CB64;
+    /*margin: 3em auto;*/
+    -webkit-animation: load6 1.2s infinite ease-in-out;
+    animation: load6 1.2s infinite ease-in-out;
+}
+@-webkit-keyframes load6{
+    0%{-webkit-transform: perspective(5em)}
+    50%{-webkit-transform: perspective(5em) rotateY(180deg)}
+    100%{-webkit-transform: perspective(5em) rotateY(180deg) rotateX(180deg)}
+}
+@keyframes load6{
+    0%{
+        transform: perspective(5em);
+        -webkit-transform: perspective(5em)
+        }
+    50%{
+        transform: perspective(5em) rotateY(180deg);
+        -webkit-transform: perspective(5em) rotateY(180deg)
+        }
+    100%{
+        transform: perspective(5em) rotateY(180deg) rotateX(180deg);
+        -webkit-transform: perspective(5em) rotateY(180deg) rotateX(180deg)
+        }
+}
+/*加载动画---7--*/
+.loader7{
+    /*margin:5em auto;*/
+    width:5em;
+    height:5em;
+    position: relative;
+}
+.cube1,.cube2{
+    background-color: #21CB64;
+    width:1em;
+    height:1em;
+    position: absolute;
+    top: 35%;
+    left: 35%;
+    -webkit-animation: load7 1.8s infinite ease-in-out;
+    animation: load7 1.8s infinite ease-in-out;
+}
+.cube2{
+    -webkit-animation-delay: -0.9s;
+    animation-delay: -0.9s;
+}
+@-webkit-keyframes load7{
+    25%{-webkit-transform: translateX(1em) rotate(90deg) scale(0.5)}
+    50%{-webkit-transform: translateX(1em) translateY(1em) rotate(180deg)}
+    75%{-webkit-transform: translateX(0em) translateY(1em) rotate(270deg) scale(0.5)}
+    100%{-webkit-transform: rotate(360deg)}
+}
+@keyframes load7{
+    25%{
+        transform: translateX(1em) rotate(90deg) scale(0.5);
+        -webkit-transform: translateX(1em) rotate(90deg) scale(0.5)
+        }
+    50%{
+        transform: translateX(1em) translateY(1em) rotate(180deg);
+        -webkit-transform: translateX(1em) translateY(1em) rotate(180deg)
+        }
+    75%{
+        transform: translateX(0em) translateY(1em) rotate(270deg) scale(0.5);
+        -webkit-transform: translateX(0em) translateY(1em) rotate(270deg) scale(0.5)
+        }
+    100%{
+        transform: rotate(360deg);
+        -webkit-transform: rotate(360deg)
+        }
+}
+
+/*按钮点击动画效果---1--*/
+.ink_item{
+    /*height:20%;
+    width:100%;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    -o-text-overflow:ellipsis;
+    white-space:nowrap;
+    margin:0.5em;*/
+}
+.ink {
+    display: block;
+    position: absolute;
+    background: rgba(255,255,255,0.5);
+    border-radius: 100%;
+    -webkit-transform: scale(0);
+    -moz-transform: scale(0);
+    -ms-transform: scale(0);
+    -o-transform: scale(0);
+    transform: scale(0)
+}
+.animate-ink {
+    -webkit-animation: ripple 0.35s linear;
+    -moz-animation: ripple 0.35s linear;
+    -ms-animation: ripple 0.35s linear;
+    -o-animation: ripple 0.35s linear;
+    animation: ripple 0.35s linear
+}
+@-webkit-keyframes ripple {
+    100% {
+        opacity: 0;
+        -webkit-transform: scale(2)
+    }
+}
+
+@-moz-keyframes ripple {
+    100% {
+        opacity: 0;
+        -moz-transform: scale(2)
+    }
+}
+
+@-o-keyframes ripple {
+    100% {
+        opacity: 0;
+        -o-transform: scale(2)
+    }
+}
+
+@keyframes ripple {
+    100% {
+        opacity: 0;
+        transform: scale(2)
+    }
+}
+

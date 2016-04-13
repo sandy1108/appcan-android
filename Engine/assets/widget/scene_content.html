@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+    <head>
+        <title></title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="target-densitydpi=device-dpi, width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <link rel="stylesheet" href="css/fonts/font-awesome.min.css">
+        <link rel="stylesheet" href="css/ui-box.css">
+        <link rel="stylesheet" href="css/ui-base.css">
+        <link rel="stylesheet" href="css/ui-color.css">
+        <link rel="stylesheet" href="css/appcan.icon.css">
+        <link rel="stylesheet" href="css/appcan.control.css">
+        <link rel="stylesheet" href="css/new_file.css">
+        <style>
+            .cancel{
+                padding:0.5em 0;
+                border-top:1px solid #eeeeee;
+            }
+        </style>
+    </head>
+    <body class="um-vp f-f" ontouchstart>
+        <div id="ocontent" class="ub ub-ver ub-f1" style="background-color: rgba(0,0,0,0.5);height:100%">
+            <div class="ub ub-ver oc_white" style="margin-top:12em;margin-left:1em;margin-right:1em;border-radius: 0.8em;">
+                <div class="ub ub-ver uinn uhide" id="WX" >
+                    <div class="ub ub-ac" id="weChatFriends" style="padding:0.5em 0;margin-left:2em;">
+                        <div class="ub ub-pc uc-a1" style="padding: 0 .2em;margin-right: 1em;">
+                            <div class="weChat_friends ub-img pic_wh"></div>
+                        </div>
+                        <div>分享到微信好友</div>
+                    </div>
+                    <div class="ub ub-ac" id="weChatCFriends" style="padding:0.5em 0;border-top:1px solid #eeeeee;margin-left:2em;">
+                        <div class="ub ub-pc uc-a1" style="padding: 0 .2em;margin-right: 1em;">
+                            <div class="weChat_cFriends ub-img pic_wh"></div>
+                        </div>
+                        <div>分享到微信朋友圈</div>
+                    </div>
+                    <div class="ub ub-ac ub-pc cancel">
+                        <div>取消分享</div>
+                    </div>
+                </div>
+                <div class="ub ub-ver uinn uhide" id="QQ">
+                    <div class="ub ub-ac ub-pc" id="QQFriends" style="padding:0.5em 0">
+                        <div class="ub ub-pc uc-a1 bg-a0" style="padding: 0 .2em;margin-right: 1em;">
+                            <div class="pic_quan ub-img pic_wh"></div>
+                        </div>
+                        <div>分享到QQ好友</div>
+                    </div>
+                    <div class="ub ub-ac ub-pc" id="Qzone" style="padding:0.5em 0;border-top:1px solid#eeeeee">
+                        <div class="ub ub-pc uc-a1 bg-4f" style="padding: 0 .2em;margin-right: 1em;margin-left: -0.5em;">
+                            <div class="pic_tx ub-img pic_wh"></div>
+                        </div>
+                        <div>分享到QQ空间</div>
+                    </div>
+                     <div class="ub ub-ac ub-pc cancel">
+                        <div>取消分享</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+    <script src="js/appcan.js"></script>
+    <script src="js/appcan.control.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/share.js"></script>
+    </body>
+    <script>
+    var shareType ='';
+    var isLinkFrom=appcan.locStorage.val("isLinkFrom")||0;
+    appcan.ready(function(){
+        shareType = appcan.locStorage.val('shareType');
+        if(shareType!=""){
+             switch(shareType){
+                case '0':
+                    $("#WX").removeClass("uhide");
+                    break;
+                default:
+                    break;
+            }
+        }
+      //分享相关回调函数
+         //微信分享回调
+         uexWeiXin.cbRegisterApp=cbRegisterApp_weixin;
+         uexWeiXin.cbShareLinkContent=cbShareLinkContent_weixin;
+    });
+ //ready函数结束
+ 
+    appcan.button("#weChatFriends","btn-act",function(){
+        share(0);//微信好友
+    })
+    appcan.button("#weChatCFriends","btn-act",function(){
+        share(1);//微信朋友圈
+    })
+    appcan.button(".cancel","btn-act",function(){
+        if(isLinkFrom==1){
+            uexWindow.setOrientation(15);
+        }
+        uexWindow.closePopover("scene_content");
+    })
+   
+    function share(sceneNum){
+        oncSheet(shareType,sceneNum);
+    }
+    </script>
+</html>

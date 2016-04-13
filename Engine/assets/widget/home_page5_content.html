@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+    <head>
+        <title></title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="target-densitydpi=device-dpi, width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <link rel="stylesheet" href="css/fonts/font-awesome.min.css">
+        <link rel="stylesheet" href="css/ui-box.css">
+        <link rel="stylesheet" href="css/ui-base.css">
+        <link rel="stylesheet" href="css/ui-color.css">
+        <link rel="stylesheet" href="css/appcan.icon.css">
+        <link rel="stylesheet" href="css/appcan.control.css">
+        <link rel="stylesheet" href="css/new_file.css">
+        <link rel="stylesheet" href="css/common.css">
+        <link rel="stylesheet" href="css/loader.css">
+    </head>
+    <!--正事儿栏目模板 -->
+    <body class="um-vp f-f" ontouchstart>
+       <div id="ocontent" class="ub ub-f1 ub-ver myVisibilityHide">
+           <!-- <div class="ub-ac ub-pc ub-img topTip" id="topHot" style="position: absolute;">
+               
+           </div>
+           <div class="ub ub-ver" id="newsTop">
+               
+           </div> -->
+           <div class="ub ub-ac ub-pc" id="newsContent" style="background-color:#E8E8E8">
+               <div class="ub ub-ver uinnItem" id="lTmpl">
+                   
+               </div>
+           </div>
+       </div>
+        <script src="js/newAppcan.js"></script>
+        <script src="js/appcan.control.js"></script>
+        <script src="js/common.js"></script>
+        <script src="js/interface.js"></script>
+        <script src="js/common.dom.js"></script>
+    </body>
+    <script>
+        var slider;
+        var icache;
+        var pageNum = 1;        //当前页数
+        var pageNoHotspot=1;
+        var pageCount = 1;      //总条数
+        var arrobjId = [];      //点击过的数组
+        var status=1;    //加载控制
+        var itemInfo={};
+        var sliderHeight="";
+         //获取资讯
+        var $myContent=$("#ocontent");
+        var columnId="",
+            isShowDate=0,
+            isShowSummary=0,
+            isSlide=0,
+            slideType=0;
+        appcan.ready(function() {
+            var parameter=zy_parse();
+            console.log("模板五传入参数=====>");
+            console.log(parameter);
+            columnId=parameter.pageName;;
+            isShowDate=parameter.isShowDate;
+            isShowSummary=parameter.isShowSummary;
+            //alert(columnId);
+            
+            icache = appcan.icache({maxtask:5});
+            appcan.window.subscribe('changeCommentCount',function (msg){
+                   var $commentNumDom=$("#commentNum_"+msg);
+                   var num= $commentNumDom.html();
+                   if(num==""){
+                       $commentNumDom.html(1);  
+                   }else{
+                       $commentNumDom.html(parseInt(num)+1);
+                   }
+             })
+            appcan.window.subscribe("sliderHeight",function (msg){
+                 sliderHeight=msg;
+                 if(msg>11.5){
+                     $("#"+sliderId).css("height",msg+"px");
+                 }else{
+                     $("#"+sliderId).css("height",msg+"em");
+                 }
+             });
+             if(isAndroid){
+                var param_slip = {
+                    isSupport:true   //(必选)true:支持；false:不支持。默认为false。
+                }
+                uexWindow.setIsSupportSlideCallback(JSON.stringify(param_slip));//设置网页是否支持滑动的相关监听方法
+            }  
+            
+            //滑动顶部刷新方式
+             appcan.frame.setBounce([0,1], null, null, function(type) {
+                 isSlide=1;
+                 if(status==0){//可能由于网络原因,处理恢复上一次的加载
+                     status=1;
+                     appcan.frame.resetBounce(slideType);
+                 }
+                 slideType=type;
+                 //判断是否有网
+                 GetInfoDevice(function(str){
+                     if(!str){
+                         appcan.frame.resetBounce(slideType);
+                         return false;
+                     }else{
+                          if (type == 0) {
+                             pageNumHotspot = 1;
+                             pageNum = 1;
+                             //slistsHotspot(1);
+                             slistsItem(1);
+                         }else{
+                            if((pageNum - 1) * 10 > pageCount) {
+                                appcan.frame.resetBounce(slideType);
+                            } else {
+                                pageNum++;
+                                slistsItem(pageNum);
+                            }
+                         }
+                     }
+                 });
+             },bounceBgColor,imgSettingsVal)
+             
+             //判断是否有网
+            GetInfoDevice(function(str){
+                 if(!str){
+                     setCacheData();//默认加载缓存数据
+                 }
+            }) 
+             
+            setCacheData();
+            //slistsHotspot(1);
+            //slistsItem(1);
+            var isFirstPage=appcan.locStorage.val('isFirstPage');
+            if(isDefine(isFirstPage) && isDefine(isFirstPage) && isFirstPage.split("_")[1]==columnId){
+                //slistsHotspot(1);
+                slistsItem(1);
+            }
+        })
+       
+        //缓存加载首页数据
+        function setCacheData(){
+            var homeNewsListBusiness_item = getLocVal('homeNewsListBusiness_item_'+columnId);
+            //var homeNewsListBusiness_hot = getLocVal('homeNewsListBusiness_hot_'+columnId);
+            //alert(homeNewsListBusiness_hot);
+            // if(isDefine(homeNewsListBusiness_hot)){
+                 // var conditions={
+                    // "isSummary":1
+                 // }
+                 // sliderItem.domShow(2,0,JSON.parse(homeNewsListBusiness_hot)[0],listHot,conditions);
+            // }
+            if(isDefine(homeNewsListBusiness_item)){
+                var conditions={
+                    "isSummary":parseInt(isShowSummary),
+                    "isComment":1,
+                    "isPtime":parseInt(isShowDate)
+                }
+                $myContent.removeClass("myVisibilityHide");
+                newsItem.domShow(5,0,JSON.parse(homeNewsListBusiness_item),listBusiness,conditions);
+            }
+        }
+        
+         //正事儿热点数据请求
+        function slistsHotspot(pageNoHotspot) {
+            var conditions={
+                "isFocus":1
+            };
+            var if_list=getInterface('newsInfoGetList',columnId,pageNoHotspot,conditions);//接口封装配置函数
+            console.log("newsItemHotspot====>"+JSON.stringify(if_list)+"\n"+chongqingUrl);
+            //ajax请求
+            appcan.request.ajax({
+                url : chongqingUrl,
+                headers : {
+                    token : appcan.locStorage.val("token") || '',
+                    deviceId : appcan.locStorage.val("deviceId") || ''
+                },
+                appVerify:true,
+                data : JSON.stringify(if_list),
+                timeout : "15000",
+                type : "POST",
+                contentType : "application/json",
+                dataType : "json",
+                success : function(res) {
+                    console.log(columnId+" >>>模板五newsItem热点====>");
+                    console.log(res);
+                    loader.close();
+                    uexWindow.closeToast();
+                    appcan.frame.resetBounce(slideType);
+                    var datas=res.data;
+                    var conditions={
+                        "isSummary":1
+                    }
+                    
+                    if(datas.list.length > 0 && pageNoHotspot == 1){
+                        $("#topHot").removeClass('uhide');
+                        $("#newsTop").removeClass('uhide');
+                        
+                        var homeNewsListBusiness_hot = getLocVal('homeNewsListBusiness_hot_'+columnId);
+                        if(!isDefine(homeNewsListBusiness_hot) || (base64_encode(homeNewsListBusiness_hot)!=base64_encode(JSON.stringify(datas.list)))){
+                             sliderItem.domShow(2,0,datas.list[0],listHot,conditions);
+                             if(isDefine(datas.list)){
+                                 setLocVal('homeNewsListBusiness_hot_'+columnId,JSON.stringify(datas.list));
+                             }
+                        }else{
+                             if(isSlide==1){//手动刷新
+                                 sliderItem.domShow(2,0,datas.list[0],listHot,conditions);
+                             }
+                        }
+                    }else{
+                        $("#topHot").addClass('uhide');
+                        $("#newsTop").addClass('uhide');
+                    }
+                },
+                error : function(xhr, errorType, error,msg) {
+                    
+                }
+            })
+        }
+        
+        //正事儿列表数据请求
+        function slistsItem(pageNo) {
+           status=0;
+           var conditions={
+                "isFocus":"0"
+            };
+           var if_list=getInterface('newsInfoGetList',columnId,pageNo,conditions);//接口封装配置函数
+           console.log("newsItem====>"+JSON.stringify(if_list)+"\n"+chongqingUrl);
+            //ajax请求
+           appcan.request.ajax({
+                url : chongqingUrl,
+                headers : {
+                    token : appcan.locStorage.val("token") || '',
+                    deviceId : appcan.locStorage.val("deviceId") || ''
+                },
+                appVerify:true,
+                data : JSON.stringify(if_list),
+                timeout : "15000",
+                type : "POST",
+                contentType : "application/json",
+                dataType : "json",
+                success : function(res) {
+                    console.log(columnId+" >>>模板五newsItem资讯列表====>");
+                    console.log(res);
+                    loader.close();
+                    uexWindow.closeToast();
+                    appcan.frame.resetBounce(slideType);
+                    status=1;
+                    if(res.status != '000'){
+                        uexWindow.toast(1, 5, res.msg, 2000);
+                        return false;
+                    }
+                    var datas=res.data; //模拟数据
+                    if(datas.list.length == 0 && pageNum == 1){
+                        $('#newsContent').html('<div class="ub ub-f1 ub-ac ub-pc c-66" style="margin-top:1em;">暂无信息</div>');
+                        return false;
+                    }
+                    
+                    var conditions={
+                        "isSummary":parseInt(isShowSummary),
+                        "isComment":1,
+                        "isPtime":parseInt(isShowDate)
+                    }
+                    
+                    $myContent.removeClass("myVisibilityHide");
+                    pageCount = datas.totalNum;//新闻资讯列表总条数
+                    if(pageNum == 1){
+                        var homeNewsListBusiness_item = getLocVal('homeNewsListBusiness_item_'+columnId);
+                        if(!isDefine(homeNewsListBusiness_item) || (base64_encode(homeNewsListBusiness_item)!=base64_encode(JSON.stringify(datas.list)))){
+                             newsItem.domShow(5,0,datas.list,listBusiness,conditions);
+                             if(isDefine(datas.list)){
+                                 setLocVal('homeNewsListBusiness_item_'+columnId,JSON.stringify(datas.list));
+                             }
+                        }else{
+                             if(isSlide==1){//手动刷新
+                                 newsItem.domShow(5,0,datas.list,listBusiness,conditions);
+                             }else{
+                                 status=1;
+                             }
+                        }
+                    }else{
+                        newsItem.domShow(5,0,datas.list,listBusiness,conditions);
+                    }
+                },
+                error : function(xhr, errorType, error,msg) {
+                    status=1;
+                    loader.close();
+                    uexWindow.closeToast();
+                    appcan.frame.resetBounce(slideType);
+                }
+            })
+        }
+        
+        //正事儿热点callback函数
+        function listHot(datas){
+            var newsTopDom = isDefine(datas.dom)?datas.dom:"";
+            itemInfo=$.extend(itemInfo,(isDefine(datas.itemInfo) ? datas.itemInfo:""));
+            
+            if(pageNoHotspot==1){
+                $("#newsTop").empty();
+            }
+            $("#newsTop").append(newsTopDom);
+            var btn_key=1;
+            appcan.button('.btnDetile','btn-act',function(e){
+                if(btn_key==1){
+                    btn_key=0;
+                    var id=$(this);
+                    btn_ink(id,e);
+                    
+                    var newsIdVal = this.id;
+                    $(this).addClass('c-88');
+                    arrobjId.push(newsIdVal);
+                    setLocVal('arrobjId3',JSON.stringify(arrobjId));
+                     //传递点击列表信息
+                    appcan.locStorage.setVal('newsItemInfo',JSON.stringify(itemInfo[newsIdVal]));
+                    if(itemInfo[newsIdVal].newsTypeId==2){
+                        //跳转图片新闻展示页面
+                        appcan.window.open('home_DetailsPictures','home_DetailsPictures.html',10);
+                    }else if(itemInfo[newsIdVal].newsTypeId==5){
+                        //跳转专题列表
+                        appcan.window.open('spe_page','spe_page.html',10,1024);
+                    }else if(itemInfo[newsIdVal].newsTypeId==6){
+                        //跳转栏目
+                        var goColumnId=itemInfo[newsIdVal].columnId;
+                        //alert(goColumnId);
+                        uexWindow.evaluateScript("", 0, "openFrame("+goColumnId+")");
+                        // appcan.locStorage.setVal("govermentColumnDomIndex","id_"+goColumnId);
+                        // uexWindow.evaluateScript("", 0, "goGoverment("+goColumnId+")");
+                    }else{
+                        //跳转新闻详细页面
+                        appcan.window.open('home_Details','home_Details.html',10,1024);
+                    }
+                    setTimeout(function(){btn_key=1;},2000);
+                }
+            })
+        }
+        
+        //正事儿列表callback函数
+        function listBusiness(datas){
+            var newsDomLeft = isDefine(datas.domLeft)?datas.domLeft:"";
+            itemInfo=$.extend(itemInfo,(isDefine(datas.itemInfo) ? datas.itemInfo:""));
+            //alert(newsDomLeft.html());
+            var $lTmpl = $("#lTmpl");
+            if(pageNum == 1){
+                $lTmpl.html('');
+            }
+            $lTmpl.append(newsDomLeft);
+            
+            status=1;
+            loader.close();
+            uexWindow.closeToast();
+            
+            if(getLocVal('arrobjId2')){
+                arrobjId = JSON.parse(getLocVal('arrobjId2'));
+                for(var i = 0;i < arrobjId.length;i++){
+                    $("#"+arrobjId[i]).addClass('c-88');
+                }
+            } 
+            var btn_key=1;
+            appcan.button('.btnDetile','btn-act',function(e){
+                 if(btn_key==1){
+                    btn_key=0;
+                    var id=$(this);
+                    btn_ink(id,e);
+                
+                    var newsIdVal = this.id;
+                    $(this).addClass('c-88');
+                    arrobjId.push(newsIdVal);
+                    setLocVal('arrobjId3',JSON.stringify(arrobjId));
+                     //传递点击列表信息
+                    appcan.locStorage.setVal('newsItemInfo',JSON.stringify(itemInfo[newsIdVal]));
+                    if(itemInfo[newsIdVal].newsTypeId==2){
+                        //跳转图片新闻展示页面
+                        appcan.window.open('home_DetailsPictures','home_DetailsPictures.html',10);
+                    }else if(itemInfo[newsIdVal].newsTypeId==5){
+                        //跳转专题列表
+                        appcan.window.open('spe_page','spe_page.html',10,1024);
+                    }else{
+                        //跳转新闻详细页面
+                        appcan.window.open('home_Details','home_Details.html',10,1024);
+                    }
+                    setTimeout(function(){btn_key=1;},2000);
+                }
+            })
+            
+            //数据显示完成，关闭预加载页
+            closeAdvert();
+        }
+        
+        function doDisplay(){
+            $myContent.removeClass("myVisibilityHide");
+        }
+        function doHide(){
+            $myContent.addClass("myVisibilityHide");
+        }
+        function goTop(){
+            window.scrollTo(0,0);
+        }
+    </script>
+</html>

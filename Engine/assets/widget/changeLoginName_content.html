@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+    <head>
+        <title></title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="target-densitydpi=device-dpi, width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <link rel="stylesheet" href="css/fonts/font-awesome.min.css">
+        <link rel="stylesheet" href="css/ui-box.css">
+        <link rel="stylesheet" href="css/ui-base.css">
+        <link rel="stylesheet" href="css/ui-color.css">
+        <link rel="stylesheet" href="css/appcan.icon.css">
+        <link rel="stylesheet" href="css/appcan.control.css">
+        <link rel="stylesheet" href="css/new_file.css">
+    </head>
+    <body class="um-vp bc-bg" ontouchstart>
+        <div class="ub ub-ver ub-f1"　style="">
+            <div class="ub uinn ub-ac ubb ub-f1" style="margin-left:1.5em;margin-right:1.5em;border-color: #998b7b;margin-top:1em">
+                <div class="ub ub-img res-password iconSpace15"></div>
+                <div class="uinput ub ub-f1  bc-border" style="margin-left:.2em">
+                    <input id="oldPhone" placeholder="请输入旧手机号" type="tel" class="ub-f1" style="padding-left:.2em">
+                </div>
+            </div>
+            <div class="ub uinn ub-ac ubb ub-f1" style="margin-left:1.5em;margin-right:1.5em;border-color: #998b7b;margin-top: 1em">
+                <div class="ub ub-img res-phoneIcon iconSpace15"></div>
+                <div class="ub ub-f1 uinput bc-border" style="margin-left:.2em">
+                    <input class="ub-f1" id="phone" placeholder="请输入新手机号" type="tel" maxlength="11" pattern="[0-9]" style="padding-left:.2em">
+                    <div class="ub ub-img ocancle"></div>
+                </div>
+            </div>
+
+            <div class="ub uinn ub-ac ubb ub-f1" style="margin-left:1.5em;margin-right:1.5em;border-color: #998b7b;margin-top:1em">
+                <div class="ub ub-img res-pwdIcon iconSpace15"></div>
+                <div class="uinput ub ub-f1  bc-border" style="margin-left:.2em">
+                    <input id="code" placeholder="验证码" type="tel" class="ub-f1" style="padding-left:.2em">
+                </div>
+                <div id="sendcode" class="ub ulev-1 umar-l uc-a" style="color:white;background-color:#a0d468;padding:.4em .6em .4em .6em">
+                    获取验证码
+                </div>
+            </div>
+            <div class="ub uinn ub-ac ubb ub-f1" style="margin-left:1.5em;margin-right:1.5em;border-color: #998b7b;margin-top:1em">
+                <div class="ub ub-img res-password iconSpace15"></div>
+                <div class="uinput ub ub-f1  bc-border" style="margin-left:.2em">
+                    <input id="pwd" placeholder="请输入密码" type="password" class="ub-f1" style="padding-left:.2em">
+                </div>
+            </div>
+
+            <div class="ub ub-f1 ub-pc">
+                <div id="next" class="ub uinn ub-ac ubb ub-pc uc-a1" style="color:white;width:80%;background-color: #FF8A00;margin-top:2em">
+                    确认更改
+                </div>
+            </div>
+        </div>
+    </body>
+    <script src="js/appcan.js"></script>
+    <script src="js/appcan.control.js"></script>
+    <script src="js/common.js"></script>
+    <script>
+        var userInfo = isDefine(getLocVal("userInfo")) ? getLocVal("userInfo") : "";
+        var userId = "";
+        appcan.ready(function() {
+            appcan.initBounce();
+            userInfo=isDefine(userInfo) ? JSON.parse(userInfo) : "";
+            userId = isDefine(userInfo) ? userInfo.userId : "";
+        });
+        appcan.button("#check", "btn-act", function() {
+            appcan.window.open("protocol", "protocol.html", 10);
+        })
+        appcan.button(".ocancle", "btn-act", function() {
+            $("#phone").val('');
+        })
+        //进入下一步
+        appcan.button("#next", "btn-act", function() {
+            var phonenum = $("#phone").val();
+            var code = $("#code").val();
+            var oldPhone = $("#oldPhone").val();
+            var pwd = $("#pwd").val();
+            if (phonenum == "" || code == "" || oldPhone == ""||pwd=="") {
+                uexWindow.toast(0, 5, "请输入完整信息", 2000);
+                return;
+            }
+            clearTimer();
+            change(phonenum, oldPhone, code,pwd);
+        })
+
+        appcan.button("#checkbox", "btn-act", function() {
+            if ($(this).children().css("display") == "block") {
+                $(this).children().hide();
+            } else {
+                $(this).children().show();
+            }
+        })
+        var f = 0,
+            t1,
+            time = 60,
+            codeTimer;
+        //发送验证码
+        appcan.button("#sendcode", "btn-bgc-act", function() {
+            var phone = $("#phone").val();
+            if (!(/^1\d{10}$/g.test(phone))) {
+                uexWindow.toast("0", "5", "请输入正确的11位手机号码", 1500);
+                return;
+            }
+            if (f == 0) {
+                t1 = new Date();
+                time = 60;
+                getVerificationCode(phone);
+                f = 1;
+            } else {
+                var t2 = new Date();
+                var t = parseInt((t2 - t1) / 1000);
+                if (t < 60) {
+                    uexWindow.toast('0', '5', '60秒之内不能重复操作！', 1500);
+                    return;
+                } else {
+                    t1 = new Date();
+                    clearTimer();
+                    time = 60;
+                    getVerificationCode(phone);
+                }
+            }
+        })
+        var sendcode = $("#sendcode");
+        function timer() {
+            time--;
+            sendcode.html("请在" + time + "s内操作");
+            (time <= 0) ? clearTimer() : "";
+        }
+
+        function clearTimer() {
+            self.clearInterval(codeTimer);
+            sendcode.html("获取验证码");
+        }
+
+        //发送验证码
+        function getVerificationCode(phoneNum) {
+            uexWindow.toast(1, 5, "正在发送验证码...", '');
+            var list = {
+                "transcode" : "userInfo_sendSMS",
+                "content" : {
+                    "mobileNo" : phoneNum,
+                    "appId" : "sdk10394",
+                    "type" : 2 //1:忘记密码   2:注册
+                }
+            };
+            console.log(JSON.stringify(list));
+            appcan.request.ajax({
+                url : chongqingUrl,
+                headers : {
+                    token : appcan.locStorage.val("token") || '',
+                    deviceId : appcan.locStorage.val("deviceId") || ''
+                },
+                appVerify : true,
+                data : list,
+                type : "POST",
+                timeout : "10000",
+                contentType : "application/json",
+                dataType : "json",
+                success : function(res) {
+                    console.log("验证码发送结果====>");
+                    console.log(JSON.stringify(res));
+                    uexWindow.closeToast();
+                    if (res.status == "000") {
+                        codeTimer = self.setInterval("timer()", 1000);
+                        uexWindow.toast(0, 5, "验证码已发送，请注意查收", 2000);
+                    } else if (res.status = "4052") {
+                        f = 0;
+                        clearTimer();
+                        uexWindow.toast(0, 5, "此手机号已经注册过 ", 2000);
+                    } else {
+                        f = 0;
+                        clearTimer();
+                        uexWindow.toast(0, 5, "验证码发送失败，请稍后再试", 2000);
+                    }
+                },
+                error : function() {
+                    f = 0;
+                    clearTimer();
+                    uexWindow.toast(0, 5, "获取失败，请检查是否正确", 2000);
+                }
+            });
+        }
+
+        function change(newPhoneNum, PhoneNum, code,pwd) {
+            loader.open();
+            var if_list = {
+                "transcode" : "userInfo_modify",
+                "info" : "changeMobileNo",
+                "content" : {
+                    "mobileNo" : PhoneNum,
+                    "newMobileNo" : newPhoneNum,
+                    "verifyCode" : code,
+                    "userId" : userId,
+                    "password":pwd
+                }
+            };
+            console.log(JSON.stringify(if_list));
+            appcan.request.ajax({
+                url : chongqingUrl,
+                headers : {
+                    token : appcan.locStorage.val("token") || '',
+                    deviceId : appcan.locStorage.val("deviceId") || ''
+                },
+                data : JSON.stringify(if_list),
+                type : "POST",
+                appVerify : true,
+                timeout : "15000",
+                contentType : "application/json",
+                dataType : "json",
+                success : function(res) {
+                    console.log("注册返回====>");
+                    console.log(res);
+                    loader.close();
+                    if (res.status == "000") {
+                        uexWindow.toast("0", "5", "更换成功！", 2500);
+                        userInfo.loginName=newPhoneNum;
+                        appcan.locStorage.setVal("userInfo", JSON.stringify(userInfo));
+                        appcan.window.publish("changePhone", newPhoneNum);
+                        setTimeout("closeWindow()", 2000);
+                    } else if (status == "4058") {
+                        uexWindow.toast("0", "5", "用户账号错误,请确认无误", 2000);
+                    } else {
+                        uexWindow.toast("0", "5", "更改失败,请确认验证码无误", 2000);
+                    }
+                },
+                error : function(err) {
+                    loader.close();
+                    console.log(err);
+                    appcan.window.openToast("请求失败，请稍后重试", 2000, 5, 0);
+                }
+            });
+        }
+
+        function closeWindow() {
+            appcan.window.publish("closeRegister", "");
+        }
+    </script>
+</html>

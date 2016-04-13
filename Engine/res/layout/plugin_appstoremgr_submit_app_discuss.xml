@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    android:orientation="vertical" >
+
+    <include
+        android:id="@+id/title"
+        layout="@layout/plugin_appstoremgr_title_layout" />
+
+    <RelativeLayout
+        android:id="@+id/discussScore"
+        android:layout_width="fill_parent"
+        android:layout_marginTop="20dip"
+        android:layout_height="60dip" >
+
+        <RatingBar
+            android:id="@+id/userScore"
+            style="@style/appraise_submit_ratingbar_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:numStars="5"
+            android:clickable="true"
+            android:isIndicator="false" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/discussContent"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dip"
+        android:paddingRight="10dip"
+        android:paddingBottom="10dip" >
+
+        <EditText
+            android:id="@+id/contentEdit"
+            android:layout_width="fill_parent"
+            android:layout_height="200dip"
+            android:background="@drawable/plugin_appstoremgr_submit_edittext_shape"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:gravity="top"
+            android:hint="请输入您要评价的信息!"
+            android:minLines="1"
+            android:padding="8dp" />
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/submitButton"
+        android:layout_width="fill_parent"
+        android:layout_height="39dip"
+        android:layout_marginLeft="20dip"
+        android:layout_marginRight="20dip"
+        android:layout_marginTop="15dip"
+        android:background="@drawable/plugin_appstoremgr_submit_button_selector"
+        android:text="提交"
+        android:textColor="#FFFFFF" />
+
+</LinearLayout>

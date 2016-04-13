@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" >
+
+    <!-- android.support.v4.view.ViewPager -->
+
+    <org.zywx.wbpalmstar.plugin.uexappstoremgr.view.ChildViewPager
+        android:id="@+id/ad_viewpager"
+        android:layout_width="fill_parent"
+        android:layout_height="150dip"
+        android:layout_alignParentTop="true" />
+
+    <org.zywx.wbpalmstar.plugin.uexappstoremgr.view.PageIndicator
+        android:id="@+id/ad_page_indictor"
+        android:layout_width="fill_parent"
+        android:layout_height="30dip"
+        android:layout_alignBottom="@id/ad_viewpager"
+        android:gravity="center" />
+
+</RelativeLayout>

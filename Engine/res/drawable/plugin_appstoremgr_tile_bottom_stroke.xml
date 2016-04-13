@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+       android:shape="rectangle">
+  <!-- bottom border -->
+  <gradient
+      android:angle="90"
+      android:startColor="@color/plugin_appstoremgr_sub_app_list_view_bg_color"
+      android:centerColor="@color/plugin_appstoremgr_tile_view_stroke_color"
+      android:centerX="1%"
+      />
+</shape>

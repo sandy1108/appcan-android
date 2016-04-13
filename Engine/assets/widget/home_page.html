@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+    <head>
+        <title></title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="target-densitydpi=device-dpi, width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <link rel="stylesheet" href="css/fonts/font-awesome.min.css">
+        <link rel="stylesheet" href="css/ui-box.css">
+        <link rel="stylesheet" href="css/ui-base.css">
+        <link rel="stylesheet" href="css/new_file.css">
+        <link rel="stylesheet" href="css/ui-color.css">
+        <link rel="stylesheet" href="css/appcan.icon.css">
+        <link rel="stylesheet" href="css/appcan.control.css">
+        <link rel="stylesheet" href="css/new_file.css">
+        <link rel="stylesheet" href="css/common.css">
+        <link rel="stylesheet" href="css/loader.css">
+        <style>
+            .change_w{
+                min-width: 2em;
+            }
+            .dropDown{
+                background-image:url('image/dropDown.png');
+            }
+            .dropUp{
+                background-image:url('image/dropUp.png');
+            }
+            .dropStyle01{
+                width:0.8em;height:0.8em;
+            }
+             .dropStyle03{
+                width:1.25em;height:1.25em;
+            }
+            .upAngle{
+                background-image:url('image/up.png');
+            }
+            .downAngle{
+                background-image:url('image/down.png');
+            }
+        </style>
+    </head>
+    <body class="um-vp f-f" ontouchstart>
+        <div id="page_0" class="up ub ub-ver bc-bg" tabindex="0">
+            <div id="header" class="uh bc-text-head ub oc_header">
+                <div id="goLeft" class="nav-btn" ontouchstart>
+                     <div class="oc_w1 oc_h1 oc_img2 ub-img">
+                     </div>
+                </div>
+                <div class="ub ub-ac ub-pc ut ub-f1  ut-s tx-c" id="allDrop">
+                     <div class="ub oc_w1 oc_h1 ub-img" id="cqLogo" style="width:40%;background-image:url('image/cqLogo04.png')"></div>
+                     <div class="ub ub-img dropStyle01 dropDown mar-l05" id="drop"></div>
+                </div>
+                <div class="nav-btn nav-bt">
+                   <div class="ub ub-ac">
+                       <div class="ub" id="goSearch" style="height:2.75em;">
+                            <div class="oc_w1 oc_h1 oc_img1 ub-img" style="margin-right:1em;">
+                            </div>
+                        </div>
+                        <div class="ub" id="goRight" style="height:2.75em;" ontouchstart>
+                            <div class="oc_w1 oc_h1 oc_img3 ub-img" style="margin-right:0.5em;">
+                            </div>
+                        </div>
+                   </div>
+                </div>
+            </div>
+            <div class="ub ub-ac oc_gray f-f Scrolling" id="menu" style="overflow-x:auto;height:2.6em;">
+                <ul id="otable" class="ub ub-ac oc_gray ub-f1" style="height:2.3em;">
+                 <!--  
+                    <div id="id_cq" class="ub ub-ac ub-pc menu  menuWidth ofont f-s12"><span>重庆</span></div>
+                    <div id="id_rw" class="ub ub-ac ub-pc menu f-s10 menuWidth menus_color" ><span>热闻</span></div>
+                    <div id="id_jy" class="ub ub-ac ub-pc menu f-s10 menuWidth menus_color" ><span>椒言</span></div>
+                    <div id="id_mj" class="ub ub-ac ub-pc menu f-s10 menuWidth menus_color" ><span>鸣家</span></div>
+                    <div id="id_zs" class="ub ub-ac ub-pc menu f-s10 menuWidth02 menus_color" ><span>正事儿</span></div>
+                    <div id="id_world" class="ub ub-ac ub-pc menu f-s10 menuWidth menus_color" ><span>娱乐</span></div>
+                    <div id="id_yt" class="ub ub-ac ub-pc menu f-s10 menuWidth menus_color" ><span>体育</span></div>
+                    <div id="id_finance" class="ub ub-ac ub-pc menu f-s10 menuWidth menus_color uhide" ><span>财经</span></div>
+                    <div id="id_ws" class="ub ub-ac ub-pc menu f-s10 menuWidth03 menus_color uhide" ><span>中国网事</span></div>
+                    <div id="id_pai" class="ub ub-ac ub-pc menu f-s10 menuWidth02 menus_color uhide" ><span>随手拍</span></div>
+                    <div id="id_italy"  class="ub ub-ac ub-pc menu f-s10 menuWidth02 menus_color uhide" ><span>意大利</span></div>
+                 -->
+                </ul>
+            </div>
+            <div class="ub ub-ac ub-pc otable" id="myColumns" style="z-index:999;position:absolute;right:0em; background-color:rgba(238,238,238,0.8);margin-top: -2.6em;">
+                <div class="ub-img dropStyle03 downAngle" id="myAngle"></div>   
+            </div>
+            
+            <div id="content" class="ub-f1 tx-l">
+                
+            </div>
+            <div id="footer" class="oc_gray ub ub-ac fz-68" style="height:4.5em;border-top:1px solid #c8c8c8;">
+                <div id="f_government" class="ub ub-ver ub-f1" style=" height:3.8em;border-right:1px solid#c8c8c8;">
+                    <div class="ub-img oc_hw6-1 f_government"></div>
+                    <div class="ub ub-ac ub-pc uinn-t03">政务</div>
+                </div>
+                <div id="f_life" class="ub ub-ver ub-f1" style=" height:3.8em;border-right:1px solid#c8c8c8;">
+                    <div class="ub-img oc_hw6-1 f_life"></div>
+                    <div class="ub ub-ac ub-pc uinn-t03">生活</div>
+                </div>
+                <div id="f_activity" class="ub ub-ver ub-f1" style=" height:3.8em;border-right:1px solid#c8c8c8;">
+                    <div class="ub-img oc_hw6-1 f_activity"></div>
+                    <div class="ub ub-ac ub-pc uinn-t03">活动</div>
+                </div>
+                <div id="f_shoot" class="ub ub-ver ub-f1" style=" height:3.8em;border-right:1px solid#c8c8c8;">
+                    <div class="ub-img oc_hw6-1 f_shoot"></div>
+                    <div class="ub ub-ac ub-pc uinn-t03">随拍</div>
+                </div>
+            </div>
+        </div>
+        <script src="js/appcan.js"></script>
+        <script src="js/appcan.control.js"></script>
+        <script src="js/config.js"></script>
+        <script src="js/common.js"></script>
+        <script src="js/interface.js"></script>
+    </body>
+    <script>
+        var oframe = "";
+        var f = parseInt(parseInt(window.screen.width)) / parseInt($('body').width(), 10);
+        var heightValue = 0;
+        var scollIndex=0;
+        var columnIndex=1;
+        var isOpen=[];
+        var isNetwork=1;//是否有网络
+        appcan.locStorage.setVal("homepageopen",1);//应用第一次打开
+        var fileData="";//存放读取出来的文件数据
+        var isSlide=1;//用户判定是滑动切换浮动页还是点击切换---0表示点击切换，1表示滑动切换
+        //栏目文件本地路径
+        var interface_columns="";
+        
+        //滑动栏目定制
+        var objId={};
+        //浮动页打开栏目定制     
+        var  popcontent='{"content":[';
+        var advertShowIsOk=0;
+        var columnOrder={};
+        var columnDom="";
+        var numTTot="";
+        var wh="";
+        var dataType=0; //0表示locStorage数据，1表示本地文件txt文件
+        appcan.ready(function() {
+            //在用户首页弹出加载页面
+            loader.open();
+            
+            //判断是否有网
+            GetInfoDevice(function(str){
+                 if(!str){
+                    isNetwork=0; 
+                 }else{
+                    isNetwork=1; 
+                 }
+            })
+            
+            var x=$(window).width();
+            if(isAndroid && x>1080){//根据屏幕大小显示Icon
+               $("#cqLogo").attr("class","change_w oc_h2 ub-img");
+               $("#drop").attr("class","ub ub-img wh-1em dropDown");
+            }
+            if(!isAndroid && x>375){
+               $("#cqLogo").attr("class","change_w oc_h2 ub-img");
+               $("#drop").attr("class","ub ub-img wh-1em dropDown");
+            }
+            
+            var plat = uexWidgetOne.getPlatform();
+            //如果是android ->1平台，则监听返回按钮事件 ios ->0
+            if (plat) {
+                uexWindow.onKeyPressed = function(keyCode){
+                    var titType = appcan.locStorage.val('TitleType');
+                    var bottomType = appcan.locStorage.val('bottomType');
+                    if (keyCode == 0) {
+                        if (flag == 1) {
+                            if(titType == '1'){
+                                appcan.frame.close('column_content');
+                                appcan.locStorage.setVal('TitleType','0');
+                            }else if(bottomType == '1'){
+                                appcan.frame.close("else_content");
+                                appcan.locStorage.setVal('bottomType','0');
+                            }else{
+                                uexWidget.finishWidget("uexWidget.finishWidget","",1);
+                            }
+                        }else {
+                            moveleft();
+                            flag = 1;
+                        }
+                    }
+                }
+                uexWindow.setReportKey(0, 1);
+            }
+            
+            if(!appcan.detect.os.phone){
+                f = 1;
+            }
+            
+            em = parseInt($('#header').css('font-size'));
+            //计算浮动窗口距离顶部的高度
+            var titHeight = $('#header').offset().height;
+            var menu = $('#menu').offset().height;
+            numTTot = parseInt(titHeight)+parseInt(menu);
+            heightValue = numTTot;
+            appcan.locStorage.setVal("rootHeader",titHeight);//保存首页root的header的高度
+            appcan.locStorage.setVal("h",heightValue);//保存header与栏目的高度和
+            appcan.locStorage.setVal("w",$('#header').offset().width);//保存header的宽度
+            wh = window.getComputedStyle(document.getElementById("content"),null);
+            //打开多页面浮动窗口的回调
+            uexWindow.cbOpenMultiPopover = function(opId, dataType, data){
+                //对于Android控制滑动的操作（区分页面内部滑动还是页面切换）
+                //alert(opId+" "+dataType+" "+data);
+                var res = JSON.parse(data);
+                columnIndex = res.multiPopSelectedIndex; //选中的栏目定位
+                if(opId == 0){
+                    isSlide=1;//表示滑动切换页面
+                    updateMenu(columnIndex);
+                    isOpened(objId,columnIndex);//调用判断是否已打开，未打开滑动加载最新数据
+                }
+            }
+            //读取文件回调
+            uexFileMgr.cbReadFile = function(opId, dataType, data) {
+                //alert(opId+" "+dataType+" "+data);
+                if (opId == path_sign && dataType == 0) {
+                    showColumn(data);
+                }
+            }
+            
+            var columnsDataTemp="";
+            columnsDataTemp=appcan.locStorage.val("columnsDataTemp");
+            if(isDefine(columnsDataTemp)){ //如果存在则首先使用locStorage的数据，更快
+                dataType=0;
+                showColumn(columnsDataTemp);
+            }else{ //使用本地存储的数据
+                dataType=1;
+                readFile(path_sign,path_myColumns);
+            }
+            
+            var android = window.navigator.userAgent.indexOf('Android');
+            if (android < 0) {
+                f = 1;
+            }
+            var d = parseInt(($('#header').offset().width - 6*em) * f);
+            oframe = d;
+            appcan.window.publish("windowMoveLength",oframe);
+    })
+    //**************ready结束**************
+    
+        //显示栏目数据
+        function showColumn(data){
+            //需要重新赋值
+                popcontent='{"content":[';
+                objId={};
+                columnOrder={};
+                columnDom="";
+                scollIndex=0;
+                columnIndex=1;
+                isOpen=[];
+                if (isDefine(data)) {
+                    fileData=JSON.parse(data);//保存文件读取的值
+                    console.log("读取本地文件的栏目信息====>");
+                    //console.log(JSON.stringify(fileData));
+                    console.log(fileData);
+                    //本地存储侧栏与政务栏目
+                    appcan.locStorage.setVal("sideColumns",fileData.sideColumns);
+                    appcan.locStorage.setVal("govermentColumns",fileData.govermentColumns);
+                    //向侧栏发送读取最新的本地文件数据
+                    appcan.window.publish("sideColumns",fileData.sideColumns);
+                    var jsonData=fileData.topColumns;
+                    uexFileMgr.closeFile(path_sign);
+                    var count=0;//记录所有的id
+                    var num=0;//记录新增的id
+                    var orderListOne={};
+                    var orderIndex=0;
+                    for(var i=0;i<jsonData.content.length;i++){
+                        //生成栏目dom对象
+                        if(jsonData.content[i].status==1){
+                            if(orderIndex==0){
+                                setLocVal('idPage',jsonData.content[i].id);//左侧默认为第一个
+                                setLocVal('isFirstPage',jsonData.content[i].id);//左侧默认为第一个
+                                isOpen[0]=jsonData.content[i].id;//默认初始页
+                            }
+                            //记录栏目顺序
+                            orderListOne={
+                                "index":orderIndex,
+                                "domId":jsonData.content[i].id,
+                                "inPageName":jsonData.content[i].inPageName,
+                                "columnsType":jsonData.content[i].columnsType,
+                                "windowUrl":jsonData.content[i].inUrl,
+                                "childColumn":jsonData.content[i].childColumn,
+                                "demoId":jsonData.content[i].templateStyle,
+                                "flag":isDefine(jsonData.content[i].flag)?jsonData.content[i].flag:""
+                            }
+                            columnOrder[jsonData.content[i].inPageName]=orderListOne;
+                            showColumnDom(orderIndex,jsonData.content[i].inPageName,jsonData.content[i].columnName);
+                            orderIndex++;
+                        }
+                        
+                        //生成对应模板页
+                        if(jsonData.content[i].columnsType=="f" && jsonData.content[i].status==1){//浮动窗口栏目
+                            objId[count]=jsonData.content[i].id;//得到栏目浮动窗口的所有id
+                            //得到浮动窗口相关参数
+                            if(isDefine(jsonData.content[i].flag) && jsonData.content[i].flag=="512"){//中国网页链接
+                                popcontent+='{"inPageName":"'+jsonData.content[i].inPageName+'","inUrl":"'+jsonData.content[i].inUrl+'","inData":"","flag":"512"},';
+                            }else{
+                                popcontent+='{"inPageName":"'+jsonData.content[i].inPageName+'","inUrl":"'+jsonData.content[i].inUrl+'","inData":""},';
+                            }
+                            if(count>5){
+                               $('#'+objId[count]).removeClass('uhide'); 
+                            }
+                            count++;
+                        }else if(jsonData.content[i].columnsType=="r" && jsonData.content[i].status==1){//打开新页面栏目
+                            //popcontent+='{},';
+                            $('#'+jsonData.content[i].id).removeClass('uhide'); 
+                        }else{
+                            if(jsonData.content[i].status==0){
+                               $('#'+jsonData.content[i].id).addClass('uhide'); 
+                            }
+                        }
+                        if(i==(jsonData.content.length-1)){
+                             popcontent=popcontent.substring(0,popcontent.length-1);
+                             popcontent+=']}';
+                             //向页面加入栏目dom
+                             columnDom+='&nbsp;&nbsp;&nbsp;&nbsp;';
+                             $("#otable").html(columnDom);
+                             
+                             //头部菜单栏点击事件
+                             appcan.button(".menu","btn-act",function(){
+                                 var domId=this.id;
+                                 openFrame(domId.split('_')[1]);
+                             })
+                        }
+                    }
+                    //console.log("columnOrder>>>>>"+JSON.stringify(columnOrder));
+                    appcan.locStorage.setVal("columnOrder",JSON.stringify(columnOrder));//保存栏目顺序
+                    //打开多页面浮动窗口
+                    uexWindow.openMultiPopover(popcontent,'indexPage', 0, 0, numTTot, document.body.clientWidth, parseInt(wh.height), 0, 512, 0,"");
+                }else{
+                    //uexWindow.toast(0, 5, "读取本地栏目文件失败", 2000);
+                    //栏目备份数据
+                    uexFileMgr.openFile(path_sign, path_myColumns, '1');
+                    uexFileMgr.writeFile(path_sign, '0', JSON.stringify(columnsDataDefault));
+                    readFile(path_sign,path_myColumns);
+                }
+        }
+        
+        var menu_width="menuWidth";
+        //生成栏目dom显示
+        function showColumnDom(index,columnIdVal,pageName){
+             if(pageName.length==3){
+                 menu_width='menuWidth02';
+             }else if(pageName.length==4){
+                 menu_width='menuWidth03';
+             }else{
+                 menu_width='menuWidth';
+             }
+             if(index==0){
+                 columnDom+='<li id="id_'+columnIdVal+'" class="ub ub-ac ub-pc menu  '+menu_width+' ofont f-s12"><span>'+pageName+'</span></li>';
+             }else{
+                 columnDom+='<li id="id_'+columnIdVal+'" class="ub ub-ac ub-pc menu  '+menu_width+' menus_color f-s10"><span>'+pageName+'</span></li>';
+             }
+        }
+        
+        //修改栏目样式及动态定位
+        function updateMenu(index){
+            if(index!=scollIndex){
+                var allWidths = 0;                     //所有滚动内容的宽度
+                var windowWidth=document.body.offsetWidth; //屏幕宽度
+                var scrWidth = $('#menu').scrollLeft();   //scroll可视化滚动条最左边距离左边起点的距离
+                var widths = 0;       //一个栏目的宽度
+               //栏目样式改变
+                var oldStringVal=$("#"+objId[scollIndex]).find('span').eq(0).html();
+                var newStringVal=$("#"+objId[index]).find('span').eq(0).html();
+                var old_menu_font='menuWidth';
+                var new_menu_font='menuWidth';
+                if(oldStringVal.length==3){
+                    old_menu_font='menuWidth02';
+                }else if(oldStringVal.length==4){
+                    old_menu_font='menuWidth03';
+                }
+                
+                if(newStringVal.length==3){
+                    new_menu_font='menuWidth02';
+                }else if(newStringVal.length==4){
+                    new_menu_font='menuWidth03';
+                }
+                //alert(old_menu_font+"\n"+new_menu_font);
+                $("#"+objId[scollIndex]).attr('class','ub ub-ac ub-pc menu '+old_menu_font+' menus_color f-s10');//恢复所有栏目样式
+                $("#"+objId[index]).attr('class','ub ub-ac ub-pc menu '+new_menu_font+' ofont f-s12');//设置当前展示栏目样式
+                setLocVal('idPage',objId[index]);
+                
+                var elem=document.getElementById(objId[index]);
+                menuLocation(elem);
+                
+                scollIndex = index; //记录上一次的栏目索引
+            }
+        }
+        
+        //打开头部栏目的浮动窗口
+        function openFrame(id){
+            isSlide=0;
+            var index =columnOrder[id].index;
+            var cStyle=columnOrder[id].columnsType;
+            var windowUrl=columnOrder[id].windowUrl;
+            var domId=columnOrder[id].domId;
+            //alert(windowUrl);
+            if(cStyle=="f"){ //定位打开浮动页
+                appcan.locStorage.setVal('idPage',objId[index]);
+                appcan.locStorage.setVal("preCloumns",index);
+                updateMenu(index);
+                isOpened(objId,index);//调用判断是否一打开，未打开点击加载数据
+            }else{ //定位打开新页面
+                $("#"+domId).removeClass("menus_color f-s10").addClass('ofont f-s12');
+                setTimeout(function(){$("#"+domId).removeClass('ofont f-s12').addClass("menus_color f-s10");},500);
+                columnOrder[id].name = $("#"+domId).find('span').html().replace(/(^\s*)|(\s*$)/g,'');
+                appcan.locStorage.setVal('columnInfo',columnOrder[id]);
+                appcan.window.open(id,windowUrl,10);
+            }
+        }
+        
+        //自定义判断是否已经打开过
+        function isOpened(objId,index){
+             //动态隐藏显示浮动页（减少重排和渲染）
+            uexWindow.evaluateMultiPopoverScript('','indexPage',JSON.parse(popcontent).content[index].inPageName,'doDisplay()');
+            for(var j=0;j<JSON.parse(popcontent).content.length;j++){
+                if(j!=index){
+                    if(j==(parseInt(index)-1)||j==(parseInt(index)+1)){
+                        uexWindow.evaluateMultiPopoverScript('','indexPage',JSON.parse(popcontent).content[j].inPageName,'doDisplay()');
+                    }else{
+                        uexWindow.evaluateMultiPopoverScript('','indexPage',JSON.parse(popcontent).content[j].inPageName,'doHide()');
+                    }
+                }
+            }
+            var count=0;
+            var columnInfo="";
+            //定义一个数组，存在已经打开过的页面名称，未打开过的去执行里面的页面获取数据的函数；也就是说除了重庆，其他页面首次open的时候先不获取数据，只有第一次点击的时候再获取数据。
+            for(var i=0;i<isOpen.length;i++){
+                if(isOpen[i]==objId[index]){
+                      //直接变换浮动窗口，不执行加载获取初始数据
+                      if(isSlide==0){//点击切换定位浮动页
+                          uexWindow.setSelectedPopOverInMultiWindow("indexPage", index);
+                      }
+                    break;//跳出for循环
+                }else{
+                    count++;
+                }
+                //未打开过
+                if(count==isOpen.length){
+                    columnInfo=columnOrder[objId[index].split("_")[1]];
+                    isOpen[count]=objId[index];
+                     //直接变换浮动窗口，并同时加载获取该页面的初始数据
+                    if(isSlide==0){//点击切换定位浮动页
+                        uexWindow.setSelectedPopOverInMultiWindow("indexPage", index);
+                    }
+                    
+                    if(!isDefine(columnInfo.flag)){
+                        var pageName=columnInfo.inPageName;
+                        var functions="";
+                        if(isNetwork!=1){
+                            functions='setCacheData();';
+                        }else{
+                            functions=(isAndroid)?'uexWindow.toast(1,5,"","");':'loader.open();';
+                            switch(columnInfo.demoId){
+                                case 0:
+                                    functions+='getSliderData();getNewsItemData(1);';
+                                    break;
+                                case 1:
+                                    functions+='slists(1);';
+                                    break;
+                                case 2:
+                                    functions+='userList();slists(1);';
+                                    break;
+                                case 3:
+                                     functions+='slists(1);';
+                                    break;
+                                case 4:
+                                     functions+='slistsHotspot(1);slistsItem(1);';
+                                    break;
+                                case 5:
+                                     functions+='cqAdvert();slists(1);';
+                                    break;
+                                case 8:
+                                     functions+='getData()';
+                                    break;
+                                case 9:
+                                     functions+='getData()';
+                                    break;
+                            } 
+                        }
+                        uexWindow.evaluateMultiPopoverScript('','indexPage',pageName,functions);
+                    }
+                }
+            }
+        }
+        
+        
+        //左滑
+        var flag = 1;
+        function moveleft() {
+           if(flag == 1){
+              flag = 0;
+              appcan.locStorage.setVal("moveFlag","left");
+              appcan.window.publish('home_page',1);
+              appcan.window.setWindowFrame(oframe,0,280,function(){}); 
+           }else{
+              flag = 1;
+              appcan.window.publish('home_page',2);
+              appcan.window.setWindowFrame(0,0,280,function(){}); 
+           }
+        }
+        //右滑
+        function moveright() {
+          if(flag == 1){
+              flag = 0;
+              appcan.locStorage.setVal("moveFlag","right");
+              appcan.window.publish('home_page',3);
+              appcan.window.setWindowFrame(-oframe,0,280,function(){});
+          }else{
+              flag = 1;
+              appcan.window.publish('home_page',2);
+              appcan.window.setWindowFrame(0,0,280,function(){}); 
+          }
+        }
+        //底部导航条
+        function getfooter(id) {
+            switch(id){
+                  case "f_government":
+                      appcan.locStorage.setVal("govermentColumnDomIndex", "");
+                      appcan.window.open('home_government','home_government.html','10');
+                      break;
+                  case "f_life":
+                    appcan.window.open('life','life.html',10);
+                    break;
+                  case "f_activity":
+                    //uexWindow.toast(0, 5, "该模块正在建设中...", 2000);
+                    appcan.window.open('home_activity','home_activity.html','10');
+                    break;
+                  case "f_shoot":
+                    appcan.window.open('shoot','shoot.html?pageName=shoot','10');
+                    break;
+            }
+        }
+        //左侧栏跳转政务栏目
+        function goGoverment(id){
+            //网络问政跳转外链
+            if(id==="wz"){
+                appcan.locStorage.setVal("navigation_ID","wenzhneg");
+                appcan.window.open('home_navigation','home_navigation.html',10);
+            }else{
+                appcan.window.open('home_government','home_government.html','10');
+            }
+        }
+      
+        //搜索
+        function osearch() {
+            appcan.window.open('search','search.html',10);
+        }
+        
+    //打开其他区县App页面
+    function openPop(str){
+        if(str == 0){
+            var openHeight = parseInt(appcan.locStorage.val("rootHeader"));
+            uexWindow.openPopover("home_else02_content", "0", "home_else02_content.html", "", 0, openHeight, parseInt(document.body.clientWidth), parseInt(document.body.clientHeight), 16, "0");
+            appcan.frame.bringToFront('home_else02_content');//在最上层
+        }else{
+            uexWindow.closePopover('home_else02_content');
+        }
+    }
+    //打开自定义个人栏目页面
+    function openPop02(str){
+        if(str == 0){
+            uexWindow.openPopover("myColumns_content", "0", "myColumns_content.html", "", 0, heightValue, parseInt(document.body.clientWidth), parseInt(document.body.clientHeight), 16, "0");
+            appcan.frame.bringToFront('myColumns_content');//在最上层
+        }else{
+            uexWindow.closePopover('myColumns_content');
+        }
+    }
+    
+//**********点击事件**********
+    var dropStatus=0;
+    appcan.button("#allDrop", "btn-act", function() {
+           if(dropStatus==0){
+                openPop(dropStatus);
+                $("#drop").removeClass("dropDown");
+                $("#drop").addClass("dropUp");
+                dropStatus=1;
+            }else{
+                openPop(dropStatus);
+                $("#drop").removeClass("dropUp");
+                $("#drop").addClass("dropDown");
+                dropStatus=0;
+            }
+    })
+    
+    var dropStatus02=0;
+    appcan.button("#myColumns", "btn-act", function() {
+        if(dropStatus02==0){
+            openPop02(dropStatus02);
+            $("#myAngle").removeClass("downAngle");
+            $("#myAngle").addClass("upAngle");
+            dropStatus02=1;
+        }else{
+            openPop02(dropStatus02);
+            $("#myAngle").removeClass("upAngle");
+            $("#myAngle").addClass("downAngle");
+            dropStatus02=0;
+            //栏目管理页面关闭   需要检查是否有改动    有则重新读取
+            var resFileData=appcan.locStorage.val("resFileData");
+            //console.log(resFileData);
+           // console.log(JSON.stringify(fileData));
+            if(resFileData!=JSON.stringify(fileData)){
+                appcan.locStorage.setVal("homepageopen","2");//第二次打开启用缓存加载
+                //先关闭再读取
+                uexWindow.closeMultiPopover('indexPage');//关闭之前打开的浮动页
+                if(dataType==1){
+                    readFile(path_sign,path_myColumns);
+                }else{
+                    var newColumnsData="";
+                    newColumnsData=appcan.locStorage.val("columnsDataTemp");
+                    showColumn(newColumnsData);
+                }
+               
+                //******实际应该记录栏目变化前的状态再恢复      时间关系先做成回到起始状态*****
+                //$('#otable').scrollLeft(0);//栏目滑动到最左边
+                // for(var i = 0;i < objId.length;i++){//恢复所有栏目样式
+                    // $("#"+objId[i]).attr('class','ub ub-ac ub-pc menus_color');
+                // }
+                // $("#id_cq").attr('class','ub ub-ac ub-pc ofont f-s12');
+            }
+        }
+    })
+    
+    //header顶部菜单
+    appcan.button("#goLeft", "btn-act", function() {
+           moveleft();
+    })
+    appcan.button("#goSearch", "btn-act", function() {
+           osearch();
+    })
+    appcan.button("#goRight", "btn-act", function() {
+           moveright();
+    })
+    
+    //footer底部菜单
+    appcan.button("#f_government", "btn-act", function() {
+           var iconDom=$("#f_government").children().eq(0);
+           var titleDom=$("#f_government").children().eq(1);
+           iconDom.removeClass("f_government").addClass("f_government_on");
+           titleDom.css("color","#FF8A00");
+           getfooter('f_government');
+           setTimeout(function(){
+                iconDom.removeClass("f_government_on").addClass("f_government");
+                titleDom.css("color","black");
+           },1000);
+    })
+    appcan.button("#f_life", "btn-act", function() {
+           var iconDom=$("#f_life").children().eq(0);
+           var titleDom=$("#f_life").children().eq(1);
+           iconDom.removeClass("f_life").addClass("f_life_on");
+           titleDom.css("color","#FF8A00");
+           getfooter('f_life');
+           setTimeout(function(){
+                iconDom.removeClass("f_life_on").addClass("f_life");
+                titleDom.css("color","black");
+           },1000);
+    })
+    appcan.button("#f_activity", "btn-act", function() {
+           var iconDom=$("#f_activity").children().eq(0);
+           var titleDom=$("#f_activity").children().eq(1);
+           iconDom.removeClass("f_activity").addClass("f_activity_on");
+           titleDom.css("color","#FF8A00");
+           getfooter('f_activity');
+           setTimeout(function(){
+                iconDom.removeClass("f_activity_on").addClass("f_activity");
+                titleDom.css("color","black");
+           },1000);
+    })
+    appcan.button("#f_shoot", "btn-act", function() {
+           var iconDom=$("#f_shoot").children().eq(0);
+           var titleDom=$("#f_shoot").children().eq(1);
+           iconDom.removeClass("f_shoot").addClass("f_shoot_on");
+           titleDom.css("color","#FF8A00");
+           getfooter('f_shoot');
+           setTimeout(function(){
+                iconDom.removeClass("f_shoot_on").addClass("f_shoot");
+                titleDom.css("color","black");
+           },1000);
+    })
+    
+  //侧栏显示后加载透明页监听滑动关闭
+  function shadowWindow(num){
+      var openHeight = parseInt(appcan.locStorage.val("rootHeader"));
+      if(num==1){
+          uexWindow.openPopover("shadowWindow", "0", "shadowWindow.html", "", 0, openHeight, parseInt(document.body.clientWidth), parseInt(document.body.clientHeight), 16, "0");
+      }else{
+          uexWindow.closePopover('shadowWindow');
+      }
+  }
+    
+  //双击回到顶部测试
+    $("#header").on("doubleTap",function(){
+        appcan.window.evaluatePopoverScript("","content","goTop()");
+    })
+    </script>
+</html>

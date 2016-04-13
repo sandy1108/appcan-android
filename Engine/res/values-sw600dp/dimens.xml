@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="plugin_appstoremgr_del_app_ok_button_height">75.0dip</dimen>
+    <dimen name="plugin_appstoremgr_grid_item_app_icon_width">72.0dip</dimen>
+    
+    <!-- 指示器小球大小 -->
+    <dimen name="plugin_appstoremgr_del_app_icon">30.0dip</dimen>
+    <dimen name="plugin_appstoremgr_del_app_icon_margin_right">20.0dip</dimen>
+    <dimen name="plugin_appstoremgr_app_icon_margin_top">15.0dip</dimen>
+    <dimen name="plugin_appstoremgr_app_download_indicator">36.0dip</dimen>
+
+    <dimen name="plugin_appstoremgr_grid_item_text_size">18.0sp</dimen>
+    <dimen name="plugin_appstoremgr_grid_item_text_margin">6.0dip</dimen>
+    <dimen name="plugin_appstoremgr_grid_item_text_padding">3.0dip</dimen>
+    <dimen name="plugin_appstoremgr_grid_item_text_height">53.0dip</dimen>
+    
+    <!-- app icon back -->
+    <dimen name="plugin_appstoremgr_new_app_icon_margin_top">8.0dip</dimen>
+    <dimen name="plugin_appstoremgr_new_app_icon_width">12.0dip</dimen>
+
+</resources>

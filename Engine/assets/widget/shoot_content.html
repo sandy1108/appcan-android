@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+    <head>
+        <title></title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="target-densitydpi=device-dpi, width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <link rel="stylesheet" href="css/fonts/font-awesome.min.css">
+        <link rel="stylesheet" href="css/ui-box.css">
+        <link rel="stylesheet" href="css/ui-base.css">
+        <link rel="stylesheet" href="css/ui-color.css">
+        <link rel="stylesheet" href="css/appcan.icon.css">
+        <link rel="stylesheet" href="css/appcan.control.css">
+        <link rel="stylesheet" href="css/new_file.css">
+        <link rel="stylesheet" href="css/common.css">
+        <link rel="stylesheet" href="css/loader.css">
+        <style>
+        .font-size02{
+            font-size:1.25em;
+        }
+        </style>
+    </head>
+    <body class="um-vp bg-e8 f-f" ontouchstart>
+        <div class="ub ub-ver ub-f1" id="content">
+            
+        </div>
+        <script src="js/newAppcan.js"></script>
+        <script src="js/appcan.control.js"></script>
+        <script src="js/common.js"></script>
+        <script src="js/interface.js"></script>
+        <script src="js/common.dom.js"></script>
+    </body>
+    <script>
+        var icache;
+        var pageCoun = 1;   //总页数
+        var pageNum = 1;     //当前页数
+        var objImage = {};      //点击图片
+        var currentInfo = '';  //要分享的这条数据数据的objID,用于定位分享的newsId以及分享的内容
+        var itemInfo={}; //根据newsId存放的对应每条列表数据json
+        var status=1;//加载控制
+        var userInfo=isDefine(getLocVal('userInfo')) ? getLocVal('userInfo'):"";
+        var objId_temp="";
+        var objectType=5;
+        var columnId="";
+        var slideType=1;
+        appcan.ready(function() {
+            var parameter=zy_parse();
+            columnId=parameter.columnId;
+            icache = appcan.icache({maxtask:5});
+            userId = isDefine(userInfo)?JSON.parse(userInfo).userId:"";
+            //alert(columnId);
+            //监听发布随手拍成功,刷新列表
+            appcan.window.subscribe('refrehShootList',function (){
+                loader.open();
+                shootList(1);
+            })
+            //监听评论数的改变
+            appcan.window.subscribe('changeCommentCount',function(id){
+                //objImage["img_"+id].wordsCount+=1; //动态评论数变化
+                var numStr = $("#commentSum_"+id).html();
+                $("#commentSum_"+id).html(parseInt(numStr) + 1);
+            })
+            //监听点赞数的改变
+            appcan.window.subscribe('shoot_zan',function (sid){
+                var numStr = $("#supportSum_"+sid).html();
+                $("#supportSum_"+sid).html(parseInt(numStr) + 1);
+            });
+            
+            if(isAndroid){
+                var param_slip = {
+                    isSupport:true   //(必选)true:支持；false:不支持。默认为false。
+                }
+                uexWindow.setIsSupportSlideCallback(JSON.stringify(param_slip));//设置网页是否支持滑动的相关监听方法
+            }  
+            
+             //滑动顶部刷新方式
+            appcan.frame.setBounce([0,1], null, null, function(type) {
+                if(status==0){//可能由于网络原因,处理恢复上一次的加载
+                     status=1;
+                     appcan.frame.resetBounce(slideType);
+                 }
+                slideType=type;
+                 //判断是否有网
+                 GetInfoDevice(function(str){
+                     if(!str){
+                         appcan.frame.resetBounce(slideType);
+                         return false;
+                     }else{
+                          if (type == 0) {
+                                pageNum = 1; 
+                                shootList(pageNum);
+                         }else{
+                            if ((pageNum-1) * 5 > pageCoun) {
+                                appcan.frame.resetBounce(slideType);
+                            } else {
+                                pageNum++;
+                                shootList(pageNum);
+                            }
+                         }
+                     }
+                 });
+             },bounceBgColor,imgSettingsVal)
+             
+             //判断是否有网
+            GetInfoDevice(function(str){
+                 if(!str){
+                     setCacheData();//默认加载缓存数据
+                 }
+            }) 
+             
+            loader.open();
+            shootList(pageNum);
+        })
+        
+        //缓存加载首页数据
+        function setCacheData(){
+            var homeNewsListShoot_item= getLocVal('homeNewsListShoot_item_'+columnId);
+            //alert(homeNewsListCQ_item);
+            if(isDefine(homeNewsListShoot_item)){
+                  newsItem.domShow(4,0,JSON.parse(homeNewsListShoot_item),showShootData);
+              }
+        }
+        
+        //ajax获取随手拍数据
+        function shootList(pageNumVal){
+            status=0;
+            var if_list = {
+                "transcode": "photoInfo_getList",
+                "content": {
+                    "userId": userId,
+                    "page": {
+                        "pageNo": pageNumVal,
+                        "pageSize": 10
+                    }
+                }
+            };
+            console.log(JSON.stringify(if_list));
+            appcan.request.ajax({
+                url : chongqingUrl,
+                headers : {
+                    token : appcan.locStorage.val("token") || '',
+                    deviceId : appcan.locStorage.val("deviceId") || ''
+                },
+                appVerify:true,
+                data : JSON.stringify(if_list),
+                timeout : "15000",
+                type : "POST",
+                contentType : "application/json",
+                dataType : "json",
+                success : function(res) {
+                    console.log("随手拍列表请求返回=======>");
+                    console.log(chongqingUrl+" "+JSON.stringify(res));
+                    uexWindow.closeToast();
+                    appcan.frame.resetBounce(slideType);
+                    loader.close();
+                    if(res.status != '000'){
+                        appcan.window.openToast(res.msg,2000);
+                        return false;
+                    }
+                    
+                    pageCoun = res.data.totalNum;   
+                    var list = res.data.list;
+                    
+                    if(pageNum==1){
+                        if(list.length == 0){
+                            $('#content').html('<div class="ub ub-f1 ub-ac ub-pc c-66" style="margin-top:1em;">暂无信息</div>');
+                            return false;
+                        }else{
+                             newsItem.domShow(4,0,list,showShootData);
+                             setLocVal('homeNewsListShoot_item_'+columnId,JSON.stringify(list));
+                        }
+                    }else{
+                        //翻页资讯列表显示
+                        if(list.length>0){
+                            newsItem.domShow(4,0,list,showShootData);//新闻列表显示
+                        }else{
+                            status=1;
+                        }
+                    }
+                },
+                error : function(xhr, errorType, error,msg) {
+                    loader.close();
+                    status=1;
+                    uexWindow.closeToast();
+                    appcan.frame.resetBounce(slideType);
+                }
+            })
+        }
+        
+        //callback函数显示随手拍数据
+        function showShootData(newsItemDatas){
+                var newsItemDom=isDefine(newsItemDatas.dom)?newsItemDatas.dom:"";
+                itemInfo=$.extend(itemInfo,(isDefine(newsItemDatas.itemInfo) ? newsItemDatas.itemInfo:""));
+                console.log(newsItemDatas);
+                if(pageNum == 1){
+                    $("#content").empty();
+                }
+                $('#content').append(newsItemDom);
+                status=1;
+                
+                //随手拍多图
+                var btn_key=1;
+                appcan.button('.shootImgs','btn-act',function(e){
+                    if(btn_key==1){
+                        btn_key=0;
+                        var id=$(this);
+                        btn_ink(id,e);
+                        
+                        var objId=(this.id).split("_")[1];
+                        setLocVal('shootItemInfo',JSON.stringify(itemInfo[objId]));
+                        appcan.window.open('shoot_Pics_content','shoot_Pics_content.html',10);
+                        setTimeout(function(){btn_key=1;},2000);
+                    }
+                })
+                //随手拍点赞
+                appcan.button('.onzambia','btn-act',function(){
+                    var objId=(this.id).split("_")[1];
+                    objId_temp=objId;
+                    userAction(objId,5,1,'',userId,shootSupportCallBack);
+                })
+                //查看随手拍评论详情
+                appcan.button(".listInfo","btn-act",function(){
+                    var objId=(this.id).split("_")[1];
+                    objId_temp=objId;
+                    setLocVal('shootItemInfo',JSON.stringify(itemInfo[objId]));
+                    appcan.window.open('shoot_details',"shoot_details.html",10);
+                })
+                
+                //随手拍分享
+                appcan.button('.shareInfo','btn-act',function(){
+                    var objId=(this.id).split("_")[1];
+                    appcan.locStorage.setVal('shareId',itemInfo[objId].photoId+"_"+objectType);
+                    appcan.locStorage.setVal('shareTitle',itemInfo[objId].content);
+                    appcan.locStorage.setVal('shareSummary','');
+                    appcan.locStorage.setVal('share_type','interactive');
+                    sharePic();  
+                })
+        }
+        
+        //调用分享页面
+        function sharePic() {
+            appcan.window.evaluateScript('','shareTypeChoose()');
+        }
+        
+          //对点赞结果回调callback
+       function shootSupportCallBack(res){
+            console.log("对评论的点赞结果返回给页面====>");
+            console.log(res);
+            if(res.status=="000"){
+                var com = $("#supportSum_"+objId_temp).html();
+                if(isDefine(com)){
+                    $("#supportSum_"+objId_temp).html(parseInt(com) + 1);
+                }
+                $("#supportIcon_"+objId_temp).removeClass("res-praiseIcon").addClass('dogood');
+                itemInfo[objId_temp].supportSum+=1; //动态点赞数变化
+            }else if(res.status == "4060") {
+                uexWindow.toast(0, 5, "您已经点过赞了", 2000);
+            }else{
+                uexWindow.toast(0, 5, res.msg, 2000);
+            }
+        }
+        
+        function moveLength(){
+            var el = document.querySelector('.test');
+            var startPosition, endPosition, deltaX, deltaY, moveLength;
+    
+            el.addEventListener('touchstart', function (e) {
+                var touch = e.touches[0];
+                startPosition = {
+                    x: touch.pageX,
+                    y: touch.pageY
+                }
+            });
+    
+            el.addEventListener('touchmove', function (e) {
+                var touch = e.touches[0];
+                endPosition = {
+                    x: touch.pageX,
+                    y: touch.pageY
+                }
+    
+                deltaX = endPosition.x - startPosition.x;
+                deltaY = endPosition.y - startPosition.y;
+                moveLength = Math.sqrt(Math.pow(Math.abs(deltaX), 2) + Math.pow(Math.abs(deltaY), 2));
+                console.log(moveLength);
+            });
+        }
+        
+        function goTop(){
+            window.scrollTo(0,0);
+        }
+ </script>
+</html>

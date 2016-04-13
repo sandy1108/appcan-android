@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/plugin_appstoremgr_grid_item_width"
+    android:layout_height="wrap_content"
+    android:background="@drawable/plugin_appstoremgr_tile_grid_item_bg" >
+
+    <LinearLayout
+        android:id="@+id/plugin_appstore_tile_icon_name"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical"
+        android:layout_centerHorizontal="true">
+
+        <ImageView
+            android:id="@+id/plugin_appstoremgr_tile_icon"
+            android:layout_width="@dimen/plugin_appstoremgr_tile_grid_item_tile_icon_size"
+            android:layout_height="@dimen/plugin_appstoremgr_tile_grid_item_tile_icon_size"
+            android:layout_gravity="center"
+            android:scaleType="fitCenter"
+            android:background="@drawable/plugin_appstoremgr_icon_bg" />
+        
+        <TextView
+            android:id="@+id/plugin_appstoremgr_tile_name"
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/plugin_appstoremgr_tile_text_view_height"
+            android:ellipsize="middle"
+            android:gravity="center"
+            android:paddingLeft="@dimen/plugin_appstoremgr_grid_item_text_padding"
+            android:paddingRight="@dimen/plugin_appstoremgr_grid_item_text_padding"
+            android:includeFontPadding="false"
+            android:singleLine="true"
+            android:textColor="#333333"
+            android:textSize="@dimen/plugin_appstoremgr_grid_item_text_size" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/plugin_appstoremgr_del_tile_icon"
+        android:layout_width="@dimen/plugin_appstoremgr_del_app_icon"
+        android:layout_height="@dimen/plugin_appstoremgr_del_app_icon"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="@dimen/plugin_appstoremgr_del_app_icon_margin_right"
+        android:src="@drawable/plugin_appstoremgr_del_app_selector"
+        android:visibility="invisible" />
+    
+    <ImageView
+        android:id="@+id/plugin_appstoremgr_tile_add_home_icon"
+        android:layout_width="@dimen/plugin_appstoremgr_del_app_icon"
+        android:layout_height="@dimen/plugin_appstoremgr_del_app_icon"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="@dimen/plugin_appstoremgr_del_app_icon_margin_right"
+        android:src="@drawable/plugin_appstoremgr_tile_add_home_marker"
+        android:visibility="invisible" />
+
+    <TextView
+        android:id="@+id/plugin_appstoremgr_push_icon"
+        android:layout_width="@dimen/plugin_appstoremgr_del_app_icon"
+        android:layout_height="@dimen/plugin_appstoremgr_del_app_icon"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="@dimen/plugin_appstoremgr_del_app_icon_margin_right"
+        android:background="@drawable/plugin_appstoremgr_push_icon"
+        android:gravity="center"
+        android:visibility="invisible" />
+
+</RelativeLayout>

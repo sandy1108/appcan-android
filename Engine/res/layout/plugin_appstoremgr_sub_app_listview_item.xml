@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#FFFFFF"
+    android:orientation="vertical" >
+    
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="1dip"
+        android:background="@drawable/plugin_appstoremgr_listview_divider" />
+    
+    <RelativeLayout
+        android:id="@+id/re1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="12dip"
+        android:paddingRight="12dip"
+        android:paddingBottom="12dip"
+        android:paddingTop="12dip"
+        android:visibility="visible" >
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="60dip"
+            android:layout_height="60dip"
+            android:background="@drawable/plugin_appstoremgr_icon_bg" />
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_alignBottom="@+id/imageView"
+            android:layout_alignTop="@+id/imageView"
+            android:layout_marginLeft="12dip"
+            android:layout_marginRight="10dip"
+            android:layout_toRightOf="@+id/imageView" >
+
+            <TextView
+                android:id="@+id/appName"
+                android:layout_width="136dip"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:text="AppCan应用"
+                android:textColor="#202020"
+                android:textSize="18sp"/>
+            
+                <RelativeLayout
+                    android:id="@+id/appDetails"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true">
+                   
+                    <TextView
+                        android:id="@+id/appDetailsTv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="查看详情"
+                        android:textSize="15sp"
+                        android:layout_centerVertical="true"
+                        android:textColor="#8E8E8E" />
+                    <ImageView
+                        android:id="@+id/appDetailsIv"
+                        android:layout_toRightOf="@+id/appDetailsTv"
+                        android:layout_marginLeft="10dip"
+                        android:layout_centerVertical="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/plugin_appstoremgr_sub_app_details_collapse"/>
+                </RelativeLayout>
+
+            <org.zywx.wbpalmstar.plugin.uexappstoremgr.view.CircleProgress
+                xmlns:android_custom="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/plugin_appstoremgr_app_download_indicator"
+                android:layout_width="@dimen/plugin_appstoremgr_circle_progress_size"
+                android:layout_height="@dimen/plugin_appstoremgr_circle_progress_size"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="5dip"
+                android_custom:plugin_appstoremgr_round_color="@color/plugin_appstoremgr_circle_progress_round_color"
+                android_custom:plugin_appstoremgr_round_progress_color="@color/plugin_appstoremgr_download_main_color"
+                android_custom:plugin_appstoremgr_text_color="@color/plugin_appstoremgr_download_main_color"
+                android_custom:plugin_appstoremgr_text_size="@dimen/plugin_appstoremgr_circle_progress_text_size"
+                android_custom:plugin_appstoremgr_round_width="@dimen/plugin_appstoremgr_circle_progress_round_width"
+                android_custom:plugin_appstoremgr_style="STROKE"
+                android:visibility="gone" />
+            <Button
+                android:id="@+id/downloadState"
+                android:layout_width="wrap_content"
+                android:layout_height="30dip"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="5dip"
+                android:background="@drawable/plugin_appstoremgr_sub_app_download_bt"
+                android:text="安装"
+                android:textColor="@color/plugin_appstoremgr_download_main_color" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+</LinearLayout>

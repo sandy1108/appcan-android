@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+    <head>
+        <title></title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="target-densitydpi=device-dpi, width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <link rel="stylesheet" href="css/ui-base.css">
+        <link rel="stylesheet" href="css/ui-box.css">
+        <link rel="stylesheet" href="css/ui-color.css">
+        <link rel="stylesheet" href="css/new_file.css">
+    </head>
+    <body id="" class="ub um-vp  bc-bg ub-ver f-f" style="margin:0;" ontouchstart>
+        <div class="ub ub-ac" style="margin-top:1em;margin-bottom:.6em;margin-left: .5em;">
+            <div class="ub uamr-r" style="height:1em;width:0.5em;background-color:#ff8a00"></div>
+            <div class="ub umar-l">最新评论</div>
+        </div>
+        <div id="list" class="ub ub-ver"></div>
+        <script src="js/appcan.js"></script>
+        <script src="js/appcan.control.js"></script>
+        <script src="js/common.js"></script>
+    </body>
+    <script>
+        var newslist = "";
+        var pageNum = 1;
+        var actId = appcan.locStorage.val("actvCommentId");
+        appcan.ready(function() {
+            appcan.initBounce();
+            appcan.window.subscribe("actCommentOk", function(msg) {
+                if (msg == actId) {
+                    showComment(1);
+                }
+            });
+            uexWindow.toast(1, 5, "", "");
+            showComment(1);
+        })
+        //获取展示评论的方法
+        function showComment(pageNum) {
+            var list1 = {
+                "ifno" : "CMS-WORD-0001",
+                "condition" : {
+                    "dmnId" : "cq",
+                    "grpId" : "",
+                    "roleId" : "",
+                    "chnlId" : "",
+                    "pageNo" : pageNum,
+                    "rowCnt" : "",
+                    "rltEntt" : [{
+                        "enttTypeId" : "14",
+                        "enttId" : actId
+                    }]
+                },
+                "content" : {}
+            };
+            appcan.request.ajax({
+                url : chongqingUrl,
+                headers : {
+                    token : appcan.locStorage.val("token") || '',
+                    deviceId : appcan.locStorage.val("deviceId") || ''
+                },
+                appVerify:true,
+                data : list1,
+                type : "POST",
+                timeout : "15000",
+                contentType : "application/json",
+                dataType : "json",
+                success : function(data) {
+                    newslist = "";
+                    var listcontent = data.info.list;
+                    if (listcontent.length == 0) {
+                        newslist = '<div class="ub ub-f1 umar-t ulev1 ub-pc" style="color:#dedede">暂无评论</div>'
+                    }
+                    for (var i = 0; i < listcontent.length; i++) {
+                        var nickname = isDefine(listcontent[i].nickname) ? listcontent[i].nickname : (listcontent[i].loginName).substring(0, 3) + '***' + (listcontent[i].loginName).substring(8, 11);
+                        var userUrl = "image/headpic.png";
+                        if (isDefine(listcontent[i].userIcon)) {
+                            userUrl = getImgUrl("1", listcontent[i].userIcon, 2);
+                        }
+                        var cont = listcontent[i].content;
+                        var time = listcontent[i].wordTime;
+                        var commentTime = timePoor(time);
+                        var newstr = '<div class="ub umar-a" style="padding-bottom:.6em;border-bottom:1px solid #dddddd">' + '<div class="ub ub-pc" style="width:3em">' + '<div class="ub ub-img7 umar-t"style="height:2em;width:2em;border-radius:50%;background-image:url(' + userUrl + ')"></div>' + '</div>' + '<div class="ub ub-ver ub-f1">' + '<div class="ub umar-b" style="color:#707070;font-size:0.8em">' + nickname + '</div>' + '<span class="ub ub-f1" style="font-size:1.05em;line-height:1.3em;">' + cont + '</span>' + '<div class="ub ub-f1 ub-pe">' + '<div class="ub umar-t umar-r" style="font-size:0.75em;color:#707070">' + commentTime + '</div>' + '</div>' + '</div>          ' + '</div>';
+                        newslist += newstr;
+                    }
+                    if (pageNum == 1) {
+                        $("#list").empty();
+                    }
+                    $("#list").html(newslist);
+                    uexWindow.closeToast();
+                },
+                error : function() {
+                    uexWindow.closeToast();
+                }
+            })
+        }
+        function goTop() {
+            window.scrollTo(0, 0);
+        }
+    </script>
+</html>

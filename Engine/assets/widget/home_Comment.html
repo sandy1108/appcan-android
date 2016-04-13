@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+    <head>
+        <title></title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="target-densitydpi=device-dpi, width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <link rel="stylesheet" href="css/fonts/font-awesome.min.css">
+        <link rel="stylesheet" href="css/ui-box.css">
+        <link rel="stylesheet" href="css/ui-base.css">
+        <link rel="stylesheet" href="css/ui-color.css">
+        <link rel="stylesheet" href="css/appcan.icon.css">
+        <link rel="stylesheet" href="css/appcan.control.css">
+        <link rel="stylesheet" href="css/new_file.css">
+    </head>
+    <body class="um-vp f-f" ontouchstart>
+        <div id="page_0" class="up ub ub-ver bg-wh" tabindex="0">
+            <!--header开始-->
+            <div id="header" class="uh bc-text-head ub oc_header">
+                <div class="nav-btn" id="nav-left">
+                    <div class="ub-img oback"></div>
+                </div>
+                <h1 class="ut ub-f1 ulev-3 ut-s tx-c" tabindex="0">写评论</h1>
+                <div class="nav-btn nav-bt" id="nav-right">
+                    发布
+                </div>
+            </div>
+            <div id="content" class="ub-f1 tx-l uinn-t05">
+                <div class="uba bc-border uinput ub ub-f1 uc-a1 uinn fz-8" style="margin: 0 .5em .5em .5em">
+                    <textarea placeholder="请填写评论内容" type="text" id="conText" class="ub-f1"></textarea>
+                </div>
+            </div>
+        <script src="js/appcan.js"></script>
+        <script src="js/appcan.control.js"></script>
+        <script src="js/common.js"></script>
+        <script src="js/interface.js"></script>
+    </body>
+    <script>
+        var commentStatus=1;
+        var commentParameter=isDefine(getLocVal("commentParameter"))?getLocVal("commentParameter"):"";
+        var userInfo=isDefine(getLocVal("userInfo"))?getLocVal("userInfo"):"";
+        var newDetailInfo=getLocVal('newDetailInfo');
+        newDetailInfo=isDefine(newDetailInfo)?JSON.parse(newDetailInfo):{};
+        appcan.ready(function() {
+            console.log(appcan.locStorage.val("deviceId") || '');
+        });
+        appcan.button("#nav-right", "btn-act", function() {
+            if(commentStatus==0){
+                appcan.window.openToast('评论正在提交...',1000);
+            }else{
+                commentStatus=0;
+                doComment();
+            }
+        })
+        
+    //处理提交评论的方法
+    function doComment(){
+        var content = $("#conText").val();
+        var userId=isDefine(userInfo)?JSON.parse(userInfo).userId:"";
+        var dataJSON=JSON.parse(commentParameter);
+        if(content==""){
+            commentStatus=1;
+            appcan.window.openToast('内容不能为空',2000);
+            return false;
+        }
+        var conditions={
+             "objType": dataJSON.objType,
+             "parentCommentId":dataJSON.parentCommentId,
+             "commentedUserId":dataJSON.commentedUserId,
+             "userId": userId,
+             "content": content
+         };
+        var list=getInterface('commentInfoAdd',dataJSON.objId,"",conditions);//接口封装配置函数
+        console.log("评论接口======>"+JSON.stringify(list));
+        appcan.request.ajax({
+            url : chongqingUrl,
+            headers : {
+                token : appcan.locStorage.val("token") || '',
+                deviceId:appcan.locStorage.val("deviceId") || ''
+            },
+            data : list,
+            type : "POST",
+            appVerify:true,
+            timeout : "15000",
+            contentType : "application/json",
+            dataType:"json",
+            success : function(res) {
+                console.log("评论成功返回=====>");
+                console.log(res);
+                if(res.status=="000"){
+                    $("#conText").val("");
+                    if(res.data.isSensitiveWord ){
+                        appcan.window.openToast(' 你的评论涉及敏感词，待审核后才可显示 ',3500);
+                        commentStatus=1;
+                        return false;
+                    }else{
+                        appcan.window.openToast('评论成功!',2000);
+                        //修改缓存数据
+                        if(isDefine(newDetailInfo[dataJSON.objId])){
+                            newDetailInfo[dataJSON.objId].detail.commentNum=parseInt( newDetailInfo[dataJSON.objId].detail.commentNum)+1;
+                            appcan.locStorage.setVal("newDetailInfo",JSON.stringify(newDetailInfo));
+                        }
+                        //if(appcan.locStorage.getVal('isCheck') == '0'){
+                            // appcan.window.publish('changeCommentCount',dataJSON.objId);
+                        //}
+                        appcan.window.publish('changeCommentCount',dataJSON.objId);
+                        if(isDefine(dataJSON.from)){
+                            appcan.window.publish('changeMyComments',dataJSON.from);
+                        }
+                    }
+                    setTimeout(function(){
+                        commentStatus=1;
+                        appcan.window.close(-1);
+                    },1000);
+                }else{
+                    appcan.window.openToast('评论失败',1000);
+                    commentStatus=1;
+                }
+            },
+            error : function(err) {
+                appcan.window.openToast('评论失败',1000);
+                commentStatus=1;
+            }
+        });
+    }
+        
+    appcan.button("#nav-left", "btn-act", function() {
+        appcan.window.close(-1);
+    })
+        
+ </script>
+</html>

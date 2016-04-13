@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="bottom"
+    android:background="@android:color/white"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingBottom="5dip"
+    android:paddingLeft="9dip"
+    android:paddingRight="9dip"
+    android:paddingTop="5dip" >
+
+    <ImageButton
+        android:id="@+id/plugin_chatkeyboard_btn_voice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/plugin_chatkeyboard_btn_voice_selector" />
+
+    <Button
+        android:id="@+id/plugin_chatkeyboard_btn_voice_input"
+        android:layout_width="0dip"
+        android:layout_height="40dip"
+        android:layout_marginLeft="6dip"
+        android:layout_weight="1"
+        android:background="@drawable/plugin_chatkeyboard_input_voice_bg"
+        android:gravity="center"
+        android:text="按住 说话"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="18sp"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/plugin_chatkeyboard_edit_input_layout"
+        android:layout_width="0dip"
+        android:layout_height="40dip"
+        android:layout_marginLeft="6dip"
+        android:layout_weight="1"
+        android:background="@drawable/plugin_chatkeyboard_input_bg"
+        android:gravity="center_vertical"
+        android:orientation="horizontal" >
+
+        <EditText
+            android:id="@+id/plugin_chatkeyboard_edit_input"
+            android:layout_width="0dip"
+            android:layout_height="40dip"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:singleLine="false"
+            android:textColor="#474747"
+            android:textSize="17sp" />
+
+        <ImageButton
+            android:id="@+id/plugin_chatkeyboard_btn_emojicon"
+            android:layout_width="32dip"
+            android:layout_height="40dip"
+            android:layout_marginRight="4dip"
+            android:background="@android:color/transparent"
+            android:src="@drawable/plugin_chatkeyboard_btn_emojicon_normal" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/plugin_chatkeyboard_btn_send"
+        android:layout_width="40dip"
+        android:layout_height="33dip"
+        android:layout_marginLeft="6dip"
+        android:background="@drawable/plugin_chatkeyboard_send_bg_selector"
+        android:gravity="center"
+        android:text="发送"
+        android:textColor="@android:color/white"
+        android:textSize="12sp"
+        android:visibility="gone" />
+
+    <ImageButton
+        android:id="@+id/plugin_chatkeyboard_btn_add"
+        android:layout_width="40dip"
+        android:layout_height="33dip"
+        android:layout_marginLeft="6dip"
+        android:background="@android:color/transparent"
+        android:src="@drawable/plugin_chatkeyboard_btn_add_normal" />
+
+</LinearLayout>

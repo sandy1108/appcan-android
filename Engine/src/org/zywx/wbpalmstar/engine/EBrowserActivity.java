@@ -49,6 +49,7 @@ import com.slidingmenu.lib.SlidingMenu;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.zywx.wbpalmstar.acedes.ACEDes;
+import org.zywx.wbpalmstar.base.BDebug;
 import org.zywx.wbpalmstar.engine.external.Compat;
 import org.zywx.wbpalmstar.engine.universalex.EUExBase;
 import org.zywx.wbpalmstar.engine.universalex.EUExCallback;
@@ -61,6 +62,7 @@ import org.zywx.wbpalmstar.platform.push.PushRecieveMsgReceiver;
 import org.zywx.wbpalmstar.platform.push.report.PushReportConstants;
 import org.zywx.wbpalmstar.widgetone.WidgetOneApplication;
 import org.zywx.wbpalmstar.widgetone.dataservice.WWidgetData;
+
 
 
 import java.io.BufferedReader;
@@ -105,6 +107,7 @@ public final class EBrowserActivity extends FragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(null);
+        BDebug.i("optimize", "EBrowserActivity onCreate start");
         if (!EResources.init(this)) {
             loadResError();
             return;
@@ -172,6 +175,7 @@ public final class EBrowserActivity extends FragmentActivity {
                             "FLAG_NEEDS_MENU_KEY").getInt(null));
         } catch (Exception e) {
         }
+        BDebug.i("optimize", "EBrowserActivity onCreate end");
     }
 
     private void reflectionPluginMethod(String method) {

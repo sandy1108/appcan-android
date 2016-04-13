@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    android:orientation="vertical" >
+    
+    <RelativeLayout 
+        android:id="@+id/ping"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:padding="12dip"
+        >
+        <TextView
+            android:id="@+id/userName"            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:text="用户名"
+            android:textColor="#000000"
+            android:textSize="14sp"
+            />
+        <RatingBar
+            android:id="@+id/userScore"
+                style="@style/appraise_ratingbar_style"
+                android:layout_width="wrap_content"
+                android:layout_height="15dip"
+                android:layout_alignParentTop="true"
+                android:layout_toRightOf="@+id/userName"
+                android:layout_marginLeft="15dip"
+                android:clickable="false"
+                android:isIndicator="true"
+                android:rating="3.5" />
+        <TextView 
+            android:id="@+id/ratingTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:text="2013-10-11"
+            android:textColor="#000000"
+            android:textSize="14sp"
+            />
+        
+        <TextView 
+            android:id="@+id/discussContent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/userName"
+            android:layout_marginTop="8dip"
+            android:textColor="#000000"
+            android:textSize="15sp"
+            android:text="系统自带的Gallery选中的item总是在组件的中间。但是有些时候我们需要把选中的元素放在左边或者是Gallery一出来就要放在左边。"
+            />
+        
+    </RelativeLayout>
+    
+    
+</LinearLayout>

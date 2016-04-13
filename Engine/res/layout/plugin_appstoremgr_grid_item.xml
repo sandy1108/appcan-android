@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/plugin_appstoremgr_grid_item_width"
+    android:layout_height="wrap_content"
+    android:background="@drawable/plugin_appstoremgr_grid_item_bg_selector" >
+
+    <RelativeLayout
+        android:id="@+id/plugin_appstoremgr_app_icon_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/plugin_appstoremgr_app_icon_margin_top" >
+
+        <ImageView
+            android:id="@+id/plugin_appstoremgr_app_icon"
+            android:layout_width="@dimen/plugin_appstoremgr_grid_item_app_icon_width"
+            android:layout_height="@dimen/plugin_appstoremgr_grid_item_app_icon_width"
+            android:layout_centerInParent="true"
+            android:background="@drawable/plugin_appstoremgr_icon_bg" />
+
+        <org.zywx.wbpalmstar.plugin.uexappstoremgr.view.Arcs
+            android:id="@+id/plugin_appstoremgr_app_download_indicator"
+            android:layout_width="@dimen/plugin_appstoremgr_app_download_indicator"
+            android:layout_height="@dimen/plugin_appstoremgr_app_download_indicator"
+            android:layout_centerInParent="true"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/plugin_appstoremgr_new_app_icon"
+            android:layout_width="@dimen/plugin_appstoremgr_new_app_icon_width"
+            android:layout_height="@dimen/plugin_appstoremgr_new_app_icon_width"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="@dimen/plugin_appstoremgr_new_app_icon_margin_top"
+            android:layout_marginTop="@dimen/plugin_appstoremgr_new_app_icon_margin_top"
+            android:src="@drawable/plugin_appstoremgr_new_app" />
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/plugin_appstoremgr_app_update_icon"
+        android:layout_width="@dimen/plugin_appstoremgr_del_app_icon"
+        android:layout_height="@dimen/plugin_appstoremgr_del_app_icon"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="@dimen/plugin_appstoremgr_del_app_icon_margin_right"
+        android:src="@drawable/plugin_appstoremgr_app_update"
+        android:visibility="invisible" />
+
+    <ImageView
+        android:id="@+id/plugin_appstoremgr_del_app_icon"
+        android:layout_width="@dimen/plugin_appstoremgr_del_app_icon"
+        android:layout_height="@dimen/plugin_appstoremgr_del_app_icon"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="@dimen/plugin_appstoremgr_del_app_icon_margin_right"
+        android:src="@drawable/plugin_appstoremgr_del_app_selector"
+        android:visibility="invisible" />
+
+    <TextView
+        android:id="@+id/plugin_appstoremgr_push_icon"
+        android:layout_width="@dimen/plugin_appstoremgr_del_app_icon"
+        android:layout_height="@dimen/plugin_appstoremgr_del_app_icon"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="@dimen/plugin_appstoremgr_del_app_icon_margin_right"
+        android:background="@drawable/plugin_appstoremgr_push_icon"
+        android:gravity="center"
+        android:visibility="invisible" />
+
+    <TextView
+        android:id="@+id/plugin_appstoremgr_app_name"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/plugin_appstoremgr_grid_item_text_height"
+        android:layout_below="@+id/plugin_appstoremgr_app_icon_layout"
+        android:layout_marginBottom="@dimen/plugin_appstoremgr_grid_item_text_margin"
+        android:layout_marginTop="@dimen/plugin_appstoremgr_grid_item_text_margin"
+        android:ellipsize="middle"
+        android:gravity="center"
+        android:padding="@dimen/plugin_appstoremgr_grid_item_text_padding"
+        android:singleLine="true"
+        android:textColor="#ff141414"
+        android:textSize="@dimen/plugin_appstoremgr_grid_item_text_size" />
+
+</RelativeLayout>

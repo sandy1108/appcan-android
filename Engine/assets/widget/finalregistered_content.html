@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+    <head>
+        <title></title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="target-densitydpi=device-dpi, width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <link rel="stylesheet" href="css/fonts/font-awesome.min.css">
+        <link rel="stylesheet" href="css/ui-box.css">
+        <link rel="stylesheet" href="css/ui-base.css">
+        <link rel="stylesheet" href="css/ui-color.css">
+        <link rel="stylesheet" href="css/appcan.icon.css">
+        <link rel="stylesheet" href="css/appcan.control.css">
+        <link rel="stylesheet" href="css/new_file.css">
+        <link rel="stylesheet" href="css/loader.css">
+    </head>
+    <body class="um-vp bc-bg" ontouchstart>
+        <div class="ub ub-ver ub-f1 ub-pc ub-ac" style="margin-top:2em">
+            <div class="ub uinn ub-ac ubb" style="width:70%;border-color: #998b7b">
+                <div class="ub ub-img res-user iconSpace15"></div>
+                <div class="uinput ub ub-f1  bc-border" style="margin-left:.2em">
+                    <input id="phone" placeholder="" type="tel" class="ub-f1" style="padding-left:.2em;" disabled="disabled">
+                </div>
+            </div>
+
+            <div class="ub uinn ub-ac ubb" style="width:70%;border-color: #998b7b;margin-top:1.5em">
+                <div class="ub ub-img res-password iconSpace15"></div>
+                <div class="uinput ub ub-f1  bc-border" style="margin-left:.2em">
+                    <input id="pwd" placeholder="请输入密码" type="password" class="ub-f1" style="padding-left:.2em">
+                </div>
+            </div>
+
+            <div class="ub uinn ub-ac ubb" style="width:70%;border-color: #998b7b;margin-top:1.5em">
+                <div class="ub ub-img res-password iconSpace15"></div>
+                <div class="uinput ub ub-f1  bc-border" style="margin-left:.2em">
+                    <input id="surepwd" placeholder="请确认密码" type="password" class="ub-f1" style="padding-left:.2em">
+                </div>
+            </div>
+
+            <div id="submit" class="ub uinn ub-ac ubb ub-pc uc-a" style="color:white;width:70%;background-color: #FF8A00;margin-top:2em">
+                注册
+            </div>
+        </div>
+        <script src="js/appcan.js"></script>
+        <script src="js/appcan.control.js"></script>
+        <script src="js/common.js"></script>
+    </body>
+    <script>
+        appcan.ready(function() {
+            var phonenum = appcan.locStorage.val("phone");
+            $("#phone").val(phonenum);
+        });
+        appcan.button("#submit", "btn-bgc-act", function() {
+            var phone = $("#phone").val();
+            var pwd = $("#pwd").val();
+            var pwdsure = $("#surepwd").val();
+            var code = appcan.locStorage.val("code");
+            if (phone == "" || pwd == "" || pwdsure == "") {
+                uexWindow.toast("0", "5", "请输入完整信息", 1500);
+                return;
+            }
+            if (pwd != pwdsure) {
+                uexWindow.toast("0", "5", "两次输入的密码不一致，请重新输入", 1500);
+                return;
+            }
+            if (pwdsure.length < 4 || pwdsure.length > 16) {
+                uexWindow.toast("0", "5", "请输入6~14位长度的密码", 1500);
+                return;
+            }
+            //uexWindow.toast("1","5","注册中","");
+            register(phone, pwd, code);
+        })
+        function register(phoneNum, password, code) {
+            loader.open();
+            var if_list = {
+                "transcode" : "userInfo_add",
+                "content" : {
+                    "verifyCode" : code,
+                    "user" : {
+                        "loginName" : phoneNum,
+                        "mobileNo" : phoneNum,
+                        "password" : password
+                    }
+                }
+            };
+            console.log(JSON.stringify(if_list));
+            appcan.request.ajax({
+                url : chongqingUrl,
+                headers : {
+                    token : appcan.locStorage.val("token") || '',
+                    deviceId : appcan.locStorage.val("deviceId") || ''
+                },
+                data : JSON.stringify(if_list),
+                type : "POST",
+                appVerify : true,
+                timeout : "15000",
+                contentType : "application/json",
+                dataType : "json",
+                success : function(res) {
+                    console.log("注册返回====>");
+                    console.log(res);
+                    loader.close();
+                    if (res.status == "000") {
+                        uexWindow.toast("0", "5", "已成功注册！", 2500);
+                        setTimeout("closeWindow()", 2500)
+                        //是否登陆的唯一标识loginState
+                        appcan.locStorage.setVal("loginState", "yes");
+                        //保存用户相关信息
+                        appcan.locStorage.setVal("userInfo", JSON.stringify(res.data));
+                        //token标识
+                        var token = res.data.token;
+                        appcan.locStorage.setVal("token", token);
+                        //保存用户昵称，无昵称保存电话
+                        var nickname = res.data.nickName;
+                        nickname=isDefine(nickname)?nickname:(res.data.loginName).substring(0,3)+"***"+(res.data.loginName).substring(7,11);
+                        appcan.locStorage.setVal("nickname", nickname);
+                        //广播登录信息
+                        appcan.window.publish("isLogined", 'yes');
+                        appcan.window.publish("changename", nickname);
+                        
+                    } else if (status == "001") {
+                        uexWindow.toast("0", "5", "此用户已注册", 2500);
+                    } else {
+                        uexWindow.toast("0", "5", "注册失败,请确认验证码无误", 2500);
+                    }
+                },
+                error : function(err) {
+                    loader.close();
+                    console.log(err);
+                    appcan.window.openToast("请求失败，请稍后重试", 2000, 5, 0);
+                }
+            });
+        }
+
+        function closeWindow() {
+            appcan.window.publish("closeRegister", "");
+        }
+    </script>
+</html>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    <RelativeLayout 
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+	    >
+        <RelativeLayout
+            android:id="@+id/plugin_uexemm_new_app_dailog_tile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal ="true"
+            android:padding="10dp">
+            <ImageView
+                android:id="@+id/plugin_uexemm_new_app_dailog_tile_icon"
+                android:layout_width="@dimen/plugin_uexemm_new_app_dialog_app_icon_width"
+                android:layout_height="@dimen/plugin_uexemm_new_app_dialog_app_icon_width"
+                android:background="@drawable/plugin_uexemm_icon_bg"/>
+            <TextView
+                android:id="@+id/plugin_uexemm_new_app_dailog_tile_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="middle"
+                android:gravity="center"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="5dp"
+                android:textColor="@color/black"
+                android:text="@string/plugin_uexemm_prompt_title"
+                android:textSize="@dimen/plugin_uexemm_new_app_dialog_app_name_text_size"
+                android:layout_toRightOf="@+id/plugin_uexemm_new_app_dailog_tile_icon"/>
+        </RelativeLayout>
+        
+        <org.zywx.wbpalmstar.plugin.uexemm.dialog.PercentageProgressBar
+            android:id="@+id/plugin_update_alert_progressbar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="12dip"
+            android:layout_below="@+id/plugin_uexemm_new_app_dailog_tile"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="10dip"
+            android:layout_marginRight="10dip"
+            android:max="100"
+            android:progress="0"
+            android:progressDrawable="@drawable/plugin_uexemm_update_alert_progressbar_style"
+            android:visibility="gone" />
+	    
+        <TextView
+            android:id="@+id/plugin_uexemm_new_app_dialog_msg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/plugin_update_alert_progressbar"
+            android:text="@string/plugin_uexemm_new_app_default_prompt"
+            android:textColor="@color/black"
+            android:padding="10dp"
+            />
+        <RelativeLayout
+            android:id="@+id/plugin_uexemm_new_app_dailog_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal ="true"
+            android:layout_below="@+id/plugin_uexemm_new_app_dialog_msg"
+            android:padding="10dp">
+            <Button
+                android:id="@+id/plugin_uexemm_new_app_dailog_left_btn"
+                android:layout_width="@dimen/plugin_uexemm_dialog_control_btn_width"
+                android:layout_height="@dimen/plugin_uexemm_dialog_control_btn_height"
+                android:layout_alignParentLeft="true"
+                android:background="@drawable/plugin_uexemm_new_app_left_btn_bg"
+                android:textColor="@color/black"
+                android:visibility="gone"/>
+            <Button
+                android:id="@+id/plugin_uexemm_new_app_dailog_right_btn"
+                android:layout_width="@dimen/plugin_uexemm_dialog_control_btn_width"
+                android:layout_height="@dimen/plugin_uexemm_dialog_control_btn_height"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/plugin_uexemm_new_app_right_btn_bg"
+                android:textColor="@color/white"
+                android:visibility="gone"/>
+            <Button
+                android:id="@+id/plugin_uexemm_new_app_dailog_center_btn"
+                android:layout_width="@dimen/plugin_uexemm_dialog_control_btn_width"
+                android:layout_height="@dimen/plugin_uexemm_dialog_control_btn_height"
+                android:layout_centerHorizontal ="true"
+                android:background="@drawable/plugin_uexemm_new_app_left_btn_bg"
+                android:textColor="@color/black"
+                android:visibility="gone"/>
+        </RelativeLayout>
+    </RelativeLayout>    
+</ScrollView>

@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="target-densitydpi=device-dpi, width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <link rel="stylesheet" href="css/fonts/font-awesome.min.css">
+        <link rel="stylesheet" href="css/ui-box.css">
+        <link rel="stylesheet" href="css/ui-base.css">
+        <link rel="stylesheet" href="css/ui-color.css">
+        <link rel="stylesheet" href="css/appcan.icon.css">
+        <link rel="stylesheet" href="css/appcan.control.css">
+        <link rel="stylesheet" href="css/new_file.css">
+        <link rel="stylesheet" href="css/common.css">
+        <link rel="stylesheet" href="css/loader.css">
+    </head>
+    <body class="um-vp bg-e8 f-f" ontouchstart>
+        <div class="ub ub-ver ub-f1">
+            <div id="speImg" class="ub-img1">
+                
+            </div>
+            <div id="spclSmmr" class="font-size02 myVisibilityHide">
+                
+            </div>
+            <div id="ocontent" class="ub ub-f1 ub-ver uinn">
+                
+            </div>
+        </div>
+        <script src="js/newAppcan.js"></script>
+        <script src="js/appcan.control.js"></script>
+        <script src="js/common.js"></script>
+        <script src="js/common.dom.js"></script>
+        <script src="js/interface.js"></script>
+        <script src="js/emmList.js"></script>
+        <script src="js/appcan.slider.js"></script>
+    </body>
+    <script>
+    var icache;
+    var status = 1;
+    var pageNum = 1;
+    //当前页数
+    var pageCount = 1;
+    //总条数
+    var arrobjId = [];
+    //点击过的数组
+
+    var newsId = {};
+    var objectId = {};
+    var adTitle = {};
+    var picArrList = {};
+    //加载控制
+    var spclObj = isDefine(getLocVal('spe_page')) ? getLocVal('spe_page').split('_') : [];
+    var spclId = spclObj[0];
+    
+    var itemInfo={}; //根据newsId存放的对应每条列表数据json
+    var newsItemInfo = isDefine(getLocVal('newsItemInfo')) ? getLocVal('newsItemInfo'):"";
+    newsItemInfo=JSON.parse(newsItemInfo);  
+    console.log(newsItemInfo); 
+    var specialId = newsItemInfo.topicId;
+    var currentSpecialIds="";
+    var topicClass={};
+    var slideType=1;
+    appcan.ready(function() {
+        icache = appcan.icache({maxtask:5});
+        appcan.window.subscribe('home_page_content', function(num) {
+            getlist(num);
+        });
+        //点赞数监听
+        appcan.window.subscribe('home_page_zan', function(sid) {
+            var numStr = $("#" + sid).html();
+            $("#" + sid).html(parseInt(numStr) + 1);
+        });
+        //浏览量监听
+        appcan.window.subscribe('home_page_bq', function(sid) {
+            var numStr = $("#bq_" + sid).html();
+            $("#bq_" + sid).html(parseInt(numStr) + 1);
+        });
+
+        if (isAndroid) {
+            var param_slip = {
+                isSupport : true //(必选)true:支持；false:不支持。默认为false。
+            }
+            uexWindow.setIsSupportSlideCallback(JSON.stringify(param_slip));
+            //设置网页是否支持滑动的相关监听方法
+        }
+ 
+        //滑动顶部刷新方式
+        appcan.frame.setBounce(0, null, null, function(type) {
+            slideType=type;
+            //判断是否有网
+            GetInfoDevice(function(str) {
+                if (!str) {
+                    appcan.frame.resetBounce(slideType);
+                    return false;
+                }
+                if (type == 0) {
+                    //slists(1,currentSpecialIds);
+                     pageNum=1;
+                    spcialTheme();
+                }else{
+                    GetInfoDevice(function(str) {
+                        if (!str) {
+                            appcan.frame.resetBounce(slideType);
+                            return false;
+                        } else {
+                            pageNum++;
+                            if ((pageNum - 1) * 10 > pageCount) {
+                                pageNum--;
+                                appcan.frame.resetBounce(slideType);
+                                //uexWindow.toast("0", "5", "没有更多内容！", "1500");
+                            } else {
+                                slists(pageNum,currentSpecialIds);
+                            }
+                        }
+                    })
+                }
+            });
+        },bounceBgColor,imgSettingsVal)
+        
+        //判断是否有网
+        GetInfoDevice(function(str) {
+            if (!str) {
+                 //**********无网显示新闻列表*********************
+               
+            } else {
+               loader.open();
+                //**********有网显示新闻列表*********************
+                 //获取专题标题
+                spcialTheme();
+            }
+        })
+    })
+        
+    //获取专题详情
+    function spcialTheme() {
+        var if_list = {
+            "transcode":"topic_getOne",
+            "content": {
+              "topicId":specialId
+            }
+        };
+        console.log(JSON.stringify(if_list));
+        appcan.request.ajax({
+            url : chongqingUrl,
+            headers : {
+                token : appcan.locStorage.val("token") || '',
+                deviceId : appcan.locStorage.val("deviceId") || ''
+            },
+            appVerify:true,
+            data : JSON.stringify(if_list),
+            type : "POST",
+            contentType : "application/json",
+            dataType : "json",
+            timeout : "15000",
+            success : function(res) {
+                console.log("专题列表主题返回===>");
+                console.log(res);
+                if(pageNum==1){
+                    $("#spclSmmr").empty();
+                    $("#speImg").empty();
+                };
+                //加载专题图片与摘要
+                if (isDefine(res.data.topicImgUrl)) {
+                    var attcUrl = res.data.topicImgUrl;
+                    //var url = getImgUrl("0", attcUrl, 1);
+                    var url = getImgUrl("0",attcUrl,1);
+                    //原图
+                    var pic = $('<div class="oc_hw2 ub-img1 ub-f1" style="background-image: url(\'image/noPic.png\');"></div>');
+                    icache.run({dom:pic,url:url});
+                    
+                    $("#speImg").append(pic);
+                }else{
+                    $("#speImg").addClass("uhide");
+                }
+                $("#spclSmmr")[0].innerHTML = res.data.topicSummary;
+                $("#spclSmmr").removeClass("myVisibilityHide");
+                
+                //子栏目处理
+                var html_res="",
+                    topicClassId="",
+                    className="",
+                    bgColor="",
+                    fontColor="";
+                for(index in res.data.topicClass){
+                    topicClassId=res.data.topicClass[index].topicClassId;
+                    currentSpecialIds+=topicClassId;
+                    (index<res.data.topicClass.length-1)?currentSpecialIds+=",":"";
+                }
+                //$("#topicClass").append(html_res);
+                console.log("currentSpecialIds===>"+currentSpecialIds);
+                if(isDefine(currentSpecialIds)){
+                    slists(1,currentSpecialIds);
+                }else{
+                    $('#ocontent').html('<div class="ub ub-f1 ub-ac ub-pc c-66" style="margin-top:1em;">暂无信息</div>');
+                    loader.close();
+                    return false;
+                }
+                
+            },
+            error : function(err) {
+                
+            }
+        });
+    }
+    
+    var classDom=[];
+     //获取专题下分类资讯列表的数据
+    function slists(pageNo,topicClassIds) {
+        status=0;
+        //var list=getInterface('newsInfoGetList',columnId,pageNo);//接口封装配置函数
+        var if_list={
+            "transcode" : "topic_getList",
+            "content" : {
+                "topicId" : specialId,
+                "topicClassIds" : topicClassIds,
+                "page" : {
+                    "pageNo" : pageNo,
+                    "pageSize" : 100
+                }
+            }
+        };
+        console.log("newsItem====>"+JSON.stringify(if_list)+"\n"+chongqingUrl);
+        appcan.request.ajax({
+            url : chongqingUrl,
+            headers : {
+                token : appcan.locStorage.val("token") || '',
+                deviceId : appcan.locStorage.val("deviceId") || ''
+            },
+            appVerify:true,
+            data : JSON.stringify(if_list),
+            timeout : "15000",
+            type : "POST",
+            contentType : "application/json",
+            dataType : "json",
+            success : function(res) {
+                console.log(topicClassIds+" >>>专题分类列表newsItem返回====>");
+                console.log(res);
+                appcan.frame.resetBounce(slideType);
+                loader.close();
+                status=1;
+                
+                if(res.status != '000'){
+                    uexWindow.toast(1, 5, "查询出错", 2000);
+                    console.log(1, 5, res.msg, 2000);
+                    return false;
+                }
+                var datas=res.data; //后台获取数据
+                pageCount = datas.totalNum;//新闻资讯列表总条数
+                
+                var conditions={
+                    "isSummary":0,
+                    "isComment":1,
+                    "isPtime":1
+                }
+                //资讯列表首页显示
+                if(datas.list.length == 0){
+                    $('#ocontent').html('<div class="ub ub-f1 ub-ac ub-pc c-66" style="margin-top:1em;">暂无信息</div>');
+                    return false;
+                }else{
+                    var domList=$("<div class='ub ub-ver'></div>");
+                    var title="",
+                        className="",
+                        bgColor="",
+                        fontColor="";
+                    topicClass=datas.list;
+                    for(index in datas.list){
+                        className=datas.list[index].className;
+                        bgColor=datas.list[index].bgColor;
+                        fontColor=datas.list[index].fontColor;
+                        domList=$('<div class="ub ub-ver" id="'+index+'"></div>');
+                        title=$('<div class="ub ub-ac " style="height:2em;padding-left:0.5em; background-color:'+bgColor+';color:'+fontColor+';"><span class="ub">'+className+'</span></div>');
+                        classDom[index] = domList.append(title);
+                        newsItem.domShow(1,0,datas.list[index].dataList,listRd,conditions);//新闻列表显示
+                    }
+                    setLocVal('homeNewsListSPE_item',JSON.stringify(datas.list));
+                }
+            },
+            error : function(xhr, errorType, error,msg) {
+                console.log("error===>"+msg);
+                loader.close();
+                status=1;
+                appcan.frame.resetBounce(slideType);
+            }
+        });
+    }
+    
+    //callback显示专题新闻列表数据
+    var count=0;
+    var domHtml="";
+    var moreHtml={};
+    function listRd(newsItemDatas){
+        var newsItemDom=isDefine(newsItemDatas.dom)?newsItemDatas.dom:"";
+        itemInfo=$.extend(itemInfo,(isDefine(newsItemDatas.itemInfo) ? newsItemDatas.itemInfo:""));
+       // alert(JSON.stringify(newsItemDom.html()));
+        if(pageNum === 1 && count===0){
+            $("#ocontent").empty();
+        }
+        domHtml=classDom[count].append(newsItemDom);
+        moreHtml= $('<div class="ub ub-ac ub-pc moreHeight"><span class="ub ub-ac ub-pc uinn" style="width:80%;border:1px solid #ccc;border-radius:0.35em;box-shadow:0 3px #ccc;">查看更多</span></div>');
+        if(topicClass[count].totalNum>10){
+            domHtml.append(moreHtml);
+        }
+        count++;
+        $('#ocontent').append(domHtml);
+        
+        // for(var j in itemImgList){//对象索引操作 调用图片预加载
+            // preloadImg('img_'+itemImgList[j].imgId,itemImgList[j].imgUrl);
+        // }
+        
+        //校验是否用户已点击过
+        if(getLocVal('arrobjId1')){
+            arrobjId = JSON.parse(getLocVal('arrobjId1'));
+            for(var i = 0;i < arrobjId.length;i++){
+                $("#"+arrobjId[i]).addClass('c-88');
+            }
+        }
+        
+        //列表点击处理
+        var btn_key=1;
+        appcan.button('.btnDetile','btn-act',function(e){
+             if(btn_key==1){
+                btn_key=0;
+                var id=$(this);
+                btn_ink(id,e);
+                
+                var newsIdVal = this.id;
+                $(this).addClass('c-88');
+                arrobjId.push(newsIdVal);
+                setLocVal('arrobjId1',JSON.stringify(arrobjId));
+                //传递点击列表信息
+                appcan.locStorage.setVal('newsItemInfo',JSON.stringify(itemInfo[newsIdVal]));
+                //console.log(JSON.stringify(itemInfo[newsIdVal]));
+                if(itemInfo[newsIdVal].newsTypeId==2){
+                    //跳转图片新闻展示页面
+                    appcan.window.open('home_DetailsPictures','home_DetailsPictures.html',10);
+                }else if(itemInfo[newsIdVal].newsTypeId==5){
+                    //跳转专题列表
+                    appcan.window.open('spe_page','spe_page.html',10,1024);
+                }else{
+                    //跳转新闻详细页面
+                    appcan.window.open('home_Details','home_Details.html',10,1024);
+                }
+                setTimeout(function(){btn_key=1;},2000);
+            }
+        })
+        
+        //列表点击查看更多处理
+        appcan.button('.moreHeight','btn-act',function(e){
+            var id=$(this);
+            btn_ink(id,e);
+            
+            var newsIdVal = $(this).parent().attr('id');
+            //alert(newsIdVal);
+            appcan.locStorage.setVal('classInfo',topicClass[newsIdVal]);
+            appcan.window.open('spe_classNewsItem','spe_classNewsItem.html',10,1024);
+        })                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
+    }
+        
+    $("#ocontent").on('touchstart', function(evt) {
+        appcan.window.setMultilPopoverFlippingEnbaled(0);
+    })
+    </script>
+</html>

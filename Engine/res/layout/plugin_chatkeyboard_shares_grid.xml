@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:paddingLeft="15dip"
+    android:paddingRight="15dip"
+    android:paddingTop="20dip" >
+
+    <GridView
+        android:id="@+id/plugin_chatkeyboard_shares_grid_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:columnWidth="@dimen/plugin_chatkeyboard_shares_column_width"
+        android:numColumns="auto_fit"
+        android:scrollingCache="false"
+        android:verticalSpacing="10dip" />
+
+</LinearLayout>

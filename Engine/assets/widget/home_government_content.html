@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+    <head>
+        <title></title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="target-densitydpi=device-dpi, width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <link rel="stylesheet" href="css/ui-box.css">
+        <link rel="stylesheet" href="css/ui-base.css">
+        <link rel="stylesheet" href="css/ui-color.css">
+        <link rel="stylesheet" href="css/new_file.css">
+        <link rel="stylesheet" href="css/loader.css">
+    </head>
+    <body class="um-vp bg-fa f-f" ontouchstart>
+        <div class="ub ub-ver" id="ocontent">
+            
+        </div>
+        <script src="js/newAppcan.js"></script>
+        <script src="js/appcan.control.js"></script>
+        <script src="js/common.js"></script>
+    </body>
+    <script>
+        var columnDataList = [];
+        var govermentColumns=isDefine(getLocVal("govermentColumns"))?getLocVal("govermentColumns"):"";
+        var isIndex=isDefine(getLocVal("govermentColumnDomIndex"))?getLocVal("govermentColumnDomIndex").split('_')[1]:"";
+        var hotLineId='hotline';
+        var hotLineColumnInfo={};
+        var govermentColumnsData="";
+        var icache;
+        appcan.ready(function() {
+            appcan.initBounce();
+            icache = appcan.icache({maxtask:5});
+            //默认加载栏目1数据及热线数据
+            govermentColumnsData=JSON.parse(govermentColumns);
+            for(index in govermentColumnsData.content){//遍历获取子栏目信息
+                columnDataList[govermentColumnsData.content[index].columnId]=govermentColumnsData.content[index];
+            }
+            var firstColumnId=govermentColumnsData.content[0].columnId;
+            if(isDefine(isIndex)){
+                (isIndex=="hotline")?getHotLineChildColumn():showList(isIndex);
+            }else{
+                showList(firstColumnId);
+            }
+        })
+
+        //第一次点击的ID
+        function showList(index) {
+            var list = columnDataList[index].childColumn;
+            $("#ocontent").empty();
+            var line=$('<div class="ub ub-f1 ubb b-dd h-1em"></div>');
+            var dom = $('<div class="ub ub-ver"></div>');
+            var picImg="";
+            var title="";
+            var domId="";
+            var picDom;
+            var itemDom;
+            for(var i = 0; i < list.length; i++){
+                //保存子栏目信息
+                title = list[i].columnName;
+                picImg = list[i].columnIcon;
+                //alert(picImg);
+                domId = 'id_'+list[i].columnId ;
+                picDom=$('<div class="ub m-r05" id="img_'+domId+'"></div>');
+                if(index=="hotline"){
+                     picIcache=$('<div class="ub-img wh-2em" style="background-image: url('+picImg+');"></div>');
+                }else{
+                     picIcache=$('<div class="ub-img wh-2em" style="background-image: url(image/noPic.png);"></div>');
+                     icache.run({dom:picIcache,url:picImg});
+                }
+                picDom.append(picIcache);
+                
+                itemDom=$('<div class="ub ub-f1 ub-ac ubb b-dd uinn51 listDum" id="'+domId+'">' 
+                           //+ '<div class="ub m-r05" id="img_'+domId+'">' 
+                              //+ '<div class="ub-img wh-2em" style="background-image: url('+picImg+');"></div>' 
+                           //+ '</div>' 
+                           + '<div class="ub">'+ title +'</div>' 
+                           + '<div class="ub ub-f1 ub-pe">' 
+                             + '<div class="ub-img right-wh rightArrow"></div>' 
+                           + '</div>'
+                        + '</div>');
+                itemDom.prepend(picDom);
+                dom.append(itemDom);
+            }
+            $("#ocontent").append(line);
+            $("#ocontent").append(dom);
+            //列表点击事件
+            var preDomId="";
+            appcan.button('.listDum', 'btn-act', function() {
+                var childColumnId=(this.id).split("_")[1];
+                if (preDomId != childColumnId){
+                    $("#id_" + preDomId).removeClass('bg-ee');
+                }
+                preDomId=childColumnId;
+                $("#"+this.id).addClass('bg-ee');
+               
+                if(index=="hotline"){//固定政务热线
+                    var hotLineClassName={
+                        "className":childColumnId
+                    }
+                    appcan.locStorage.setVal('hotLineClassName', hotLineClassName);
+                    appcan.window.open("home_governmentHotLine", "home_governmentHotLine.html", 10,1024);
+                }else{ //其他
+                     var childColumnInfo={
+                        "presentColumnId":index,
+                        "presentColumnName":columnDataList[index].columnName,
+                        "childColumnId":childColumnId
+                    }
+                    appcan.locStorage.setVal('childColumnInfo', childColumnInfo);
+                    appcan.window.open("home_governmentNewsItem", "home_governmentNewsItem.html", 10,1024);
+                }
+            })
+        }
+        
+        function getHotLineChildColumn(){
+            isDefine(columnDataList['hotline'])?showList('hotline'):"";
+            var hotLineColumnInfo=[];
+            var hotLineColumnInfo=[{
+                "columnName":"市政府组成部门",
+                "columnIcon":"twoImg/zw_zwrx_01.png",
+                "columnId":"市政府组成部门"
+            },
+            {
+                "columnName":"市政府特设、直属机构",
+                "columnIcon":"twoImg/zw_zwrx_01.png",
+                "columnId":"市政府特设、直属机构"
+            },
+            {
+                "columnName":"市政府部门管理机构",
+                "columnIcon":"twoImg/zw_zwrx_01.png",
+                "columnId":"市政府部门管理机构"
+            },
+            {
+                "columnName":"市政府派出机构",
+                "columnIcon":"twoImg/zw_zwrx_01.png",
+                "columnId":"市政府派出机构"
+            },
+            {
+                "columnName":"议事协调机构和直属事业单位",
+                "columnIcon":"twoImg/zw_zwrx_01.png",
+                "columnId":"议事协调机构和直属事业单位"
+            },
+            {
+                "columnName":"社会团体",
+                "columnIcon":"twoImg/zw_zwrx_01.png",
+                "columnId":"社会团体"
+            },
+            {
+                "columnName":"中央在渝直属机构",
+                "columnIcon":"twoImg/zw_zwrx_01.png",
+                "columnId":"中央在渝直属机构"
+            },
+            {
+                "columnName":"部分企业",
+                "columnIcon":"twoImg/zw_zwrx_01.png",
+                "columnId":"部分企业"
+            },
+            {
+                "columnName":"各区县（自治县）政府",
+                "columnIcon":"twoImg/zw_zwrx_01.png",
+                "columnId":"各区县（自治县）政府"
+            }];
+            columnDataList['hotline']={
+                "childColumn":hotLineColumnInfo
+            }
+            showList('hotline');
+        }
+        
+        function goTop() {
+            window.scrollTo(0, 0);
+        }
+        
+    </script>
+</html>

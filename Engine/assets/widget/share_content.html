@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+    <head>
+        <title></title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="target-densitydpi=device-dpi, width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <link rel="stylesheet" href="css/fonts/font-awesome.min.css">
+        <link rel="stylesheet" href="css/ui-box.css">
+        <link rel="stylesheet" href="css/ui-base.css">
+        <link rel="stylesheet" href="css/ui-color.css">
+        <link rel="stylesheet" href="css/appcan.icon.css">
+        <link rel="stylesheet" href="css/appcan.control.css">
+        <link rel="stylesheet" href="css/new_file.css">
+    </head>
+    <body class="um-vp f-f" ontouchstart>
+        <div id="ocontent" class="ub ub-ver ub-f1" style="background-color: rgba(0,0,0,0.5);height:100%">
+            <div class="ub-f1" id="blank01" style="height: 100%"></div>
+            <div class="ub ub-ver oc_white uinn">
+                <div class="ub ub-ac ub-pc uinn50 ob_b" id="WX">
+                    <div class="ub ub-pc uc-a1 uinn4" style="margin-right: 1em;">
+                        <div class="weixinLogo ub-img pic_wh"></div>
+                    </div>
+                    <div style="width:8em;">分享到 微信</div>
+                </div>
+                <div class="ub ub-ac ub-pc uinn50 ob_b" id="QQ">
+                    <div class="ub ub-pc uc-a1 uinn4" style="margin-right: 1em;">
+                        <div class="qqLogo ub-img pic_wh"></div>
+                    </div>
+                    <div style="width:8em;">分享到 QQ</div>
+                </div>
+                <div class="ub ub-ac ub-pc uinn50 ob_b" id="sina">
+                    <div class="ub ub-pc uc-a1 uinn4" style="margin-right: 1em;">
+                        <div class="sinaLogo ub-img pic_wh"></div>
+                    </div>
+                    <div style="width:8em;">分享到 新浪微博</div>
+                </div>
+                <div class="ub ub-ac ub-pc ulev1 uinn50 ob_b" id="cancel">取消分享</div>
+            </div>
+        </div>
+        <script src="js/appcan.js"></script>
+        <script src="js/appcan.control.js"></script>
+        <script src="js/common.js"></script>
+        <script src="js/share.js"></script>
+    </body>
+    <script>
+        var isLinkFrom=appcan.locStorage.val("isLinkFrom")||0;
+        appcan.ready(function() {
+            if(isLinkFrom==1){
+                orientationChange();//初始屏幕状态设定
+                //屏幕转动监听
+                window.addEventListener("onorientationchange" in window ? "orientationchange" : "resize", orientationChange, false); 
+            }
+            //QQ分享回调
+            // uexQQ.cbLogin=cbLogin_qq;
+            uexQQ.cbShareQQ = cbShareQQ_qq;
+            //sina分享回调
+            uexSina.cbRegisterApp = cbRegisterApp_sina;
+            uexSina.cbShare = cbShare_sina;
+        });
+
+        appcan.button("#WX", "", function() {
+            doChoose(0);
+        })
+        appcan.button("#QQ", "", function() {
+            doChoose(1);
+        })
+        appcan.button("#sina", "", function() {
+            doChoose(2);
+        })
+        function doChoose(num) {
+            appcan.locStorage.setVal('shareType', num);
+            if (num == 2) {//直接默认分享插件（新浪微博）
+                oncSheet(num, '0');
+            } else if (num == 1) {//（QQ插件自带场景选择）
+                oncSheet(num, '0');
+            } else {//需要选择场景（微信）
+                appcan.window.evaluateScript('', 'sceneChoose()');
+                setTimeout(function() {
+                    uexWindow.closePopover("share_content");
+                }, 600);
+            }
+        }
+        appcan.button("#blank01", "", function() {
+            if(isLinkFrom==1){
+                uexWindow.setOrientation(15);
+            }
+            uexWindow.closePopover("share_content");
+        })
+        appcan.button("#cancel", "", function() {
+            if(isLinkFrom==1){
+                uexWindow.setOrientation(15);
+            }
+            uexWindow.closePopover("share_content");
+        })
+    </script>
+</html>

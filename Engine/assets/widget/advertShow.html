@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+    <head>
+        <title></title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="target-densitydpi=device-dpi, width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <link rel="stylesheet" href="css/fonts/font-awesome.min.css">
+        <link rel="stylesheet" href="css/ui-box.css">
+        <link rel="stylesheet" href="css/ui-base.css">
+        <link rel="stylesheet" href="css/ui-color.css">
+        <link rel="stylesheet" href="css/appcan.icon.css">
+        <link rel="stylesheet" href="css/appcan.control.css">
+        <link rel="stylesheet" href="css/new_file.css">
+        <link rel="stylesheet" href="css/common.css">
+    </head>
+    <body class="um-vp f-f" ontouchstart>
+      <div class="ub-img7 myAdvert" id="contentAdvert">
+        <div id="advert" class="ub-img7 myAdvert">
+            
+        </div>
+      </div>
+    </body>
+    <script src="js/newAppcan.js"></script>
+    <script src="js/appcan.control.js"></script>
+    <script src="js/common.js"></script>
+    <script>
+        var advertImgUrl='image/960.png';
+        var icache;
+        appcan.ready(function() {
+            icache = appcan.icache({maxtask:5});
+            //保存预加载页的打开状态
+            appcan.locStorage.setVal("isOpenAdvertShow",1);
+            //openPop512("newsLinkPage", "http://fms.news.cn/swf/lh_hlj_2016_sjxw/index.html", 0, 0, "contentAdvert");
+            //获取预加载页数据
+            getAdvertShowData(showAdvertImg);
+            //获取栏目更新时间以及判断是否需要获取最新栏目
+            columnInfo.getColumnsUpdateTime(show);
+        })
+        
+        function show(resStatus){
+            //alert("获取栏目信息状态返回0表示未获取新栏目,1表示获取了最新栏目并存入了===>"+resStatus);
+            //return false;
+            var flagstatus = appcan.locStorage.val('flagstatus');
+            if(!isDefine(flagstatus) || flagstatus== 'true'){//首次加载app,先打开轮播广告页（在轮播页里再打开用户首页）
+                //清除缓存
+                uexWidgetOne.cbCleanCache = function(opId,dataType,data){
+                    if(data == 0){
+                        //alert("清除成功！");
+                    }
+                }
+                uexWidgetOne.cleanCache();
+                setTimeout(function(){
+                    appcan.window.open('start_guide','start_guide.html',0,256);//首次加载打开启动页
+                },1000);
+            }else{//非首次加载直接打开用户首页
+                setTimeout(function(){
+                    appcan.window.open('home_page','home_page.html',5,256); //加载用户首页
+                },1000);
+            }
+            setTimeout(function(){appcan.window.close(-1);},2000);
+        }
+        
+        function showAdvertImg(url){
+            if(isDefine(url)){
+                url=getImgUrl("0",url,5);
+                $('#advert').css("background-image","url("+url+")");
+            }else{
+                var imgDom='<div class="ub-img7 myAdvert" style="background-image:url(image/yjz02.jpg)"></div>';
+                $('.myAdvert').html(imgDom);
+            }
+        }
+        
+    </script>
+</html>

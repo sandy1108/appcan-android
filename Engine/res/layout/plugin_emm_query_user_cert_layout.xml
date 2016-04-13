@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+<RelativeLayout 
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#F2F2F2"
+    android:padding="10dp"
+    >
+        <TextView
+            android:id="@+id/plugin_uexemm_query_ueser_cert_hint_tv"
+            android:layout_centerHorizontal="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#000000"
+            android:text="@string/plugin_uexemm_query_ueser_cert_hint_str"
+            />
+        <EditText
+            android:id="@+id/plugin_uexemm_query_ueser_cert_check_code_et"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:hint="@string/plugin_uexemm_auth_code_et_hint_str"
+            android:layout_below="@+id/plugin_uexemm_query_ueser_cert_hint_tv"
+            android:singleLine="true" >
+        </EditText>
+        <Button
+            android:id="@+id/plugin_uexemm_query_ueser_cert_btn"
+            android:layout_width="@dimen/plugin_uexemm_query_ueser_cert_btn_width"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/plugin_uexemm_query_ueser_cert_check_code_et"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="7dp"
+            android:background="@drawable/plugin_uexemm_query_ueser_cert_btn_bg"
+            android:text="@string/plugin_uexemm_query_ueser_cert_str" /> 
+</RelativeLayout>    
+</ScrollView>

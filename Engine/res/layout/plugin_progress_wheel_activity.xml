@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ProgressWheel="http://schemas.android.com/apk/res-auto"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+    
+    <LinearLayout
+        android:id="@+id/plugin_uextoast_layout_fill"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:id="@+id/plugin_uextoast_layout_top"
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="3.75"
+            android:alpha="0.75"
+            android:background="@color/black"
+            android:orientation="horizontal" >
+            
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2.5"
+            android:gravity="center"
+            android:orientation="horizontal" >
+
+            <LinearLayout
+                android:id="@+id/plugin_uextoast_layout_left"
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="2"
+                android:alpha="0.75"
+                android:background="@color/black"
+                android:orientation="horizontal" >
+            </LinearLayout>
+            
+            <LinearLayout
+                android:id="@+id/plugin_uextoast_layout_center"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_weight="6"
+                android:alpha="0.75"
+                android:gravity="center"
+                android:background="@color/black" >
+
+                <LinearLayout
+                    android:id="@+id/plugin_uextoast_layout_layoutId"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|center_horizontal"
+                    android:gravity="center"
+                    android:background="@drawable/plugin_progress_acticity_background"
+                    android:orientation="vertical" >
+
+                    <org.zywx.wbpalmstar.plugin.uextoast.ProgressWheel
+                        android:id="@+id/plugin_uextoast_view_progressBarFour"
+                        android:layout_marginTop="5dp"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp" />
+                    
+                    <LinearLayout 
+                        android:id="@+id/plugin_uextoast_layout_pointlayoutId"
+                        android:layout_height="4dp"
+                        android:layout_width="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:orientation="horizontal"
+                        >
+                        
+                        <TextView
+                            android:id="@+id/point1"
+                            android:layout_marginLeft="5dp"
+                            android:layout_width="3dp"
+                            android:layout_height="3dp"
+                            android:background="@android:color/black" />
+
+                        <TextView
+                            android:id="@+id/point2"
+                            android:layout_marginLeft="5dp"
+                            android:layout_width="3dp"
+                            android:layout_height="3dp"
+                            android:background="@android:color/black" />
+
+                        <TextView
+                            android:id="@+id/point3"
+                            android:layout_marginLeft="5dp"
+                            android:layout_width="3dp"
+                            android:layout_height="3dp"
+                            android:background="@android:color/black" />
+
+                        <TextView
+                            android:id="@+id/point4"
+                            android:layout_marginLeft="5dp"
+                            android:layout_width="3dp"
+                            android:layout_height="3dp"
+                            android:background="@android:color/black" />
+
+                        <TextView
+                            android:id="@+id/point5"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginRight="5dp"
+                            android:layout_width="3dp"
+                            android:layout_height="3dp"
+                            android:background="@android:color/black" />
+                    
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/textViewId"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="10dp"
+                        android:gravity="center"
+                        android:text="努力加载中..."
+                        android:textSize="18sp" />
+                </LinearLayout>
+
+               
+            </LinearLayout>
+            
+			<LinearLayout
+			    android:id="@+id/plugin_uextoast_layout_right"
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="2"
+                android:alpha="0.75"
+                android:orientation="horizontal"
+                android:background="@color/black" >
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/plugin_uextoast_layout_bottom"
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="3.75"
+            android:alpha="0.75"
+            android:orientation="horizontal"
+            android:background="@color/black" >
+        </LinearLayout>
+    </LinearLayout>
+    
+    <ImageView
+        android:id="@+id/plugin_uextoast_exit"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_alignParentRight="true"
+        android:layout_margin="15dp"
+        android:scaleType="fitXY" />
+
+</RelativeLayout>

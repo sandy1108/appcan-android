@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+    <head>
+        <title></title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="target-densitydpi=device-dpi, width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <link rel="stylesheet" href="css/fonts/font-awesome.min.css">
+        <link rel="stylesheet" href="css/ui-box.css">
+        <link rel="stylesheet" href="css/ui-base.css">
+        <link rel="stylesheet" href="css/ui-color.css">
+        <link rel="stylesheet" href="css/appcan.icon.css">
+        <link rel="stylesheet" href="css/appcan.control.css">
+        <link rel="stylesheet" href="css/new_file.css">
+        <link rel="stylesheet" href="css/loader.css">
+        <style>
+            .mTime {
+                font-size: 85%
+            }
+            .btn_bgColor{
+                background-color:#EEEEEE;
+            }
+        </style>
+    </head>
+    <body class="um-vp oc_white" ontouchstart>
+        <div class="ub ub-ver" id="content">
+            <!--div class="ub ub-ver" style="border-bottom: 1px solid#eeeeee">
+                <div class="ub ub-ac">
+                    <div class="ub-img oheadpic1" style="margin-right:0.3em;"></div>
+                    <div class="">是所長在吃M豆forever 赞了我的评论</div>
+                </div>
+                <div class="ub ub-ac" style="margin-bottom:0.5em;">
+                    <div class="ub-img oheadpic1" style="margin-right:0.3em;visibility: hidden"></div>
+                    <div class="oc_gray ulev-1 ub-f1" style="">我的评论：一季度各省份GDP出炉  重庆增速超10% 居首</div>
+                </div>
+            </div-->
+        </div>
+    </body>
+    <script src="js/appcan.js"></script>
+    <script src="js/appcan.control.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/interface.js"></script>
+    </body>
+    <script>
+        var pageNum = 1;
+        var pageCount = 1;
+        var userInfo=isDefine(getLocVal('userInfo')) ? getLocVal('userInfo'):"";
+        var userId="";
+        var slideType=1;
+        appcan.ready(function() {
+            userId = isDefine(userInfo)?JSON.parse(userInfo).userId:"";
+            appcan.frame.setBounce([0, 1], null, null, function(type) {
+                slideType=type;
+                if (type == 1) {
+                    if ((pageNum - 1) * 10 > pageCount) {
+                        appcan.frame.resetBounce(slideType);
+                    } else {
+                        pageNum++;
+                        showdata(pageNum);
+                    }
+                }else{
+                    pageNum=1;
+                    showdata(1);
+                }
+            },bounceBgColor,imgSettingsVal)
+            
+            loader.open();
+            showdata(1);
+        })
+        
+        function showdata(pageNo){
+            var if_list= {
+                "transcode": "supportInfo_getList",
+                "content": {
+                    "userId": userId,
+                    "page": {
+                    "pageNo": pageNo,
+                    "pageSize": 10
+                   }
+                }
+            };
+            console.log(JSON.stringify(if_list));
+            appcan.request.ajax({
+                url : chongqingUrl,
+                headers : {
+                    token : appcan.locStorage.val("token"),
+                    deviceId : appcan.locStorage.val("deviceId") || ''
+                },
+                appVerify:true,
+                type : 'POST',
+                data : JSON.stringify(if_list),
+                contentType : "application/json",
+                dataType : 'json',
+                timeout : "15000",
+                success : function(res) {
+                    console.log("个人收到的赞列表结果返回=====>");
+                    console.log(res);
+                    status=1;
+                    loader.close();
+                    uexWindow.closeToast();
+                    appcan.frame.resetBounce(slideType);
+                    
+                    if(res.status != '000'){
+                        uexWindow.toast(1, 5, res.msg, 2000);
+                        return false;
+                    }
+                    var list = res.data.list;
+                    pageCount = res.data.totalNum;
+                    var tmpl = '';
+                    for(var i = 0;i < list.length;i++){
+                        var name = list[i].commentNickName;
+                        var commentLoginName=list[i].commentLoginName;
+                        if(commentLoginName!="游客"){
+                            commentLoginName=(list[i].commentLoginName).substring(0,3)+"***"+(list[i].commentLoginName).substring(7,11);
+                        }
+                        name=isDefine(name)?name:commentLoginName;
+                        var commentedUserId = list[i].commentedUserId;
+                        var userIcon = isDefine(list[i].commentAvatar) ? getImgUrl("1",list[i].commentAvatar,2) : 'css/img/oheadpic.png';
+                        var cTime = UnixToDate(Date(list[i].cTime),false);
+                        if(list[i].objectType==5){
+                            tmpl += '<div class="ub ub-ver uinn oc_white" style="border-bottom:1px solid#d2d2d2;border-top：1px solid#b2b2b2;">'
+                                    +'<div class="ub ub-ac">'
+                                        +'<div class="ub-img7 bor-yuan oheadpic1" style="margin-right:0.3em;background-image:url(\''+userIcon+'\')"></div>'
+                                        +'<div class="c-998 ub-f1">'+name+' 赞了我的随手拍</div>'
+                                        +'<div class="c-998 mTime">'+cTime+'</div>'
+                                    +'</div>'
+                                    +'<div class="ub ub-ac uinn-t03" style="">'
+                                        +'<div class="ub-img oheadpic1" style="margin-right:0.3em;visibility: hidden"></div>'
+                                        +'<div class="oc_gray ulev-1 ub-f1 uinn btn_bgColor shoots" data-objId="'+list[i].objectId+'">我的随手拍：'+list[i].phoneContent+'</div>'
+                                    +'</div>'
+                                +'</div>';
+                        }else if(list[i].objectType==4){
+                                var content=list[i].content;
+                                if(list[i].userDel==1){
+                                    content="此评论/信息已经被删除";
+                                }
+                                tmpl += '<div class="ub ub-ver uinn oc_white" style="border-bottom:1px solid#d2d2d2;border-top：1px solid#b2b2b2;">'
+                                        +'<div class="ub ub-ac">'
+                                            +'<div class="ub-img7 bor-yuan oheadpic1" style="margin-right:0.3em;background-image:url(\''+userIcon+'\')"></div>'
+                                            +'<div class="c-998 ub-f1">'+name+' 赞了我的评论</div>'
+                                            +'<div class="c-998 mTime">'+cTime+'</div>'
+                                        +'</div>'
+                                        +'<div class="ub ub-ac uinn-t03" style="">'
+                                            +'<div class="ub-img oheadpic1" style="margin-right:0.3em;visibility: hidden"></div>'
+                                            +'<div class="oc_gray ulev-1 ub-f1 uinn btn_bgColor news" data-objId="'+list[i].objectId+'">我的评论：'+content+'</div>'
+                                        +'</div>'
+                                    +'</div>';
+                          }else{
+                              tmpl += '<div class="ub ub-ver uinn oc_white" style="border-bottom:1px solid#d2d2d2;border-top：1px solid#b2b2b2;">'
+                                        +'<div class="ub ub-ac">'
+                                            +'<div class="ub-img7 bor-yuan oheadpic1" style="margin-right:0.3em;background-image:url(\''+userIcon+'\')"></div>'
+                                            +'<div class="c-998 ub-f1">'+name+' 赞了我的资讯</div>'
+                                            +'<div class="c-998 mTime">'+cTime+'</div>'
+                                        +'</div>'
+                                        +'<div class="ub ub-ac uinn-t03" style="">'
+                                            +'<div class="ub-img oheadpic1" style="margin-right:0.3em;visibility: hidden"></div>'
+                                            +'<div class="oc_gray ulev-1 ub-f1 uinn btn_bgColor news" data-objId="'+list[i].objectId+'">我的资讯：'+list[i].newsTitle+'</div>'
+                                        +'</div>'
+                                    +'</div>';
+                          }
+                            
+                    }
+                    if(pageNum == 1){
+                        if(list.length == 0){
+                            tmpl = '<div class="ub ub-f1 ub-ac ub-pc uinn-t1 oc_white">暂无信息</div>';
+                        }
+                        $("#content").empty();
+                    }
+                    $("#content").append(tmpl);
+                    
+                    btn_key=1
+                    //跳转资讯详情
+                    appcan.button(".news", "btn-act", function(e) {
+                        if(btn_key==1){
+                            btn_key=0;
+                            var newsIdVal=$(this).attr('data-objId');
+                            //alert(newsIdVal);
+                            //直接调用显示推送数据的方法，根据newsId先请求数据，再跳转处理
+                            getPushData(newsIdVal);
+                            setTimeout(function(){btn_key=1;},2000);
+                        }
+                    })
+                    //跳转随手拍详情
+                    appcan.button(".shoots", "btn-act", function(e) {
+                        //直接调用显示推送数据的方法，根据newsId先请求数据，再跳转处理
+                        if(btn_key==1){
+                            btn_key=0;
+                            var photoIdVal=$(this).attr('data-objId');
+                            //alert(photoIdVal);
+                            var itemInfo={
+                                "photoId":photoIdVal
+                            };
+                            setLocVal('shootItemInfo',JSON.stringify(itemInfo));
+                            appcan.window.open('shoot_details',"shoot_details.html",10);
+                            setTimeout(function(){btn_key=1;},2000);
+                        }
+                    })
+                },
+                error:function(err) {
+                    status=1;
+                    loader.close();
+                    uexWindow.closeToast();
+                    appcan.frame.resetBounce(slideType);
+                }
+            })
+       }
+       
+      function goTop(){
+         window.scrollTo(0,0);
+      }
+    </script>
+</html>

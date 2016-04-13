@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+    <head>
+        <title></title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="target-densitydpi=device-dpi, width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <link rel="stylesheet" href="css/fonts/font-awesome.min.css">
+        <link rel="stylesheet" href="css/ui-box.css">
+        <link rel="stylesheet" href="css/ui-base.css">
+        <link rel="stylesheet" href="css/ui-color.css">
+        <link rel="stylesheet" href="css/appcan.icon.css">
+        <link rel="stylesheet" href="css/appcan.control.css">
+        <link rel="stylesheet" href="css/new_file.css">
+        <link rel="stylesheet" href="css/loader.css">
+        <style>
+            .oc_hw33{
+                min-width: 4em;
+                min-height: 4em;
+            }
+        </style>
+    </head>
+    <body class="um-vp bg-fa f-f" ontouchstart>
+        <div class="ub ub-ver">
+            <div class="ub ub-f1 uinn-1" id="titles">
+                <div class="ub oc_hw33 ub-img7" style="background-image: url('css/img/oheadpic.png')"></div>
+                <div class="ub bg-wh uba b-ce ub-f1 ub-ver uinn-l1">
+                    <span class="ub"></span>
+                    <!--span class="ub fz-8 c-88 uinn-t03">一个患了中二病的小青年</span-->
+                </div>
+            </div>
+            <!-- <div class="ub ub-f1 ubb ubt b-dd bg-ee uinn50">
+                <div class="ub ub-f1 ub-pc ubr b-dd ofont tdText" id="tddw">他的达文</div>
+                <div class="ub ub-f1 ub-pc c-66 tdText" id="tdrp">他的热评</div>
+            </div> -->
+            <div class="ub ub-ver ub-f1" id="contentList">
+                
+            </div>
+        </div>
+        <script src="js/appcan.js"></script>
+        <script src="js/appcan.control.js"></script>
+        <script src="js/common.js"></script>
+    </body>
+    <script>
+        var itemInfo={}; //根据newsId存放的对应每条列表数据json
+        var arrobjId = [];   //点击过的数组
+        var userId = getLocVal('supUserId');
+        //alert(userId);
+        var pageNum=1,
+            pageCount=1,
+            slideType=1;
+        console.log("名家ID====>"+userId);
+        appcan.ready(function() {
+            loader.open();
+            getUserInfo();
+            getList(1);
+            
+            //滑动顶部刷新方式
+            appcan.frame.setBounce([0,1], null, null, function(type) {
+                slideType=type;
+                 //判断是否有网
+                 GetInfoDevice(function(str){
+                     if(!str){
+                         appcan.frame.resetBounce(slideType);
+                         return false;
+                     }else{
+                         if (type == 0) {
+                             pageNum=1;
+                             getUserInfo();
+                             getList(1);
+                         }else{
+                             //判断是否有网
+                             if(status==0){
+                                 //uexWindow.toast(0, 5, "正在请求数据...", 2000);
+                                 //return false;
+                             }else{
+                                if ((pageNum - 1) * 10 > pageCount) {
+                                    appcan.frame.resetBounce(slideType);
+                                } else {
+                                    pageNum++;
+                                    getList(pageNum);
+                                }
+                            }
+                         }
+                     }
+                 });
+             },bounceBgColor,imgSettingsVal)
+        })
+        
+        //获取个人信息
+        function getUserInfo(){
+            var if_list = {
+                "transcode" : "userInfo_getOne",
+                "content" : {
+                    "userId" : userId,
+                    "type" : 1,//-1:游客, 0-普通用户，1-名家
+                    "page" : {
+                        "pageNo" : 1,
+                        "pageSize" : 100
+                    }
+                }
+            };
+            console.log(JSON.stringify(if_list));
+            appcan.request.ajax({
+                url : chongqingUrl,
+                headers : {
+                    token : appcan.locStorage.val("token") || '',
+                    deviceId : appcan.locStorage.val("deviceId") || ''
+                },
+                appVerify:true,
+                data : JSON.stringify(if_list),
+                type : "POST",
+                timeout : "15000",
+                contentType : "application/json",
+                dataType : "json",
+                success : function(res) {
+                    console.log("名家个人信息返回======>")
+                    console.log(res);
+                    loader.close();
+                    if(res.status != '000'){
+                        uexWindow.toast(1, 5, res.msg, 2000);
+                        return false;
+                    }
+                    var list=res.data.list;
+                    var userIcon = isDefine(list.userIcon) ? getImgUrl("1",list.userIcon,2) : 'css/img/mrtx.png';
+                    var signature = isDefine(list.signature) ? list.signature : '';
+                    var tTmpl = '<div class="ub oc_hw33 ub-img7" style="background-image: url(\''+userIcon+'\')"></div>'
+                                +'<div class="ub bg-wh uba b-ce ub-f1 ub-ver" style="padding: .5em .5em .5em 1em">'
+                                    +'<span class="ub">'+list.nickName+'</span>'
+                                    +'<span class="ub fz-8 c-88 uinn-t03">'+signature+'</span>'
+                                +'</div>';
+                    $("#titles").html(tTmpl);
+                },
+                error : function() {
+                    loader.close();
+                }
+            })
+    }
+    
+    //获取他的达文
+    function getList(pageNo){
+        var if_list = {
+            "transcode": "newsInfo_getList",
+            "content": {
+               "columnIds":"",
+               "supUserId":userId,
+               "deviceType": isAndroid?2:1,
+               "listType": 0,
+               "page": {
+                   "pageNo": pageNo,
+                   "pageSize": 10
+                   }
+              }
+        };
+        console.log(JSON.stringify(if_list));
+        appcan.request.ajax({
+            url : chongqingUrl,
+            headers : {
+                token : appcan.locStorage.val("token") || '',
+                deviceId : appcan.locStorage.val("deviceId") || ''
+            },
+            appVerify:true,
+            data : JSON.stringify(if_list),
+            type : "POST",
+            timeout : "15000",
+            contentType : "application/json",
+            dataType : "json",
+            success : function(res) {
+                console.log("鸣家文章列表=======>");
+                uexWindow.closeToast();
+                appcan.frame.resetBounce(slideType);
+                console.log(res);
+                
+                if(res.status != '000'){
+                    uexWindow.toast(1, 5, res.msg, 2000);
+                    return false;
+                }
+                if((res.data.list).length == 0){
+                    $('#contentList').html('<div class="ub ub-f1 ub-ac ub-pc" style="margin-top:1em;">暂无信息</div>');
+                    return false;
+                }
+                var list = res.data.list;
+                var tmpl = '';
+                var time="";
+                for(var i = 0;i < list.length;i++){
+                    itemInfo[list[i].newsId]=list[i];//保存列表对应的json信息
+                    time = NYR(list[i].publishTime,'1');
+                    tmpl += '<div class="ub ub-ac bg-wh btnDetile uinn" id="'+list[i].newsId+'">'
+                            +'<div class="ub ub-ver ub-f1" style="margin-left:.7em;">'
+                                +'<div class="ub-f1 c-66">'
+                                    +list[i].newsTitle
+                                +'</div>'
+                                +'<div class="ub-f1 ulev-1 ut-s c-66" style="margin-bottom:.3em;margin-top:0.3em;">'
+                                    +list[i].summary
+                                +'</div>'
+                                +'<div class="ub ub-ac">'
+                                    +'<div class="ub ub-ac">'
+                                        +'<div class="ub-img ojyp"></div>'
+                                        +'<div class="ofont" style="margin-left:.2em">'
+                                            +list[i].commentNum
+                                        +'</div>'
+                                    +'</div>'
+                                    +'<div class="ub ub-ac" style="margin-left:0.8em;">'
+                                        +'<div class="ub-img oztz"></div>'
+                                        +'<div class="ofont" style="margin-left:.2em">'
+                                            +list[i].supportNum
+                                        +'</div>'
+                                    +'</div>'
+                                    +'<div class="fz-8 ub-f1 ub ub-pe c-ad" style="margin-right:.5em">'
+                                        +time
+                                    +'</div>'
+                                +'</div>'
+                            +'</div>'
+                        +'</div>'
+                        +'<div class="ubb b-dd"></div>';
+                }
+                
+                $("#contentList").html(tmpl);
+                
+                //列表点击处理
+                appcan.button('.btnDetile','btn-act',function(e){
+                    var id=$(this);
+                    btn_ink(id,e);
+                    
+                    var newsIdVal = this.id;
+                    $(this).addClass('c-88');
+                    arrobjId.push(newsIdVal);
+                    setLocVal('arrobjId1',JSON.stringify(arrobjId));
+                    //传递点击列表信息
+                    appcan.locStorage.setVal('newsItemInfo',JSON.stringify(itemInfo[newsIdVal]));
+                    //console.log(JSON.stringify(itemInfo[newsIdVal]));
+                    if(itemInfo[newsIdVal].newsTypeId==2){
+                        //跳转图片新闻展示页面
+                        appcan.window.open('home_DetailsPictures','home_DetailsPictures.html',10);
+                    }else if(itemInfo[newsIdVal].newsTypeId==5){
+                        //跳转专题列表
+                        appcan.window.open('spe_page','spe_page.html',10,1024);
+                    }else if(itemInfo[newsIdVal].newsTypeId==6){
+                        //跳转栏目
+                        var goColumnId=itemInfo[newsIdVal].columnId;
+                        //alert(goColumnId);
+                        uexWindow.evaluateScript("home_page", 0, "openFrame("+goColumnId+")");
+                        // appcan.locStorage.setVal("govermentColumnDomIndex","id_"+goColumnId);
+                        // uexWindow.evaluateScript("", 0, "goGoverment("+goColumnId+")");
+                    }else{
+                        //跳转新闻详细页面
+                        appcan.window.open('home_Details','home_Details.html',10,1024);
+                    }
+                })                  
+                
+            },
+            error : function() {
+                appcan.frame.resetBounce(slideType);
+            }
+        });
+    }
+            
+    function goTop(){
+        window.scrollTo(0,0);
+    }
+    </script>
+</html>

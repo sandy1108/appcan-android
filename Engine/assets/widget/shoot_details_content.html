@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+    <head>
+        <title></title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="target-densitydpi=device-dpi, width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <link rel="stylesheet" href="css/fonts/font-awesome.min.css">
+        <link rel="stylesheet" href="css/ui-box.css">
+        <link rel="stylesheet" href="css/ui-base.css">
+        <link rel="stylesheet" href="css/ui-color.css">
+        <link rel="stylesheet" href="css/appcan.icon.css">
+        <link rel="stylesheet" href="css/appcan.control.css">
+        <link rel="stylesheet" href="css/new_file.css">
+        <link rel="stylesheet" href="css/loader.css">
+        <style>
+        .add_wh{
+            width: 4.93em;
+            height: 4.93em;
+            margin-right: 1em;
+            margin-top: 1em;
+            float: left;
+        }
+        </style>
+    </head>
+    <body class="um-vp f-f bg-wh" ontouchstart>
+        <div class="ub ub-ver ub-f1">
+            <div class="ub ub-ver" style="margin-bottom: .5em;">
+                <div class="ub ub-ver uinn">
+                    <div class="ub ub-ac" id="userInfo">
+                        <!--div class="ub-img1" style="width: 2.43em;height: 2.43em;background-image: url('image/touxiang.png')"></div>
+                        <div class="ub ub-ver uinn-l1">
+                            <div class="">西山</div>
+                            <div class="c-c6 uinn-t03 fz-8">5分钟前</div>
+                        </div-->
+                    </div>
+                    <div class="c-99 uinn-t05 fz-8" id="content">
+                        
+                    </div>
+                </div>
+                <!--
+                <div class="ub-img banner_wh" id="bannImage"></div>
+                -->
+                <div class="ub-f1 ub-pj uinn" id="bannImage">
+                    
+                </div>
+            </div>
+            <div class="ub-ver" id="wordsText" style="display:none; border-top: 1px solid #ccc;padding-top:0.5em;">
+                <div class="ub ub-ver" id="wordsText1"></div>
+                <div class="ub ub-ver" id="wordsText2"></div>
+                <div class="ub ub-ver" id="wordsText3"></div>
+            </div>
+            
+            <div class="ub ub-ver" id="commentList">
+                
+            </div>
+        </div>
+    </body>
+    <script src="js/appcan.js"></script>
+    <script src="js/appcan.control.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/interface.js"></script>
+    <script>
+        var objId = "";
+        var pageCon = 1;      //总条数
+        var pageNum = 1;
+        var shootItemInfo=getLocVal('shootItemInfo');
+        var userInfo=isDefine(getLocVal('userInfo')) ? getLocVal('userInfo'):"";
+        var userId="";
+        var slideType=1;
+        appcan.ready(function() {
+            //appcan.initBounce();
+            shootItemInfo=JSON.parse(shootItemInfo);
+            objId=shootItemInfo.photoId;
+            userId = isDefine(userInfo)?JSON.parse(userInfo).userId:"";
+            
+            appcan.window.subscribe('changeCommentCount',function(id){
+                if(id==objId){
+                    showComment(1,1);
+                }
+            })
+             //滑动底部刷新方式
+            appcan.frame.setBounce(1, null, null, function(type) {
+                slideType=type;
+                if ((pageNum - 1) * 10 > pageCon) {
+                    //uexWindow.toast("0", "5", "没有更多内容！", "2000");
+                    appcan.frame.resetBounce(slideType);
+                } else {
+                    pageNum++;
+                    showComment(1,pageNum);
+                }
+            },bounceBgColor,imgSettingsVal)
+            
+            loader.open();
+            getDetail();
+            showComment(1,1);
+        })
+        
+        function getDetail(){
+            var if_list = {
+                "transcode" : "photoInfo_getOne",
+                "content" : {
+                    "objId" : objId
+                }
+            };
+            appcan.request.ajax({
+                url:chongqingUrl,
+                headers : {
+                    token : appcan.locStorage.val("token") || '',
+                    deviceId:appcan.locStorage.val("deviceId") || ''
+                },
+                appVerify:true,
+                data : JSON.stringify(if_list),
+                type : "POST",
+                contentType : "application/json",
+                dataType : "json",
+                timeout : "15000",
+                success : function(res) {
+                    console.log("随手拍详情返回====>");
+                    console.log(res);
+                    loader.close();
+                    var time = timePoor(res.data.cTime);
+                    var userIcon=isDefine(res.data.userIcon)? getImgUrl("1",res.data.userIcon,2) : 'css/img/oheadpic.png';
+                    var nickname=(res.data.loginName).substring(0,3)+"***";
+                    if(isDefine(res.data.nickName) && res.data.nickName!=""){
+                        nickname = res.data.nickName;
+                    } 
+                    var tmpl = '<div class="ub-img7" style="width: 2.43em;height: 2.43em;border-radius:50%;background-image: url('+userIcon+')"></div>'
+                                +'<div class="ub ub-ver uinn-l1">'
+                                    +'<div class="">'+nickname+'</div>'
+                                    +'<div class="c-c6 uinn-t03 fz-8">'+time+'</div>'
+                                +'</div>';
+                    $("#userInfo").html(tmpl);
+                    $("#content").html(res.data.content);
+                    
+                    var imgs=res.data.picUrls;
+                    //alert(imgs);
+                    var imgList = imgs.split(",");
+                    //百分比
+                    if(imgList.length>=3){
+                        var widthPic=95/3;
+                        var widthPicem=$(window).width()/3;
+                    }else{
+                        var widthPic=95/imgList.length;
+                        var widthPicem=$(window).width()/imgList.length;
+                    }
+                    //alert(widthPic);
+                    //像素宽度
+                    var heightPic=widthPicem*9/(16*10);
+                    if(imgList.length>1){
+                        var str_html="";
+                        var str_h='<div class="ub" style="margin-top:0.8em;">';
+                        var length=imgList.length;;
+                        for(var i = 0;i <length ;i++){
+                           if(i>0&&(i%3)==0){
+                               str_h+='</div><div class="ub" style="margin-top:0.8em;">';
+                           }
+                           //str_h+='<div class="ub ub-img" style="height:'+heightPic+'em;width:'+widthPic+'%;background-image: url('+getImgUrl("1",imgList[i],1)+')"></div>';
+                           str_h+='<div class="ub ub-img" style="width:'+widthPic+'%;margin:0.2em;"><img style="width:100%" src="'+getImgUrl("1",imgList[i],1)+'" alt=""></img></div>';
+                           if((i+1)==length){
+                               str_h+="</div>";
+                           }                         
+                        }
+                         //$("#bannImage").prepend(str_h+str_html+"</div>");
+                           $("#bannImage").html(str_h);
+                    }else{
+                        var imgDom="";
+                         for(var i = 0;i < imgList.length;i++){
+                            imgDom=$('<div class="ub ub-img" style="width:100%;"><img style="width:'+widthPic+'%" src="'+getImgUrl("1",imgList[i],1)+'" alt=""></img></div>');
+                            
+                            $("#bannImage").prepend(imgDom);
+                        }
+                    }
+                    uexWindow.closeToast();
+                    //$("#bannImage").attr('style','background-image:url('+getImgUrl("1",data.info.attachment[0].attcId,1)+')');
+                },
+                error : function(err){
+                    loader.close();
+                }
+            })
+        }
+        
+        
+       //获取评论的方法
+        function showComment(index,page) {
+            pageNum = page;
+            if(index==1){
+                var titleVal="最新评论";
+                var conditions={
+                    "userId":userId,
+                    "objType":5
+                };
+                var list1=getInterface('commentInfoGetList',objId,pageNum,conditions);//接口封装配置函数
+            }else if(index==2){
+                var titleVal="名家评论";
+                var conditions={
+                    "isFamous":1, 
+                    "userId":userId,
+                    "objType":5
+                };
+                var list1=getInterface('commentInfoGetList',objId,pageNum,conditions);//接口封装配置函数
+            }else{
+                var titleVal="最热评论";
+                var conditions={
+                    "isHot":1, 
+                    "userId":userId,
+                    "objType":5
+                };
+                var list1=getInterface('commentInfoGetList',objId,pageNum,conditions);//接口封装配置函数
+            }
+            console.log(JSON.stringify(list1));
+            appcan.request.ajax({
+                url : chongqingUrl,
+                headers : {
+                    token : appcan.locStorage.val("token") || '',
+                    deviceId : appcan.locStorage.val("deviceId") || ''
+                },
+                appVerify:true,
+                data : list1,
+                type : "POST",
+                contentType : "application/json",
+                dataType : "json",
+                timeout : "15000",
+                success : function(res) {
+                    console.log("随手拍===>"+titleVal);
+                    console.log(res);
+                    appcan.frame.resetBounce(slideType);
+                    var list = res.data.list;
+                    pageCon = res.data.totalNum;
+                    var tmpl = '',
+                        tmpl1 = '',
+                        time="",
+                        nickName = "",
+                        nickedName="",
+                        commentNickName="",
+                        commentedNickName="",
+                        commentLoginName="",
+                        commentedLoginName="",
+                        userIconUrl="",
+                        picPrse = 'praise1',
+                        isSupport=0;
+                    for(var i = 0;i < list.length;i++){
+                        time = timePoor(list[i].mTime);
+                        commentNickName = list[i].commentNickName;
+                        if(list[i].commentLoginName!="游客"){
+                            commentLoginName=(list[i].commentLoginName).substring(0,3)+'***'+(list[i].commentLoginName).substring(8,11);
+                        }else{
+                            commentLoginName=list[i].commentLoginName;
+                        }
+                        nickName = isDefine(commentNickName) ? commentNickName : commentLoginName;
+                        
+                        if (isDefine(list[i].commentedUserId)) {
+                            commentedNickName = list[i].commentedNickName;
+                            if(list[i].commentLoginName!="游客"){
+                                commentedLoginName=(list[i].commentedLoginName).substring(0,3)+'***'+(list[i].commentedLoginName).substring(8,11);
+                            }else{
+                                commentedLoginName=list[i].commentedLoginName;
+                            }
+                            nickedName = isDefine(commentedNickName) ? commentedNickName : commentedLoginName;
+                            nickName = nickName + ' 对  ' + nickedName + ' 的评论';
+                        }
+                        userIconUrl = isDefine(list[i].commentAvatar) ? getImgUrl("1",list[i].commentAvatar,2) : 'css/img/oheadpic.png';
+                        isSupport = isDefine(list[i].isSupport)?list[i].isSupport:0;
+                        if(isSupport == 1){
+                            picPrse = 'praise2';
+                        }else{
+                            picPrse = 'praise1';
+                        }
+                        var content=list[i].content;
+                        if(list[i].userDel==1){
+                            content="该评论已删除";
+                        }
+                        tmpl1 += '<div class="ub uinn uinn-t1">'
+                                    +'<div class="ub-img7 wh-2em bor-yuan" style="background-image:url(\''+userIconUrl+'\')"></div>'
+                                    +'<div class="ub ub-f1 mar-l1">'
+                                        +'<div class="ub ub-f1 ub-ver">'
+                                            +'<div class="c-70 fz-8">'+nickName+'</div>'
+                                            +'<div class="uinn02 c-46 wrap">'
+                                                +content
+                                            +'</div>'
+                                            +'<div class="ub ub-pj">'
+                                                +'<div class="ub c-99 fz-68">'+time+'</div>'
+                                                +'<div class="ub ub-ac">'
+                                                    +'<div class="wh-1em '+picPrse+' ub-img userSupport" id="'+list[i].commentId+'"></div>'
+                                                    +'<div class="c-3c fz-8 umar-lr">'+list[i].supportNum+'</div>&nbsp;&nbsp;&nbsp;&nbsp;'
+                                                    +'<div class="wh-1em discuss ub-img" onclick="plComment(\''+list[i].commentId+'\',\''+list[i].commentUserId+'\')"></div>'
+                                                +'</div>'
+                                            +'</div>'
+                                        +'</div>'
+                                    +'</div>'
+                                +'</div>'
+                                +'<div class="ubb b-dd" style="height: 1px"></div>';
+                    }
+                    
+                    tmpl = '<div class="ub ub-f1 uinn-t1" style="margin-left:.5em">'
+                                    +'<div class="ub bg-ff w-06em"></div>'
+                                    +'<span class="ub ub-ac c-66 mar-l05">'+titleVal+'</span>'
+                                +'</div>'
+                            +tmpl1;
+                            
+                    if(!isDefine(tmpl1)){
+                        tmpl = '';
+                    }
+                    if(index==1){
+                        if(pageCon>0){
+                            $("#wordsText").show();
+                            if(pageNum==1){
+                                $("#wordsText3").empty();
+                                $("#wordsText3").append(tmpl);
+                            }else{
+                                $("#wordsText3").append(tmpl1);
+                            }
+                        }
+                    }else if(index==2){
+                        //点赞数超过100才会显示
+                        (pageCon>0)?$("#wordsText1").html(tmpl):"";
+                    }else {
+                        //点赞数超过100才会显示
+                        (pageCon>0)?$("#wordsText2").html(tmpl):"";
+                    }
+                    
+                   appcan.button(".userSupport","btn-act",function(){
+                       userCommentId=this.id;
+                       userAction(userCommentId,4,1,'',userId,userSupportCallBack);
+                   })
+                },
+                error : function() {
+                    appcan.frame.resetBounce(slideType);
+                }
+            })
+        }
+      
+      //资讯点赞
+        appcan.button("#support","btn-act",function(){
+           userAction(newsId,1,1,'',userId,supportCallBack);
+       })
+      //资讯点赞结果回调callback
+       function supportCallBack(res){
+            console.log("点赞结果返回给页面====>");
+            console.log(res);
+            if(res.status=="000"){
+                var str = $("#praiseText").html();
+                $("#praiseText").html(parseInt(str) + 1);
+                $("#picZan").attr('style','background-image: url(\'image/praise-1.png\');');
+            }else if(res.status == "4060") {
+                uexWindow.toast(0, 5, "您已经点过赞了", 2000);
+            }else{
+                uexWindow.toast(0, 5, data.dispose.msg, 2000);
+            }
+        }
+        
+        //评论点赞结果回调callback
+       function userSupportCallBack(res){
+            console.log("对评论的点赞结果返回给页面====>");
+            console.log(res);
+            if(res.status=="000"){
+                $("#"+userCommentId).removeClass('praise1').addClass('praise2');
+                var supportNum=parseInt($("#"+userCommentId).next().html())+1;
+                $("#"+userCommentId).next().html(supportNum);
+            }else if(res.status == "4060") {
+                uexWindow.toast(0, 5, "您已经点过赞了", 2000);
+            }else{
+                uexWindow.toast(0, 5, res.msg, 2000);
+            }
+        }
+        
+        //对评论进行评论
+        function plComment(parentCommentId,commentedUserId){
+            //传入评论参数
+            var commentParameter={
+                "objId": objId,
+                "objType": 5,
+                "parentCommentId":parentCommentId,//被评论的id
+                "commentedUserId":commentedUserId //被评论者id
+            }
+            setLocVal("commentParameter",JSON.stringify(commentParameter));
+            appcan.window.open('home_Comment','home_Comment.html',10);
+        }
+ </script>
+</html>

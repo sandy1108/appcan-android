@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+    <head>
+        <title></title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="target-densitydpi=device-dpi, width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <link rel="stylesheet" href="css/fonts/font-awesome.min.css">
+        <link rel="stylesheet" href="css/ui-box.css">
+        <link rel="stylesheet" href="css/ui-base.css">
+        <link rel="stylesheet" href="css/ui-color.css">
+        <link rel="stylesheet" href="css/appcan.icon.css">
+        <link rel="stylesheet" href="css/appcan.control.css">
+        <link rel="stylesheet" href="css/new_file.css">
+        <link rel="stylesheet" href="css/common.css">
+        <link rel="stylesheet" href="css/loader.css">
+    </head>
+    <body class="um-vp " ontouchstart>
+        <div id="page_0" class="up ub ub-ver bc-bg ub-img1" tabindex="0" style="background-image: url('image/loginBG.png')">
+            <!--header开始-->
+            <div id="header" class="uh bc-text-head ub oc_header" style="height:3em">
+                <!-- <div class="nav-btn" id="nav-left">
+                <div class="ub-img oback"></div>
+                </div>
+                <h1 class="ut ub-f1 ulev-3 ut-s tx-c" tabindex="0">详情</h1>
+                <div class="nav-btn nav-bt" id="nav-right">
+
+                </div> -->
+            </div>
+            <!--header结束--><!--content开始-->
+            <div id="content" class="ub-f1 tx-l" style="overflow-y: hidden">
+
+            </div>
+            <!--content结束-->
+            <div id="footer" class="ubt bc-border oc_header ub ub-ac ub-pc  uinn3" style="height:3em">
+                <div class="uinn4 ub ub-f1" style="margin-left:1em;margin-right: .5em">
+                    <div class="uinput ub  bc-border uba uc-a1 ub-f1" style="width:82%;background-color: white">
+                        <input placeholder="评论内容" type="text" class="ub-f1" id="input_content">
+                    </div>
+                </div>
+                <div id="handout" class="ub ub-pc uc-a1" style="padding-top:.4em;padding-bottom:0.4em;color:white;margin-right:1em;width: 22%;background-color:#ff8a00">
+                    提交
+                </div>
+            </div>
+        </div>
+        <script src="js/appcan.js"></script>
+        <script src="js/appcan.control.js"></script>
+        <script src="js/common.js"></script>
+        <script src="js/interface.js"></script>
+    </body>
+    <script>
+        var objId = "";
+        var shootItemInfo = getLocVal('shootItemInfo');
+        var userInfo = isDefine(getLocVal("userInfo")) ? getLocVal("userInfo") : "";
+        appcan.ready(function() {
+            shootItemInfo = JSON.parse(shootItemInfo);
+            objId=shootItemInfo.photoId;
+            appcan.frame.open("header", "shoot_details_header.html", 0, 0);
+            var titHeight = $('#header').offset().height;
+            var s = window.getComputedStyle($("#content")[0], null);
+            var fh = $("#footer").offset().height;
+            uexWindow.openPopover("content", "0", "shoot_details_content.html", "", 0, titHeight, parseInt($('#content').offset().width), "", parseInt(s.fontSize), "0", parseInt(fh));
+            window.onorientationchange = window.onresize = function() {
+                appcan.frame.resize("content", 0, titHeight);
+            }
+            //监听header关闭
+            appcan.window.subscribe("close_shoot", function(msg) {
+                appcan.window.close(-1);
+            });
+        })
+        var commentStatus = 1;
+        appcan.button("#handout", "btn-act", function() {
+            if (commentStatus == 0) {
+                appcan.window.openToast('评论正在提交...', 1000);
+            } else {
+                commentStatus = 0;
+                doComment();
+            }
+        })
+        //处理提交评论的方法
+        function doComment() {
+            var content = $("#input_content").val();
+            var userId = isDefine(userInfo) ? JSON.parse(userInfo).userId : "";
+            if (content == "") {
+                commentStatus = 1;
+                appcan.window.openToast('内容不能为空', 2000);
+                return false;
+            }
+            var conditions = {
+                "objType" : 5,
+                "parentCommentId" : "",
+                "commentedUserId" : "",
+                "userId" : userId,
+                "content" : content
+            };
+            var if_list = getInterface('commentInfoAdd', objId, "", conditions);
+            //接口封装配置函数
+            console.log("评论接口======>" + JSON.stringify(if_list));
+            //return false;
+            appcan.request.ajax({
+                url : chongqingUrl,
+                headers : {
+                    token : appcan.locStorage.val("token") || '',
+                    deviceId : appcan.locStorage.val("deviceId") || ''
+                },
+                appVerify : true,
+                data : JSON.stringify(if_list),
+                type : "POST",
+                timeout : "15000",
+                contentType : "application/json",
+                dataType : "json",
+                success : function(res) {
+                    console.log("评论成功返回=====>");
+                    console.log(res);
+                    if (res.status == "000") {
+                        $("#input_content").val("");
+                        if (res.data.isSensitiveWord) {
+                            appcan.window.openToast(' 你的评论涉及敏感词，待审核后才可显示 ', 3500);
+                            commentStatus = 1;
+                            return false;
+                        } else {
+                            appcan.window.openToast('评论成功!', 2000);
+                            appcan.window.publish('changeCommentCount', objId);
+                        }
+                        setTimeout(function() {
+                            commentStatus = 1;
+                            //appcan.window.close(-1);
+                        }, 1000);
+                    } else {
+                        appcan.window.openToast('评论失败', 1000);
+                        commentStatus = 1;
+                    }
+                },
+                error : function(err) {
+                    appcan.window.openToast('评论失败', 1000);
+                    commentStatus = 1;
+                }
+            });
+        }
+
+    </script>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+    <head>
+        <title></title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="target-densitydpi=device-dpi, width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <link rel="stylesheet" href="css/fonts/font-awesome.min.css">
+        <link rel="stylesheet" href="css/ui-box.css">
+        <link rel="stylesheet" href="css/ui-base.css">
+        <link rel="stylesheet" href="css/ui-color.css">
+        <link rel="stylesheet" href="css/appcan.icon.css">
+        <link rel="stylesheet" href="css/appcan.control.css">
+        <link rel="stylesheet" href="css/new_file.css">
+        <link rel="stylesheet" href="css/loader.css">
+        <style>
+            .call{
+                font-weight: bold;
+                color:#FF8A00;
+            }
+        </style>
+    </head>
+    <body class="um-vp bc-bg" ontouchstart>
+        <div class="ub ub-ver" id="connectContent" style="margin:1.5em 1em">
+            <!-- <div class="ub" style="margin-bottom:1em">
+                <div class="ub umar-r" style="">联系电话</div>
+                <div class="ub umar-l call">023-89187518</div>
+            </div>
+            <div class="ub" style="margin-bottom:1em">
+                <div class="ub umar-r">联系邮箱</div>
+                <div class="ub umar-l" style="font-weight: bold">1036127437@qq.com</div>
+            </div>
+            <div class="ub" style="margin-bottom:1em">
+                <div class="ub umar-r">联系地址</div>
+                <div class="ub umar-l" style="font-weight: bold">重庆市渝北区新南路181号3楼</div>
+            </div>
+            <div class="ub ub-i mg" style="background-image: url(twoImg/chongqing.png);width: auto;height: 10em;">
+            </div> -->
+        </div>
+    <script src="js/appcan.js"></script>
+    <script src="js/appcan.control.js"></script>
+    <script src="js/common.js"></script>
+    </body>
+    <script>
+        appcan.ready(function() {
+            appcan.initBounce();
+            getConnectMsg();
+        });
+        appcan.button(".call","btn-act",function(){
+            uexCall.dial($(this).html());
+        })
+        //获取联系我们的信息获取
+        function getConnectMsg(){
+            loader.open();
+            var list={
+                "transcode": "config_getOne",
+                "content": {
+                        "key": "联系我们"   //UserAgreement-用户协议，AboutUS-联系我们，3-获取区县APP下载地址[后端程序通过读取配置文件，获得全部区县，并将其返回给前端。]
+                }
+             };
+            console.log(JSON.stringify(list));
+            appcan.request.ajax({
+                type : 'POST',
+                appVerify:true,
+                url : chongqingUrl,
+                headers : {
+                    token : appcan.locStorage.val("token")||'',
+                    deviceId : appcan.locStorage.val("deviceId") || ''
+                },
+                data : list,
+                contentType : "application/json",
+                dataType : 'json',
+                timeout : "15000",
+                success : function(res) {
+                    console.log("联系我们接口返回======>");
+                    console.log(res);
+                    loader.close();
+                    if(res.status="000"){
+                        if(res.data.configStatus == 0){
+                            appcan.window.openToast('后台维护中',1000,5,0);
+                        }else{
+                            $("#connectContent").html(res.data.configValue);
+                        }
+                    }else{
+                        appcan.window.openToast('获取失败',2000);
+                        $("#connectContent").html("暂无信息");
+                        return false;
+                    }
+                },
+                error:function(err) {
+                     loader.close();
+                     appcan.window.openToast('获取失败',2000);
+                     $("#connectContent").html("暂无信息");
+                }
+            })
+        }
+        //双击回到顶部
+        function goTop(){
+            window.scrollTo(0,0);
+        }
+    </script>
+</html>

@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+    <head>
+        <title></title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="target-densitydpi=device-dpi, width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <link rel="stylesheet" href="css/fonts/font-awesome.min.css">
+        <link rel="stylesheet" href="css/ui-box.css">
+        <link rel="stylesheet" href="css/ui-base.css">
+        <link rel="stylesheet" href="css/ui-color.css">
+        <link rel="stylesheet" href="css/appcan.icon.css">
+        <link rel="stylesheet" href="css/appcan.control.css">
+        <link rel="stylesheet" href="css/new_file.css">
+        <link rel="stylesheet" href="css/loader.css">
+    </head>
+    <body class="um-vp oc_gray" ontouchstart>
+        <div class="ub ub-ver">
+            <div class="ub ub-ac oc_white uinn ob_bt" ontouchstart="appcan.touch()" onclick="changepic()" style="height:4em;margin-top:1em;">
+                <div class="ub-f1">
+                    头像
+                </div>
+                <div id="photo" class="ub-img7 oheadpic" style="height:4em;width: 4em;border-radius: 2em"></div>
+                <div class="ub-img onext" style="margin-left:1em;"></div>
+            </div>
+            <div onclick="changenick()" class="ub ub-ac oc_white uinn ob_bt" style="height:2em;margin-top:1em;">
+                <div class="ub-f1">
+                    昵称
+                </div>
+                <div id="name" class="c-998"></div>
+                <div class="ub-img onext"></div>
+            </div>
+            <div class="ub ub-ac oc_white uinn ob_b" onclick="changepers()" style="height:2em;">
+                <div class="ub-f1">
+                    个性签名
+                </div>
+                <div class="c-998" id="persValue"></div>
+                <div class="ub-img onext"></div>
+            </div>
+            <!-- <div onclick="changepass()" class="ub ub-ac oc_white uinn ob_b" style="height:2em;">
+                <div class="ub-f1">
+                    修改登录密码
+                </div>
+                <div class="ub-img onext"></div>
+            </div> -->
+            <div class="ub ub-ac oc_white uinn ob_b" style="height:2em;">
+                <div class="ub-f1">
+                    性别
+                </div>
+                <div class="select uba bc-border bc-text">
+                    <div class="text">
+                        保密
+                    </div>
+                    <div class="icon"></div>
+                    <select id="sex" class="sel" selectedindex="0">
+                        <option value='0'>保密</option>
+                        <option value='1'>男</option>
+                        <option value='2'>女</option>
+                    </select>
+                </div>
+
+            </div>
+            <div class="ub ub-ac oc_white uinn ob_b" onclick="changeEmail()" style="height:2em;">
+                <div class="ub-f1">
+                    邮箱
+                </div>
+                <div class="c-998" id="email"></div>
+                <div class="ub-img onext"></div>
+            </div>
+
+            <div class="ub ub-ac oc_white uinn ob_b" style="height:2em;margin-top:1em;">
+                <div class="ub-f1">
+                    手机号
+                </div>
+                <div id="phoneNum" class="c-998"></div>
+            </div>
+        </div>
+    </body>
+    <script src="js/appcan.js"></script>
+    <script src="js/appcan.control.js"></script>
+    <script src="js/common.js"></script>
+    </body>
+    <script>
+        var num = 100;
+        //生成随机数
+        var dirPath = "";
+        //获取的本地图片地址
+        var userInfo = isDefine(getLocVal('userInfo')) ? getLocVal('userInfo') : "";
+        var userId = "";
+        appcan.ready(function() {
+            appcan.initBounce();
+            userInfo=isDefine(userInfo) ? JSON.parse(userInfo) : "";
+            userId = isDefine(userInfo) ? userInfo.userId : "";
+            var persValue = isDefine(userInfo) ? userInfo.signature : "";
+            if (isDefine(persValue) && (persValue.length > 10)) {
+                persValue = persValue.substring(0, 8) + '..';
+            }
+
+            var phone = isDefine(userInfo)?userInfo.loginName:"";
+            var Num1 = phone.substring(0, 3);
+            var Num2 = phone.substring(7, 11);
+            $("#name").html(appcan.locStorage.val("nickname") || Num1 + "***" + Num2);
+            $("#phoneNum").html(Num1 + "****" + Num2);
+            $("#persValue").html(persValue);
+            
+            if(isDefine(userInfo)){
+                var persSex=isDefine(userInfo)?userInfo.sex:0;
+                document.getElementById("sex").options[persSex].selected="selected";
+                if(persSex!=0){
+                    (persSex == 1) ? $(".select .text").text("男") : $(".select .text").text("女");
+                }else{
+                    $(".select .text").text("保密");
+                }
+            }
+            
+            var emailVal=isDefine(userInfo)?userInfo.email:"";
+            $("#email").html(emailVal);
+            
+            var userIcon = isDefine(userInfo)?getImgUrl("1", userInfo.userIcon, 2) : 'css/img/oheadpic.png';
+            if (userIcon != "?imageView2/2/w/125/h/125") {
+                $("#photo").css("background-image", "url(" + userIcon + ")");
+            }
+
+            appcan.window.subscribe("changename", function(msg) {
+                $("#name").html(msg);
+            })
+            appcan.window.subscribe("persName", function(msg) {
+                $("#persValue").html(msg);
+            })
+            appcan.window.subscribe("email", function(msg) {
+                $("#email").html(msg);
+            })
+
+            uexImageBrowser.cbPick = function(opId, dataType, data) {
+                dirPath = data;
+                //得到本地路劲后创建图片上传
+                uexUploaderMgr.createUploader(num, uploadHttp);
+            }
+            //打开相机会回调  得到文件本地路径
+            uexCamera.cbOpen = function(opCode, dataType, data) {
+                //alert(data);
+                dirPath = data;
+                //alert(data);
+                //uexLog.sendLog("---------url===>"+uploadHttp);
+                uexUploaderMgr.createUploader(num, uploadHttp);
+            }
+            //上传
+            uexUploaderMgr.onStatus = function(opCode, fileSize, percent, serverPath, status) {
+                switch (status) {
+                case 0:
+                    //上传中
+                    appcan.window.openToast('图像上传中' + percent + '%', 0, 5);
+                    break;
+                case 1:
+                    appcan.window.openToast('图像上传成功', 2500, 5);
+                    // var serverUrl=JSON.parse(serverPath).url;
+                    // var imgId=serverUrl.split("/");
+                    var imgId = JSON.parse(serverPath).key;
+                    uexUploaderMgr.closeUploader(num);
+                    num++;
+                    //updateload(imgId[imgId.length-1]);
+                    updateload(imgId);
+                    break;
+                case 2:
+                    appcan.window.openToast('文件上传失败', 3000, 5);
+                    uexUploaderMgr.closeUploader(num);
+                    num++;
+                    break;
+                }
+            }
+            ///创建上传的回调
+            uexUploaderMgr.cbCreateUploader = function(opCode, dataType, data) {
+                if (data == 0) {
+                    uexUploaderMgr.uploadFile(num, dirPath, "uploadFile", 3);
+                } else {
+                    uexWindow.toast(0, 5, "创建失败", 3000);
+                }
+            }
+        })
+        //修改头像
+        function changepic() {
+            appcan.window.evaluateScript('', 'opeAction();');
+        }
+
+        //修改昵称
+        function changenick() {
+            appcan.window.open('change_nickname', 'change_nickname.html', '10');
+        }
+
+        //修改密码
+        // function changepass() {
+            // appcan.window.open('change_password', 'change_password.html', '10');
+        // }
+
+        //修改个性签名
+        function changepers() {
+            appcan.window.open('change_pers', 'change_pers.html', '10');
+        }
+
+        //打开本地图片库
+        function choosehead() {
+            uexImageBrowser.pick();
+        }
+
+        //打开设置邮箱
+        function changeEmail() {
+            appcan.window.open('change_email', 'change_email.html', '10');
+        }
+
+        //打开本地相机函数
+        function openCamera() {
+            uexCamera.open();
+        }
+
+        function updateload(picId) {
+            loader.open();
+            var tok = appcan.locStorage.val("token")||"";
+            var dev = appcan.locStorage.val("deviceId")||"";
+            var list = {
+                "transcode" : "userInfo_modify",
+                "info" : "changeHeadIcon",
+                "content" : {
+                    "avatarUrl" : picId,
+                    "userId" : userId
+                }
+            };
+            appcan.request.ajax({
+                url : chongqingUrl, //接口地址
+                headers : {
+                    token : tok,
+                    deviceId : dev
+                },
+                appVerify : true,
+                data : list,
+                type : "POST",
+                timeout : "15000",
+                contentType : "application/json",
+                dataType : "json",
+                success : function(res) {//数据请求成功
+                    console.log("头像修改结果返回===>");
+                    console.log(JSON.stringify(res));
+                    loader.close();
+                    //alert(getImgUrl("1",picId,2));
+                    if (res.status == "000") {
+                        var userIconUrl = getImgUrl("1", picId, 2);
+                        $("#photo").css("background-image", "url(" + userIconUrl + ")");
+                        if (isDefine(userIconUrl)) {
+                            userInfo.userIcon = picId;
+                            appcan.locStorage.setVal("userInfo", JSON.stringify(userInfo));
+                        }
+                        appcan.window.publish("changehead", userIconUrl);
+                        uexWindow.toast(0, 5, "修改成功", 2000);
+                    } else {
+                        uexWindow.toast(0, 5, "修改失败", 2000);
+                    }
+                },
+                error : function() {
+                    loader.close();
+                    uexWindow.toast(0, 5, "修改失败", 2000);
+                }
+            });
+        }
+        
+        appcan.select(".select", function(ele, value) {
+            var if_list = {
+                "transcode" : "userInfo_modify",
+                "info" : "changeSex",
+                "content" : {
+                    "sex" : value,
+                    "userId" : userId
+                }
+            };
+
+            var tok = appcan.locStorage.val("token")||"";
+            var dev = appcan.locStorage.val("deviceId")||"";
+            appcan.request.ajax({
+                url : chongqingUrl, //接口地址
+                headers : {
+                    token : tok,
+                    deviceId : dev
+                },
+                appVerify : true,
+                data : JSON.stringify(if_list),
+                type : "POST",
+                timeout : "15000",
+                contentType : "application/json",
+                dataType : "json",
+                success : function(res) {//数据请求成功
+                    userInfo.sex=value;
+                    appcan.locStorage.setVal("userInfo",JSON.stringify(userInfo));
+                    uexWindow.toast(0, 5, "修改成功", 2000);
+                },
+                error : function() {
+                    uexWindow.toast(0, 5, "修改失败", 2000);
+                }
+            });
+        });
+
+    </script>
+</html>

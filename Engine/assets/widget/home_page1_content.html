@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+<head>
+    <title></title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="target-densitydpi=device-dpi, width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" href="css/fonts/font-awesome.min.css">
+    <link rel="stylesheet" href="css/ui-box.css">
+    <link rel="stylesheet" href="css/ui-base.css">
+    <link rel="stylesheet" href="css/ui-color.css">
+    <link rel="stylesheet" href="css/appcan.icon.css">
+    <link rel="stylesheet" href="css/appcan.control.css">
+    <link rel="stylesheet" href="css/new_file.css">
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/loader.css">
+</head>
+<!-- 重庆栏目模板 -->
+<body class="um-vp f-f" ontouchstart>
+    <div class="ub ub-f1 ub-ver" id="myContent">
+        <div id="slider" class="slider">
+            
+        </div>
+         <div id="subColumn">
+            <ul class="ub ub-f1 ubb b-dd Scrolling uhide" id="viceTitle">
+                <li class="ub ub-ac ub-pc ub-ver vice_w" id="wenzhneg">
+                    <div class="ub-img7 twoWater_wh" style="background-image: url(image/home/wz.png)"></div>
+                    <p class="ub c-66 fz-8 uinn-t03">问政</p>
+                </li>
+                <li class="ub ub-ac ub-pc ub-ver vice_w" id="register">
+                    <div class="ub-img7 twoWater_wh" style="background-image: url(twoImg/register.png)"></div>
+                    <p class="ub c-66 fz-8 uinn-t03">预约挂号</p>
+                </li>
+                <li class="ub ub-ac ub-pc ub-ver vice_w" id="chaxun">
+                    <div class="ub-img7 twoWater_wh" style="background-image: url(twoImg/illegal.png)"></div>
+                    <p class="ub c-66 fz-8 uinn-t03">违章查询</p>
+                </li>
+                <li class="ub ub-ac ub-pc ub-ver vice_w" id="lukuang">
+                    <div class="ub-img7 twoWater_wh" style="background-image: url(twoImg/traffic.png)"></div>
+                    <p class="ub c-66 fz-8 uinn-t03">实时路况</p>
+                </li>
+                <li class="ub ub-ac ub-pc ub-ver vice_w" id="food">
+                    <div class="ub-img7 twoWater_wh" style="background-image: url(twoImg/foodFee.png)"></div>
+                    <p class="ub c-66 fz-8 uinn-t03">美食</p>
+                </li>
+                <li class="ub ub-ac ub-pc ub-ver vice_w" id="movie">
+                    <div class="ub-img7 twoWater_wh" style="background-image: url(twoImg/movie.png)"></div>
+                    <p class="ub c-66 fz-8 uinn-t03">电影院</p>
+                </li>
+                 <li class="ub ub-ac ub-pc ub-ver vice_w" id="sdk10364">
+                    <div class="ub-img7 twoWater_wh" style="background-image: url(twoImg/TVFee.png)"></div>
+                    <p class="ub c-66 fz-8 uinn-t03">有线电视</p>
+                </li>
+                <li class="ub ub-ac ub-pc ub-ver vice_w" id="sdk10558">
+                    <div class="ub-img7 twoWater_wh" style="background-image: url(twoImg/bill.png)"></div>
+                    <p class="ub c-66 fz-8 uinn-t03">手机话费</p>
+                </li>
+                <li class="ub ub-ac ub-pc ub-ver vice_w" id="sdk10352">
+                    <div class="ub-img7 twoWater_wh" style="background-image: url(twoImg/waterFee.png)"></div>
+                    <p class="ub c-66 fz-8 uinn-t03">水费</p>
+                </li>
+                <li class="ub ub-ac ub-pc ub-ver vice_w" id="sdk10353">
+                    <div class="ub-img7 twoWater_wh" style="background-image: url(twoImg/electricFee.png)"></div>
+                    <p class="ub c-66 fz-8 uinn-t03">电费</p>
+                </li>
+                <li class="ub ub-ac ub-pc ub-ver vice_w" id="sdk10354">
+                    <div class="ub-img7 twoWater_wh" style="background-image: url(twoImg/gasFee.png)"></div>
+                    <p class="ub c-66 fz-8 uinn-t03">气费</p>
+                </li>
+            </ul>
+        </div>
+        <div id="ocontent" class="ub ub-f1 ub-ver">
+             <div id="listData" class="ub ub-ver">
+                 
+             </div>
+        </div>
+    </div>
+    <script src="js/newAppcan.js"></script>
+    <script src="js/appcan.control.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/interface.js"></script>
+    <script src="js/common.dom.js"></script>
+    <script src="js/appcan.slider.js"></script>
+    <script src="js/emmList.js"></script>
+</body>
+<script>
+    var slider;
+    var icache;
+    var pageNum = 1;        //当前页数
+    var pageCount = 1;      //总条数
+    var itemInfo={}; //根据newsId存放的对应每条列表数据json
+    //slider相关变量
+    var newsId_slider=[]; //slider列表对应id
+    //列表相关变量
+    var status=1;//加载控制
+    var arrobjId = [];   //点击过的数组
+    var homepageopen=appcan.locStorage.val("homepageopen");
+    var isFirstPage=appcan.locStorage.val('isFirstPage');
+    var $viceTitle=$("#viceTitle");
+    var columnId="",
+        isShowDate=1,
+        isShowSummary=0,
+        conditions="",
+        isSlide=0,
+        slideType=0;
+    appcan.ready(function() {  
+        //获取当前页唯一pageName值（通过地址传入参数）
+        var parameter=zy_parse();
+        console.log("模板一传入参数=====>");
+        console.log(parameter);
+        columnId=parameter.pageName;
+        isShowDate=parameter.isShowDate;
+        isShowSummary=parameter.isShowSummary;
+        
+        //alert(columnId);
+        //alert(isShowSummary);
+        conditions={
+            "isSummary":parseInt(isShowSummary),
+            "isComment":1,
+            "isPtime":parseInt(isShowDate)
+        };
+        icache = appcan.icache({maxtask:5});
+        slider = appcan.slider({
+            selector : '#slider',
+            aspectRatio : 15/30,
+            hasLabel : true,
+            hasIndicator : true,
+            index : 0,
+            auto:5000,
+            icache:icache
+        });
+        slider.on("clickItem", function(index, data) {
+            goAdDetail(itemInfo[newsId_slider[index]]);//广告位定位栏目函数
+        })
+        if(isAndroid){//(必选)true:支持；false:不支持。默认为false
+            var param_slip = {
+                isSupport:true
+            }
+            uexWindow.setIsSupportSlideCallback(JSON.stringify(param_slip));//设置网页是否支持滑动的相关监听方法
+        }
+         appcan.window.subscribe('home_page_content',function (num){getlist(num)});
+         
+          //监听评论更新
+         appcan.window.subscribe('changeCommentCount',function (msg){
+               var $commentNumDom=$("#commentNum_"+msg);
+               var num= $commentNumDom.html();
+               if(num==""){
+                   $commentNumDom.html(1);  
+               }else{
+                   $commentNumDom.html(parseInt(num)+1);
+               }
+         })
+         //点赞数监听
+         appcan.window.subscribe('home_page_zan',function (sid){
+            var numStr = $("#"+sid).html();
+            $("#"+sid).html(parseInt(numStr) + 1);
+         });
+         //浏览量监听
+         appcan.window.subscribe('home_page_bq',function (sid){
+            var numStr = $("#bq_"+sid).html();
+            $("#bq_"+sid).html(parseInt(numStr) + 1);
+         })
+           
+        //滑动顶部刷新方式
+        appcan.frame.setBounce([0,1], null, null, function(type) {
+             isSlide=1;
+             if(status==0){//可能由于网络原因,处理恢复上一次的加载
+                 status=1;
+                 appcan.frame.resetBounce(slideType);
+             }
+             slideType=type;
+             //判断是否有网
+             GetInfoDevice(function(str){
+                 if(!str){
+                     appcan.frame.resetBounce(slideType);
+                     return false;
+                 }else{
+                     if (type == 0) {//删除缓存文件
+                         pageNum=1;
+                         getSliderData();
+                         getNewsItemData(1);
+                     }else{
+                         //判断是否有网
+                         // if(status==0){
+                             // //uexWindow.toast(0, 5, "正在请求数据...", 2000);
+                             // //return false;
+                         // }else{
+                            if ((pageNum-1)*10 > pageCount) {
+                                appcan.frame.resetBounce(slideType);
+                            } else {
+                                pageNum++;
+                                //alert(pageNum);
+                                getNewsItemData(pageNum);
+                            }
+                         //}
+                     }
+                 }
+             })
+         },bounceBgColor,imgSettingsVal)
+         
+         if(!isSML){
+            getlogin(); //加载emm回调  
+         }
+        
+         //判断是否有网
+         GetInfoDevice(function(str){
+             if(!str){
+                 setCacheData();//默认加载缓存数据
+             }
+         })
+         
+        setCacheData();//默认加载缓存数据
+        viceHtML();//***************显示中间栏目*********************
+        //**********轮播图*********
+        //getSliderData();
+        //**********有网显示新闻列表********************
+        //getNewsItemData(1);
+        
+        //用户看见的第一页才加载数据
+        if(isDefine(isFirstPage) && isFirstPage.split("_")[1]==columnId){
+            getSliderData();
+            getNewsItemData(1);
+        }
+    })
+    
+    //缓存加载首页数据
+    function setCacheData(){
+        var homeNewsListCQ_slider= getLocVal('homeNewsListCQ_slider_'+columnId);
+        var homeNewsListCQ_item= getLocVal('homeNewsListCQ_item_'+columnId);
+        if(isDefine(homeNewsListCQ_slider)){
+            sliderItem.domShow(1,0,JSON.parse(homeNewsListCQ_slider),advertShow_cq);
+        }else{
+            if(!isDefine(isFirstPage) || isFirstPage.split("_")[1]!=columnId){
+                getSliderData();
+            }
+        } 
+        
+        $viceTitle.removeClass("uhide");
+        if(isDefine(homeNewsListCQ_item)){
+            newsItem.domShow(1,0,JSON.parse(homeNewsListCQ_item),newsItemShow_Cq,conditions);
+        }
+    }
+    
+    //slider数据请求
+    function getSliderData(){
+         var if_list=getInterface('billboardGetList',columnId,1);//接口封装配置函数
+         console.log("sliderItem====>"+JSON.stringify(if_list)+"\n"+chongqingUrl);
+         appcan.request.ajax({
+            url : chongqingUrl,
+            headers : {
+                token : appcan.locStorage.val("token") || '',
+                deviceId : appcan.locStorage.val("deviceId") || ''
+            },
+            appVerify:true,
+            data : JSON.stringify(if_list),
+            timeout : "15000",
+            type : "POST",
+            contentType : "application/json",
+            dataType : "json",
+            success : function(res) {
+                console.log(columnId+" >>>模板一栏目slider返回====>");
+                console.log(res);
+                loader.close();
+                if(res.status != '000'){
+                    uexWindow.toast(1, 5, res.msg, 2000);
+                    return false;
+                }
+                $viceTitle.removeClass("uhide");
+                var datas=res.data;//后台数据库请求
+                if(isDefine(datas.list)){
+                    var homeNewsListCQ_slider= getLocVal('homeNewsListCQ_slider_'+columnId);
+                    if(!isDefine(homeNewsListCQ_slider) || (base64_encode(homeNewsListCQ_slider)!=base64_encode(JSON.stringify(datas.list)))){
+                        sliderItem.domShow(1,0,datas.list,advertShow_cq);//重庆广告轮播显示
+                        if(isDefine(datas.list)){
+                            setLocVal('homeNewsListCQ_slider_'+columnId,JSON.stringify(datas.list));
+                        }
+                    }else{
+                         if(isSlide==1){//手动刷新
+                             sliderItem.domShow(1,0,datas.list,advertShow_cq);//重庆广告轮播显示
+                         }
+                    }
+                }
+            },
+            error : function(xhr, errorType, error,msg) {
+                loader.close();
+            }
+        })
+    }
+    
+    //获取重庆栏目下资讯列表的数据
+    function getNewsItemData(pageNo) {
+        status=0;
+        var if_list=getInterface('newsInfoGetList',columnId,pageNo);//接口封装配置函数
+        console.log("newsItem====>"+JSON.stringify(if_list)+"\n"+chongqingUrl);
+        //appcan---ajax请求
+        appcan.request.ajax({
+            url : chongqingUrl,
+            headers : {
+                token : appcan.locStorage.val("token") || '',
+                deviceId : appcan.locStorage.val("deviceId") || ''
+            },
+            appVerify:true,
+            data : JSON.stringify(if_list),
+            timeout : "15000",
+            type : "POST",
+            contentType : "application/json",
+            dataType : "json",
+            success : function(res) {
+                console.log(columnId+" >>>模板一栏目newsItem返回====>");
+                console.log(res);
+                loader.close();
+                uexWindow.closeToast();
+                appcan.frame.resetBounce(slideType);
+                status=1;
+                if(res.status != '000'){
+                    uexWindow.toast(1, 5, res.msg, 2000);
+                    return false;
+                }
+                var datas=res.data; //后台获取数据
+                $viceTitle.removeClass("uhide");
+                pageCount = datas.totalNum;//新闻资讯列表总条数
+                if(pageNum==1){
+                    loader.close();
+                    //资讯列表首页显示
+                    if(datas.list.length == 0){
+                        $('#listData').html('<div class="ub ub-f1 ub-ac ub-pc c-66" style="margin-top:1em;">暂无信息</div>');
+                        return false;
+                    }else{
+                        var homeNewsListCQ_item= getLocVal('homeNewsListCQ_item_'+columnId);
+                        if(!isDefine(homeNewsListCQ_item) || (base64_encode(homeNewsListCQ_item)!=base64_encode(JSON.stringify(datas.list)))){
+                            newsItem.domShow(1,0,datas.list,newsItemShow_Cq,conditions);//新闻列表显示
+                            if(isDefine(datas.list)){
+                                setLocVal('homeNewsListCQ_item_'+columnId,JSON.stringify(datas.list));
+                            }
+                        }else{
+                             if(isSlide==1){//手动刷新
+                                 newsItem.domShow(1,0,datas.list,newsItemShow_Cq,conditions);//新闻列表显示
+                             }else{
+                                 status=1;
+                             }
+                        }
+                    }
+                }else{
+                    //翻页资讯列表显示
+                    if(datas.list.length>0){
+                        newsItem.domShow(1,0,datas.list,newsItemShow_Cq,conditions);//新闻列表显示
+                    }else{
+                        status=1;
+                    }
+                }
+            },
+            error : function(xhr, errorType, error,msg) {
+                console.log("error===>"+msg);
+                status=1;
+                appcan.frame.resetBounce(slideType);
+                loader.close();
+                uexWindow.closeToast();
+            }
+        })
+    }
+    
+   //callback函数显示资讯广告
+    function advertShow_cq(advertDatas){
+           var picArrList=[];
+           newsId_slider=advertDatas.newsIds;
+           picArrList=advertDatas.picArrLists;
+           itemInfo=$.extend(itemInfo,(isDefine(advertDatas.itemInfo) ? advertDatas.itemInfo:""));
+           //alert(JSON.stringify(picArrList));
+           $("#slider").empty();
+           if(isDefine(picArrList)){
+               slider.set(picArrList);
+           }else{
+                slider.set([{
+                    "img" : 'images/adpic.png',
+                    "label" : '广告火热招商中'
+                }]);
+           }
+           
+           //android轮播高度为0时改变slider高度
+           if(isAndroid){
+               var sliderHeight=$("#slider").offset().height;
+               if(sliderHeight==0){
+                   var sliderHeightLoc=appcan.locStorage.val("sliderHeight");
+                   if(isDefine(sliderHeightLoc)){
+                       $("#slider").css("height",sliderHeightLoc+"px");
+                   }else{
+                       $("#slider").css("height",11.5+"em");
+                   }
+               }else if(sliderHeight>0){
+                   appcan.locStorage.setVal("sliderHeight",sliderHeight);
+               }
+           }
+    }
+    
+    //callback显示新闻列表数据
+    function newsItemShow_Cq(newsItemDatas){
+        var newsItemDom=isDefine(newsItemDatas.dom)?newsItemDatas.dom:"";
+        itemInfo=$.extend(itemInfo,(isDefine(newsItemDatas.itemInfo) ? newsItemDatas.itemInfo:""));
+        //alert(JSON.stringify(newsItemDom.html()));
+        var $listData=$("#listData");
+        if(pageNum == 1){
+            //$("#ocontent").empty();
+            $listData.html('');
+        }
+        $listData.append(newsItemDom);
+        
+        status=1;
+        loader.close();
+        uexWindow.closeToast();
+        // for(var j in itemImgList){//对象索引操作 调用图片预加载
+            // preloadImg('img_'+itemImgList[j].imgId,itemImgList[j].imgUrl);
+        // }
+        
+        //校验是否用户已点击过
+        if(getLocVal('arrobjId1')){
+            arrobjId = JSON.parse(getLocVal('arrobjId1'));
+            for(var i = 0;i < arrobjId.length;i++){
+                $("#"+arrobjId[i]).addClass('c-88');
+            }
+        }
+        
+        var btn_key=1;
+        //列表点击处理
+        appcan.button('.btnDetile','btn-act',function(e){
+            if(btn_key==1){
+                btn_key=0;
+                var id=$(this);
+                btn_ink(id,e);
+                var newsIdVal = this.id;
+                $(this).addClass('c-88');
+                arrobjId.push(newsIdVal);
+                setLocVal('arrobjId1',JSON.stringify(arrobjId));
+                //传递点击列表信息
+                appcan.locStorage.setVal('newsItemInfo',JSON.stringify(itemInfo[newsIdVal]));
+                //console.log(JSON.stringify(itemInfo[newsIdVal]));
+                if(itemInfo[newsIdVal].newsTypeId==2){
+                    //跳转图片新闻展示页面
+                    appcan.window.open('home_DetailsPictures','home_DetailsPictures.html',10);
+                }else if(itemInfo[newsIdVal].newsTypeId==5){
+                    //跳转专题列表
+                    appcan.window.open('spe_page','spe_page.html',10,1024);
+                }else if(itemInfo[newsIdVal].newsTypeId==6){
+                    //跳转栏目
+                    var goColumnId=itemInfo[newsIdVal].columnId;
+                    //alert(goColumnId);
+                    uexWindow.evaluateScript("", 0, "openFrame("+goColumnId+")");
+                    // appcan.locStorage.setVal("govermentColumnDomIndex","id_"+goColumnId);
+                    // uexWindow.evaluateScript("", 0, "goGoverment("+goColumnId+")");
+                }else{
+                    //跳转新闻详细页面
+                    appcan.window.open('home_Details','home_Details.html',10,1024);
+                }
+                setTimeout(function(){btn_key=1;},2000);
+            }
+        })                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
+        
+        //数据显示完成，关闭预加载页
+        closeAdvert();
+    }
+    
+    //中间栏目位
+    function viceHtML(){
+        appcan.button(".vice_w","btn-act",function(){
+            var idVal=this.id;
+            if(idVal == 'wenzhneg' || idVal== 'lukuang' || idVal == 'chaxun' || idVal=="register"){
+                setLocVal('navigation_ID',idVal);
+                appcan.window.open('home_navigation','home_navigation.html',10);
+                return false;
+            }
+            if(idVal == 'movie' || idVal == 'food'){
+                setLocVal('life_ID',idVal);
+                appcan.window.open('life_page_content','life_page_content.html',10);
+                return false;
+            }
+            getapp(idVal);
+        })
+    }
+    
+    $viceTitle.on("touchstart",function(evt){
+        uexWindow.setMultilPopoverFlippingEnbaled(1);
+        appcan.window.disableBounce();
+    })
+    $viceTitle.on("touchmove",function(evt){
+        uexWindow.setMultilPopoverFlippingEnbaled(1);
+        appcan.window.disableBounce();
+    })
+    $viceTitle.on("touchend",function(evt){
+        uexWindow.setMultilPopoverFlippingEnbaled(0);
+        appcan.window.enableBounce();
+    })
+    $viceTitle.on("touchcancel",function(evt){
+        uexWindow.setMultilPopoverFlippingEnbaled(0);
+        appcan.window.enableBounce();
+    })
+    $("#ocontent").on('touchstart',function(evt){
+        uexWindow.setMultilPopoverFlippingEnbaled(0);
+    })
+    var $myContent=$("#myContent");
+    function doDisplay(){
+        $myContent.removeClass("uhide");
+    }
+    function doHide(){
+        $myContent.addClass("uhide");
+    }
+    function goTop(){
+        window.scrollTo(0,0);
+    }
+ 
+</script>
+</html>

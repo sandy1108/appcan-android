@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/plugin_appstoremgr_grid_item_width"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/plugin_appstoremgr_tile_item_padding"
+    android:background="@drawable/plugin_appstoremgr_tile_grid_item_bg" >
+
+    <RelativeLayout
+        android:id="@+id/plugin_appstore_add_tile_icon_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_centerInParent="true">
+
+        <ImageView
+            android:id="@+id/plugin_appstoremgr_add_tile_icon"
+            android:layout_width="@dimen/plugin_appstoremgr_tile_add_icon_size"
+            android:layout_height="@dimen/plugin_appstoremgr_tile_add_icon_size"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_centerInParent="true"
+            android:background="@drawable/plugin_appstoremgr_add_tile" />
+    </RelativeLayout>
+
+
+</RelativeLayout>

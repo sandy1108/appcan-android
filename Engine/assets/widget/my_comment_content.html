@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+    <head>
+        <title></title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="target-densitydpi=device-dpi, width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <link rel="stylesheet" href="css/fonts/font-awesome.min.css">
+        <link rel="stylesheet" href="css/ui-box.css">
+        <link rel="stylesheet" href="css/ui-base.css">
+        <link rel="stylesheet" href="css/ui-color.css">
+        <link rel="stylesheet" href="css/appcan.icon.css">
+        <link rel="stylesheet" href="css/appcan.control.css">
+        <link rel="stylesheet" href="css/new_file.css">
+        <link rel="stylesheet" href="css/loader.css">
+        <style>
+            .remove {
+                font-size: 90%;
+                color: #ff8a00
+            }
+            .response {
+                font-size: 90%;
+                color: #ff8a00
+            }
+            .mTime {
+                font-size: 85%
+            }
+            .btn_bgColor{
+                background-color:#EEEEEE;
+            }
+        </style>
+    </head>
+    <body class="um-vp oc_gray f-f" ontouchstart>
+        <div class="ub ub-ver btn_bgColor">
+            <div class="ub ub-f1 ub-ac uinn50">
+                <div class="ub-f1 ub ub-ac ub-pc ofont pinglun" id="fa">
+                    发出的评论
+                </div>
+                <div class="ub-f1 ub ub-ac ub-pc pinglun" id="shou">
+                    收到的评论
+                </div>
+            </div>
+            <div class="ub ub-ver ub-f1" id="content">
+                <!--div class="ub ub-ver uinn oc_white" style="border-bottom:1px solid#d2d2d2;border-top：1px solid#b2b2b2;">
+                <div class="ub ub-ac">
+                <div class="ub-img oheadpic1" style="margin-right:0.3em;"></div>
+                <div class="">是所長在吃M豆forever 赞了我的评论</div>
+                </div>
+                <div class="ub ub-ac" style="">
+                <div class="ub-img oheadpic1" style="margin-right:0.3em;visibility: hidden"></div>
+                <div class="ub-f1" style="">好一句适应社会。无耻之极</div>
+                </div>
+                <div class="ub ub-ac" style="">
+                <div class="ub-img oheadpic1" style="margin-right:0.3em;visibility: hidden"></div>
+                <div class="oc_gray ulev-1 ub-f1 uinn" style="">我的评论：一季度各省份GDP出炉  重庆增速超10% 居首</div>
+                </div>
+                </div-->
+
+            </div>
+        </div>
+    </body>
+    <script src="js/appcan.js"></script>
+    <script src="js/appcan.control.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/interface.js"></script>
+    <script>
+        var typeValue = 0;
+        var pageNum00 = 1;
+        var pageNum01 = 1;
+        var pageCount00 = 1;
+        var pageCount01 = 1;
+        var status = 1;
+        var userInfo = isDefine(getLocVal('userInfo')) ? getLocVal('userInfo') : "";
+        var userId = "";
+        var slideType = 1;
+        appcan.ready(function() {
+            userId = isDefine(userInfo) ? JSON.parse(userInfo).userId : "";
+            appcan.window.subscribe("changeMyComments",function(msg){
+                if(msg=="my_comment"){
+                    if(typeValue==1){
+                        pageNum01 = 1;
+                        showdata(2, pageNum01);
+                    }else{
+                        pageNum00 = 1;
+                        showdata(1, pageNum00);
+                    }
+                }
+            })
+            appcan.frame.setBounce([0, 1], null, null, function(type) {
+                slideType = type;
+                //判断是否有网
+                GetInfoDevice(function(str) {
+                    if (!str) {
+                        appcan.frame.resetBounce(slideType);
+                        return false;
+                    } else {
+                        if (typeValue == 0) {
+                            if (type == 1) {
+                                if ((pageNum00 - 1) * 10 > pageCount00) {
+                                    appcan.frame.resetBounce(slideType);
+                                } else {
+                                    showdata(1, pageNum00);
+                                }
+                            } else {
+                                pageNum00 = 1;
+                                showdata(1, pageNum00);
+                            }
+                        } else {
+                            if (type == 1) {
+                                if ((pageNum01 - 1) * 10 > pageCount01) {
+                                    appcan.frame.resetBounce(slideType);
+                                } else {
+                                    showdata(2, pageNum01);
+                                }
+                            } else {
+                                pageNum01 = 1;
+                                showdata(2, pageNum01);
+                            }
+                        }
+                    }
+                });
+            }, bounceBgColor, imgSettingsVal)
+            
+            loader.open();
+            showdata(1, 1);
+        })
+
+        appcan.button('.pinglun', 'btn-act', function() {
+            if (this.id == 'fa') {
+                typeValue = 0;
+                pageNum00 = 1;
+                loader.open();
+                showdata(1, 1);
+                $("#fa").addClass('ofont');
+                $("#shou").removeClass('ofont');
+            } else {
+                typeValue = 1;
+                pageNum01 = 1;
+                loader.open();
+                showdata(2, 1);
+                $("#shou").addClass('ofont');
+                $("#fa").removeClass('ofont');
+            }
+        })
+        
+        function showdata(type, pageNum) {
+            status = 0;
+            var list = {
+                "transcode" : "commentInfo_getList",
+                "content" : {
+                    "userId" : userId,
+                    "type" : type, //1-发出的评论，2-收到的评论
+                    "userDel" : 0,
+                    "page" : {
+                        "pageNo" : pageNum,
+                        "pageSize" : 10
+                    }
+                }
+            };
+            console.log(JSON.stringify(list));
+            appcan.request.ajax({
+                url : chongqingUrl,
+                headers : {
+                    token : appcan.locStorage.val("token")||"",
+                    deviceId : appcan.locStorage.val("deviceId") || ""
+                },
+                appVerify : true,
+                type : 'POST',
+                data : JSON.stringify(list),
+                contentType : "application/json",
+                dataType : 'json',
+                timeout : "15000",
+                success : function(res) {
+                    console.log("我的评论结果返回===>");
+                    console.log(res);
+                    loader.close();
+                    uexWindow.closeToast();
+                    appcan.frame.resetBounce(slideType);
+                    status = 1;
+                    var list = res.data.list;
+                    var tmpl = '';
+                    var commentType = 1;
+                    for(var i = 0;i < list.length;i++){
+                        commentType=list[i].commentType;
+                        var name = list[i].commentNickName;
+                        var commentLoginName=list[i].commentLoginName;
+                        var commentedNickName = list[i].commentedNickName;
+                        var commentedLoginName=list[i].commentedLoginName;
+                        
+                        if(commentLoginName!="游客"){
+                            commentLoginName=(list[i].commentLoginName).substring(0,3)+"***"+(list[i].commentLoginName).substring(7,11);
+                        }
+                        name=isDefine(name)?name:commentLoginName;
+                        
+                        if(commentedLoginName!="游客"){
+                            commentedLoginName=(list[i].commentedLoginName).substring(0,3)+"***"+(list[i].commentedLoginName).substring(7,11);
+                        }
+                        commentedNickName=isDefine(commentedNickName)?commentedNickName:commentedLoginName;
+                        
+                        var commentedUserId = list[i].commentedUserId;
+                        var mTime = UnixToDate(Date(list[i].mTime),false);
+                        if(commentType == 3){ //随手拍
+                            var userIcon = isDefine(list[i].commentAvatar) ? getImgUrl("1",list[i].commentAvatar,2) : 'css/img/oheadpic.png';
+                            var tempTag="";
+                            var tempObj="";
+                            if(type==1){
+                               tempTag='<div class="remove" pics="'+list[i].phonePicUrl+'" id="'+list[i].commentId+'">删除</div>';
+                               tempObj='<div class="oc_gray ulev-1 ub-f1 uinn wrap btn_bgColor shoots" data-objId="'+list[i].objId+'">随手拍：'+list[i].phoneContent+'</div>';
+                            }else {
+                               tempTag='<div class="response" onclick="plComment(\''+list[i].commentId+'\',\''+list[i].commentUserId+'\',\''+list[i].objId+'\')">回复</div>';
+                               tempObj='<div class="oc_gray ulev-1 ub-f1 uinn wrap btn_bgColor shoots" data-objId="'+list[i].objId+'">评论我的随手拍：'+list[i].phoneContent+'</div>';
+                            }
+                            tmpl += '<div class="ub ub-ver uinn oc_white" id="comment_'+list[i].commentId+'" style="border-bottom:1px solid#d2d2d2;border-top：1px solid#b2b2b2;">'
+                                    +'<div class="ub ub-ac">'
+                                        +'<div class="ub-img7 bor-yuan oheadpic1" style="margin-right:0.3em;background-image:url(\''+userIcon+'\')"></div>'
+                                        +'<div class="c-998 ub-f1">'+name+'</div>'
+                                        +'<div class="c-998 mTime">'+mTime+'</div>'
+                                    +'</div>'
+                                    +'<div class="ub ub-ac" style="">'
+                                        +'<div class="ub-img oheadpic1" style="margin-right:0.3em;visibility: hidden"></div>'
+                                        +'<div class="ub-f1" style="">'+list[i].content+'</div>'
+                                        //+'<div class="remove" pics="'+list[i].phonePicUrl+'" id="'+list[i].commentId+'">删除</div>'
+                                        +tempTag
+                                    +'</div>'
+                                    +'<div class="ub ub-ac">'
+                                        +'<div class="ub-img oheadpic1" style="margin-right:0.3em;visibility: hidden"></div>'
+                                        //+'<div class="oc_gray ulev-1 ub-f1 uinn wrap btn_bgColor shoots" data-objId="'+list[i].objId+'">随手拍：'+list[i].phoneContent+'</div>'
+                                        +tempObj
+                                    +'</div>'
+                                +'</div>';
+                        }else if(commentType==2){//对评论
+                            var resp="";
+                            var tempObj="";
+                            if(type==1){
+                               resp='<div class="remove" id="'+list[i].commentId+'">删除</div>'; 
+                               tempObj='<div class="oc_gray ulev-1 ub-f1 uinn wrap news btn_bgColor" data-objId="'+list[i].objId+'">评论<span class="ofont uinn20">'+commentedNickName+'</span>的评论：'+list[i].contented+'</div>';
+                            }else {
+                                resp='<div class="response" onclick="plComment(\''+list[i].commentId+'\',\''+list[i].commentUserId+'\',\''+list[i].objId+'\')">回复</div>';
+                                tempObj='<div class="oc_gray ulev-1 ub-f1 uinn wrap news btn_bgColor" data-objId="'+list[i].objId+'">评论我的的评论：'+list[i].contented+'</div>'
+                            }
+                            
+                            var userIcon = isDefine(list[i].commentAvatar) ? getImgUrl("1",list[i].commentAvatar,2) : 'css/img/oheadpic.png';
+                            tmpl += '<div class="ub ub-ver uinn oc_white" id="comment_'+list[i].commentId+'" style="border-bottom:1px solid#d2d2d2;border-top：1px solid#b2b2b2;">'
+                                    +'<div class="ub ub-ac">'
+                                        +'<div class="ub-img7 bor-yuan oheadpic1" style="margin-right:0.3em;background-image:url(\''+userIcon+'\')"></div>'
+                                        +'<div class="c-998 ub-f1">'+name+'</div>'
+                                        +'<div class="c-998 mTime">'+mTime+'</div>'
+                                    +'</div>'
+                                    +'<div class="ub ub-ac" style="">'
+                                        +'<div class="ub-img oheadpic1" style="margin-right:0.3em;visibility: hidden"></div>'
+                                        +'<div class="ub-f1">'+list[i].content+'</div>'
+                                        +resp
+                                    +'</div>'
+                                    +'<div class="ub ub-ac">'
+                                        +'<div class="ub-img oheadpic1" style="margin-right:0.3em;visibility: hidden"></div>'
+                                        //+'<div class="oc_gray ulev-1 ub-f1 uinn wrap news btn_bgColor" data-objId="'+list[i].objId+'">评论<span class="ofont uinn20">'+list[i].commentedNickName+'</span>的评论：'+list[i].contented+'</div>'
+                                        +tempObj
+                                    +'</div>'
+                                +'</div>';
+                        }else{//对资讯
+                            var userIcon = isDefine(list[i].commentAvatar) ? getImgUrl("1",list[i].commentAvatar,2) : 'css/img/oheadpic.png';
+                            tmpl += '<div class="ub ub-ver uinn oc_white" id="comment_'+list[i].commentId+'" style="border-bottom:1px solid#d2d2d2;border-top：1px solid#b2b2b2;">'
+                                    +'<div class="ub ub-ac">'
+                                        +'<div class="ub-img7 bor-yuan oheadpic1" style="margin-right:0.3em;background-image:url(\''+userIcon+'\')"></div>'
+                                         +'<div class="c-998 ub-f1">'+name+'</div>'
+                                        +'<div class="c-998 mTime">'+mTime+'</div>'
+                                    +'</div>'
+                                    +'<div class="ub ub-ac" style="">'
+                                        +'<div class="ub-img oheadpic1" style="margin-right:0.3em;visibility: hidden"></div>'
+                                        +'<div class="ub-f1"  style="">'+list[i].content+'</div>'
+                                        +'<div class="remove" id="'+list[i].commentId+'">删除</div>'
+                                    +'</div>'
+                                    +'<div class="ub ub-ac">'
+                                        +'<div class="ub-img oheadpic1" style="margin-right:0.3em;visibility: hidden"></div>'
+                                        +'<div class="oc_gray ulev-1 ub-f1 uinn wrap news btn_bgColor" data-objId="'+list[i].objId+'" objType="'+list[i].objType+'">评论 &nbsp;"'+list[i].objTitle+'"</div>'
+                                    +'</div>'
+                                +'</div>';
+                        }
+                    }
+
+                    if ( pageNum==0 && list.length==0) {
+                        tmpl = '<div class="ub ub-f1 ub-ac ub-pc uinn-t1 oc_white">暂无信息</div>';
+                    }
+                    if (pageNum == 1) {
+                        $("#content").html(tmpl);
+                    } else {
+                        $("#content").append(tmpl);
+                    }
+
+                    if (typeValue == 0) {
+                        pageNum00++;
+                        if (pageNum == 1) {
+                            pageCount00 = res.data.totalNum;
+                        }
+                    } else {
+                        pageNum01++;
+                        if (pageNum == 1) {
+                            pageCount01 = res.data.totalNum;
+                        }
+                    }
+                    
+                    btn_key=1
+                    //跳转资讯详情
+                    appcan.button(".news", "btn-act", function(e) {
+                        if(btn_key==1){
+                            btn_key=0;
+                            var newsIdVal=$(this).attr('data-objId');
+                            //alert(newsIdVal);
+                            //直接调用显示推送数据的方法，根据newsId先请求数据，再跳转处理
+                            getPushData(newsIdVal);
+                            setTimeout(function(){btn_key=1;},2000);
+                        }
+                    })
+                    //跳转随手拍详情
+                    appcan.button(".shoots", "btn-act", function(e) {
+                        //直接调用显示推送数据的方法，根据newsId先请求数据，再跳转处理
+                        if(btn_key==1){
+                            btn_key=0;
+                            var photoIdVal=$(this).attr('data-objId');
+                            //alert(photoIdVal);
+                            var itemInfo={
+                                "photoId":photoIdVal
+                            };
+                            setLocVal('shootItemInfo',JSON.stringify(itemInfo));
+                            appcan.window.open('shoot_details',"shoot_details.html",10);
+                            setTimeout(function(){btn_key=1;},2000);
+                        }
+                    })
+                    
+                    appcan.button(".remove", "btn-act", function() {
+                        appcan.locStorage.val("delCommentId", this.id);
+                        appcan.locStorage.val("delCommentPic", $(this).attr("pics")||"");
+                        appcan.window.evaluateScript('', 'opendelect()');
+                    })
+                },
+                error : function(err) {
+                    status = 1;
+                    uexWindow.closeToast();
+                    loader.close();
+                    appcan.frame.resetBounce(slideType);
+                }
+            })
+        }
+        
+        //删除评论
+        function delectComment(commentid) {
+            uexWindow.toast("0", "5", "正在删除...", '');
+            var list = {
+                "transcode" : "commentInfo_remove",
+                "content" : {
+                    "userId" : userId,
+                    "commentId" : commentid
+                }
+            }
+            appcan.request.ajax({
+                url : chongqingUrl,
+                headers : {
+                    token : appcan.locStorage.val("token")||'',
+                    deviceId : appcan.locStorage.val("deviceId") || ''
+                },
+                appVerify : true,
+                type : 'POST',
+                data : list,
+                contentType : "application/json",
+                dataType : 'json',
+                timeout : "15000",
+                success : function(res) {
+                    uexWindow.closeToast();
+                    if (res.status == "000") {
+                        uexWindow.toast("0", "5", "删除成功", 1500);
+                        $("#comment_" + commentid).remove()
+                    }
+                },
+                error : function(err) {
+                    uexWindow.closeToast();
+                }
+            })
+        }
+
+        //对评论的评论
+        function plComment(parentCommentId, commentedUserId, objId) {
+            //传入评论参数
+            var commentParameter = {
+                "objId" : objId,
+                "objType" : 1,
+                "parentCommentId" : parentCommentId, //被评论的id
+                "commentedUserId" : commentedUserId, //被评论者id
+                "from":"my_comment"
+            }
+            setLocVal("commentParameter", JSON.stringify(commentParameter));
+            appcan.window.open('home_Comment', 'home_Comment.html', 10);
+        }
+         
+        function goTop() {
+            window.scrollTo(0, 0);
+        }
+    </script>
+</html>

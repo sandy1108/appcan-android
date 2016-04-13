@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    android:orientation="vertical" >
+    
+    <org.zywx.wbpalmstar.plugin.uexappstoremgr.view.XExpandableListView
+        android:id="@+id/more_app_tile_expandview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alwaysDrawnWithCache="false"
+        android:cacheColorHint="#00000000"
+        android:choiceMode="singleChoice"
+        android:clickable="true"
+        android:groupIndicator="@null"
+        android:divider="@null"
+        android:fadingEdge="none"
+        android:fadingEdgeLength="0dip"
+        android:smoothScrollbar="true"
+        android:soundEffectsEnabled="false" />
+</LinearLayout>

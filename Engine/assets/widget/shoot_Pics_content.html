@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+    <head>
+        <title></title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="target-densitydpi=device-dpi, width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <link rel="stylesheet" href="css/fonts/font-awesome.min.css">
+        <link rel="stylesheet" href="css/ui-box.css">
+        <link rel="stylesheet" href="css/ui-base.css">
+        <link rel="stylesheet" href="css/ui-color.css">
+        <link rel="stylesheet" href="css/appcan.icon.css">
+        <link rel="stylesheet" href="css/appcan.control.css">
+        <link rel="stylesheet" href="css/new_file.css">
+        <link rel="stylesheet" href="css/loader.css">
+        <link rel="stylesheet" href="css/common.css">
+    </head>
+    <body class="um-vp f-f c-wh" style="background-color: #000000" ontouchstart>
+        <div id="header" class="uh bc-text-head ub oc_header" style="visibility: hidden;">
+            <div class="nav-btn" id="nav-left">
+                <div class="ub-img oback"></div>
+            </div>
+            <h1 class="ut ub-f1 ulev-3 ut-s tx-c" tabindex="0">随手拍</h1>
+            <div class="nav-btn nav-bt" id="nav-right">
+                    <div class="ub-img tit_pat_r"></div>
+            </div>
+        </div>
+        <div class="ub ub-ver ub-f1" id="content" style="width: 100%;overflow: hidden;">
+            <div class="ub ub-f1" style="height: 70%">
+                <div id="slider" class="ub ub-ac ub-con" style="height: 100%">
+                    
+                </div>
+            </div>
+            <div class="ub ub-pc ub-f1 fz-8 Scrolling" id="textContent" style="padding: 1em 0;height:10em;">
+                
+            </div>
+        </div>
+        <div id="footer" class="ub ub-f1 c-66" style="height:2.75em;visibility: hidden;">
+            <div class="ub ub-f1 ubt b-aa bg-wh uinn uhide"  id="footer1">
+                <div class="ub ub-ac ub-f1 ubr b-ce Hcomment">
+                    <div class="pic_foot1 ub-img foot_wh"></div>
+                    <span>写评论</span>
+                </div>
+                <div class="ub ub-f4 ub-ac ub-pj">
+                    <div class="ub ub-f1 pic_foot2 ub-img foot_wh">
+                        <div class="pos-x" style="display: none" id="pluns"></div>
+                    </div>
+                    <div class="ub ub-f1 ub-img foot_wh res-praiseIcon" id="foot3">
+                        <div class="pos-x" style="display: none" id="zambia"></div>
+                    </div>
+                    <div class="ub ub-f1 pic_foot4 ub-img foot_wh" id="share">
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+    <script src="js/appcan.js"></script>
+    <script src="js/appcan.control.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/interface.js"></script>
+    <script src="js/zy_slide.js"></script>
+    <script>
+        var slider;
+        var objectId,title;
+        var itemInfo = getLocVal('shootItemInfo');
+        var userInfo=isDefine(getLocVal('userInfo')) ? getLocVal('userInfo'):"";
+        var userId="";
+        var objectType=5;
+        appcan.ready(function(){
+            itemInfo=isDefine(itemInfo)?JSON.parse(itemInfo):"";
+            console.log(itemInfo);
+            userId = isDefine(userInfo)?JSON.parse(userInfo).userId:"";
+            objectId=itemInfo.photoId;
+            title=itemInfo.content;
+            var titHeight = $('#header').offset().height;
+            var titHeight1 = $('#footer').offset().height;
+            var height = parseInt(document.body.clientHeight) - parseInt(titHeight) - parseInt(titHeight1)-1;
+            $("#content").css('height',height+'px');
+            
+            //监听评论数的改变
+            appcan.window.subscribe('changeCommentCount',function(id){
+                if(objectId==id){
+                    $("#pluns").html(parseInt(itemInfo.commentSum)+1);
+                }
+            })
+            
+            getInfo();
+            
+            //拍照回调
+            uexCamera.cbOpenInternal = function(opCode, dataType, data) {
+                var arrUpload = [];
+                arrUpload.push(data);
+                setLocVal('arrUpload',JSON.stringify(arrUpload));
+                appcan.window.open('shoot_add','shoot_add.html',10);
+            }
+            //照片
+            uexImageBrowser.cbPick = function(opCode, dataType, data) {
+                var arrUpload = data.split(",");
+                if(arrUpload.length > 9){
+                    appcan.window.openToast('图片最多只能选择9张!',2000);
+                    return false;
+                }
+                setLocVal('arrUpload',JSON.stringify(arrUpload));
+                appcan.window.open('shoot_add','shoot_add.html',10);
+            }
+            
+        })
+        
+        //显示随手拍图片数据
+        function getInfo(){
+            console.log(itemInfo.picUrls);
+            var imgList = (itemInfo.picUrls).split(",");        //图片数组
+            
+            //评论数显示
+            if(isDefine(itemInfo.commentSum) && itemInfo.commentSum>0){
+                $("#pluns").html(itemInfo.commentSum);
+                $("#pluns").show();
+            }
+            
+            //点赞数显示
+            if(isDefine(itemInfo.supportSum) && itemInfo.supportSum>0){
+                $("#zambia").html(itemInfo.supportSum);
+                $("#zambia").show();
+            }
+            
+            slider.maxPoint = imgList.length - 1;       //设置slider的最大个数
+            
+            var tmpl = '';
+            var stmpl = '';
+            for(var i = 0; i < imgList.length;i++){
+                var shoo = 'bg-6d';
+                if(i == 0){
+                    shoo = 'bg-wh';
+                }
+                stmpl += '<div class="bor-yuan '+shoo+' mar-l05" name="shootSli" style="padding: .3em"></div>';
+                tmpl += '<div class="ub-fh ub-img" onclick="visiHeaFoo()" style="height:100%;background-image: url('+getImgUrl("1",imgList[i],1)+')"></div>';
+            }
+            $("#slider").append(tmpl);
+            $("#footer2").append(stmpl);
+            $("#textContent").html(itemInfo.content);
+            $("#footer").attr('style','visibility:visible');
+        }
+        
+        slider = new zySlide('slider','H',function(){
+            },false,function(e){
+                var cur = slider.currentPoint;
+                var length = slider.maxPoint;
+                console.log(cur+"<----->"+length);
+                for(var i = 0;i <= length; i++){
+                    $("div[name=shootSli]").attr("class",'bor-yuan bg-6d mar-l05');
+                }
+                $("div[name=shootSli]").attr("class",'bor-yuan bg-wh mar-l05');
+        })
+        
+        //跳转到评论页面
+        appcan.button(".Hcomment","btn-act",function(){
+            //传入评论参数
+            var commentParameter={
+                "objId": objectId,
+                "objType": 5,
+                "parentCommentId":"",
+                "commentedUserId":""
+            }
+            setLocVal("commentParameter",JSON.stringify(commentParameter));
+            appcan.window.open('home_Comment','home_Comment.html',10);
+        })
+        //进入随手拍评论详情页面
+        appcan.button(".pic_foot2","btn-act",function(){
+            setLocVal("shootObjId",objectId);
+            appcan.window.open('shoot_details',"shoot_details.html",10);
+        })
+        
+        //点赞
+        appcan.button("#foot3","btn-act",function(){
+            userAction(objectId,5,1,'',userId,shootSupportCallBack);
+        })
+        //对点赞结果回调callback
+       function shootSupportCallBack(res){
+            console.log("对评论的点赞结果返回给页面====>");
+            console.log(res);
+            if(res.status=="000"){
+                var com = $("#zambia").html();
+                 if(isDefine(com) && com>0){
+                    $("#zambia").html(parseInt(com) + 1);
+                }else{
+                    $("#zambia").html(1);
+                }
+                $("#foot3").removeClass("res-praiseIcon").addClass('dogood');
+                itemInfo[objectId].supportSum+=1; //动态点赞数变化
+                appcan.window.publish('shoot_zan',objectId);
+            }else if(res.status == "4060") {
+                uexWindow.toast(0, 5, "您已经点过赞了", 2000);
+            }else{
+                uexWindow.toast(0, 5, res.msg, 2000);
+            }
+       }
+        
+        //分享代码开始
+        appcan.button("#share","btn-act",function(){
+            appcan.locStorage.setVal('shareId',objectId+"_"+objectType);
+            appcan.locStorage.setVal('shareTitle',title);
+            appcan.locStorage.setVal('shareSummary','');
+            appcan.locStorage.setVal('share_type','interactive');
+            shareTypeChoose();
+        })
+        function shareTypeChoose() {//弹出分享第三方选择(只有footer处调用)
+            uexWindow.openPopover("share_content",0,'share_content.html','',0,0,document.body.clientWidth,document.body.clientHeight,32,0,0);
+        }
+        function sceneChoose() {//弹出分享场景选择
+             uexWindow.openPopover("scene_content",0,'scene_content.html','',0,0,document.body.clientWidth,document.body.clientHeight,32,0,0);
+        }
+        //分享代码结束
+        
+        //顶部与底部动态显示
+        var hideText = true;
+        function visiHeaFoo(){
+            if(hideText){
+                $("#header").attr('style','visibility: visible;');
+                $("#footer1").removeClass('uhide');
+                $("#footer2").addClass('uhide');
+                hideText = false;
+            }else{
+                $("#header").attr('style','visibility: hidden;');
+                $("#footer1").addClass('uhide');
+                $("#footer2").removeClass('uhide');
+                hideText = true;
+            }
+            $("#footer3").addClass('uhide');
+        }
+        
+        appcan.button(".nav-btn", "btn-act", function() {
+            switch(this.id){
+                case 'nav-left':
+                    appcan.window.close(-1);
+                    break;
+                case 'nav-right':
+                    if(!isUser()){
+                        appcan.window.open('login','login.html',10);
+                        return false;
+                    }
+                    setLocVal('shootPD','3');
+                    uexWindow.openPopover("shoot_Pic_content","0","shoot_Pic_content.html","",0,0,parseInt(document.body.clientWidth),parseInt(document.body.clientHeight),16,"0");
+                    break;
+            }
+        })
+        
+        //增加图片
+        function openShee(str){
+            if(str == 1){
+                uexImageBrowser.pickMulti(9);
+            }else{
+                uexCamera.openBandIconInternal('res://camera.png','0','50');
+            }
+        }
+        
+    </script>
+</html>

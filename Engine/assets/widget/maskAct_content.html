@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+<head>
+    <title></title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="target-densitydpi=device-dpi, width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" href="css/ui-box.css">
+    <link rel="stylesheet" href="css/ui-base.css">
+    <link rel="stylesheet" href="css/new_file.css">
+    <link rel="stylesheet" href="css/ui-color.css">
+    <link rel="stylesheet" href="css/appcan.icon.css">
+    <link rel="stylesheet" href="css/appcan.control.css">
+    <style>
+        .chooseWhich{
+            background-color:#ccc;
+        }
+    </style>
+</head>
+<body class="um-vp font-fa f-f" ontouchstart="zy_touch('btn-act')" onclick="callback();">
+    <div class="ub ub-f1 ub-pj" style="margin-left:1.15em;margin-right:1.15em" id="water">
+        <div id="actAll" class="ub ub-ver ub-ac ub-pc" style="border:1px solid #cecdc9;background-color:white;opacity: 0">
+            <div id="allact" class="ub ub-f1 ub-ac ub-pc choose" style="color:#656565;height:2.22em;border-bottom:1px solid #cecdc9;">全部活动</div>
+            <div id="opening" class="ub ub-f1 ub-ac ub-pc choose" style="color:#656565;height:2.22em;border-bottom:1px solid #cecdc9;">&nbsp;&nbsp;进行中&nbsp;&nbsp;</div>
+            <div id="over" class="ub ub-f1 ub-ac ub-pc choose" style="color:#656565;height:2.22em">&nbsp;&nbsp;已结束&nbsp;&nbsp;</div>
+        </div>
+        
+        <div id="actType" class="ub ub-ver ub-ac ub-pc" style="border:1px solid #cecdc9;background-color:white;opacity:0">
+            <div id="alltype" class="ub ub-f1 ub-ac ub-pc choose" style="color:#656565;height:2.22em;border-bottom:1px solid #cecdc9;">全部类型</div>
+            <div id="show" class="ub ub-f1 ub-ac ub-pc choose" style="color:#656565;height:2.22em;border-bottom:1px solid #cecdc9;">公告类型</div>
+            <div id="vote" class="ub ub-f1 ub-ac ub-pc choose" style="color:#656565;height:2.22em;border-bottom:1px solid #cecdc9;">投票类型</div>
+            <div id="luckDraw" class="ub ub-f1 ub-ac ub-pc choose" style="color:#656565;height:2.22em">抽奖类型</div>
+        </div>
+	</div>
+</body>
+<script src="js/appcan.js"></script>
+<script src="js/appcan.control.js"></script>
+<script src="js/common.js"></script>
+<script>
+appcan.ready(function() {
+        var boxwidth=appcan.locStorage.val("boxWidth");
+        //alert(boxwidth);
+        //console.log($("#actAll"));
+        $("#actAll").css("width",boxwidth+"px");
+        $("#actType").css("width",boxwidth+"px");
+        $("#allact").css("width",boxwidth+"px");
+        $("#alltype").css("width",boxwidth+"px");
+        $("#opening").css("width",boxwidth+"px");
+        $("#over").css("width",boxwidth+"px");
+        $("#show").css("width",boxwidth+"px");
+        $("#vote").css("width",boxwidth+"px");
+        $("#luckDraw").css("width",boxwidth+"px");
+        var flag=appcan.locStorage.val("whichBox");
+        //alert(typeof(flag));
+        if(flag=="1"){
+            $("#actAll").css("opacity",1);
+        }
+        else{
+            $("#actType").css("opacity",1);
+        }
+        if(isAndroid){
+            uexWindow.setSwipeRate(4);
+        }
+        uexWindow.onSwipeLeft=function(){
+            //alert(appcan.locStorage.val("moveFlag"));
+            if(appcan.locStorage.val("moveFlag")=="left"){
+                appcan.window.evaluateScript('home_page','moveleft();');
+            }
+            else{
+                return;
+            }
+        }
+        uexWindow.onSwipeRight=function(){
+            //alert(appcan.locStorage.val("moveFlag"));
+            if(appcan.locStorage.val("moveFlag")=="right"){
+                appcan.window.evaluateScript('home_page','moveright();');
+            }
+            else{
+                return;
+            }
+        }
+	uexWindow.setBounce("1");
+	uexWindow.showBounceView("0", "rgba(255,255,255,0)", "0");
+    uexWindow.showBounceView("1", "rgba(255,255,255,0)", "0");
+})
+
+$(".choose").click(function(){
+    appcan.window.publish("changeChoice",$(this).html());
+    $(".choose").removeClass("chooseWhich");
+    $(this).addClass("chooseWhich");
+})
+function callback(){
+    appcan.window.close(-1);
+	//appcan.window.evaluateScript('home_page','moveleft()');
+}
+
+function sendBack(){
+    appcan.window.publish("changeChoice",$(this).html());
+}
+</script>
+</html>

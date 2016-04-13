@@ -1,0 +1,349 @@
+.vice_w{
+    width:25%;
+}
+.vodeoLogo{
+    height:2em;
+    width:2em;
+    background-image:url('../image/Play.png');
+}
+.vodeoLogo01{
+    height:1.2em;
+    width:1.2em;
+    background-image:url('../image/Play.png');
+    position:absolute;
+    bottom:0;
+}
+.vodeoLogo02{
+    height:1.2em;
+    width:1.2em;
+    background-image:url('../image/video.png');
+    position:absolute;
+    bottom:0;
+}
+.vodeoLogo03{
+    height:1.2em;
+    width:1.2em;
+    background-image:url('../image/video.png');
+    position:absolute;
+    bottom:0;
+}
+
+.itemImg{
+    height:4.5em;
+    width:6em;
+}
+.itemImg02{
+    height:3em;
+    width:4em;
+}
+.itemTitle{
+    height:2.85em;
+}
+.itemTitle03{
+    padding-bottom: 0.35em;
+}
+.itemImg03{
+    height:4em;
+}
+.itemBorder{
+    border:1px solid #D9D9D9;
+    margin-top:0.5em;
+    background-color:#EEEEEE;
+}
+.menuWidth{
+    width:3.8em;
+}
+.menuWidth02{
+    width:5em;
+}
+.menuWidth03{
+    width:6em;
+}
+.menu{
+    -moz-transition:all .2s ease;  
+    -webkit-transition:all .2s ease;  
+    -o-transition:all .2s ease;  
+    -ms-transition:all .2s ease;  
+    transition:all .2s ease;
+    -webkit-transform:transition3d(0,0,0);
+    -webkit-transform:translateZ(0);
+}
+.moreHeight{
+    height:3em;
+    margin-bottom: 0.5em;
+}
+.mark{
+    height:1em;
+    width:1em;
+}
+.myImg{
+    max-width: 100%;
+}
+.headerImg{
+    height:3.25em;
+    width:3.25em;
+}
+.itemHeight{
+    height:5em;
+}
+.myAdvert{
+    height:100%;
+    width: 100%;
+    background-image: url(../image/960_1.png);
+}
+.myh3{
+    font-weight:normal;
+    font-size: 1em;
+}
+.myh4{
+    font-weight:normal;
+    font-size: 0.985em;
+}
+.myVisibilityHide{
+    visibility:hidden;
+}
+.myVisibilityShow{
+    visibility:visible;
+}
+
+.summary_span{
+    height:4em;
+    width:4em;
+    border-radius:0.35em;
+    border:1px solid #9D5D12;
+    color:#9D5D12;
+    padding:0.25em;
+}
+.summary_div{
+    margin:0.25em;
+    background-color:#D9D9D9;
+}
+.shootImgs{
+    height:15em;
+    width:100%;
+}
+
+.pHeight{
+    height:11.5em;
+}
+.push_bc_ok{
+    background-color:#FF8A00;
+}
+.push_bc_false{
+    background-color:#D0BEAB;
+}
+.newsTag{
+    height:1.05em;
+    width:1.5em;
+    background-image:url('../image/newsTag.png');
+}
+.newsTagFont{
+    color:#FE8F0E;
+    font-size: 0.965em;
+}
+
+.topTip{
+    color:#fff;
+    font-size: 0.865em;
+    height:2.5em;
+    width:3.5em;
+    background-image:url('../image/hotTip.png');
+    margin-left:0.5em;
+    z-index:999;
+}
+
+.line_height01{
+    line-height: 1.5em;
+}
+.sideItemBg{
+    background-image: url('../twoImg/bg2.png');
+}
+
+.uinnTag{
+    padding: 0.15em;
+    margin: 0;
+}
+.uinnTit{
+    padding: 0.5em;
+}
+.uinnItem{
+    width:98%;
+}
+
+.hotFont{
+    margin-left:0.75em;
+    margin-top:0.25em;
+}
+.half-width{
+    width:47%;
+}
+.plusImg{
+    background-image: url('../twoImg/jia.png');
+}
+.minusImg{
+    background-image: url('../twoImg/jian.png');
+}
+.gInfo{
+    min-heigth:3em;
+}
+.news{
+    background-image:url('img/oin3.png') !important;
+}
+.news-1{
+    background-image:url('img/oin3-1.png') !important;
+}
+
+.goverment{
+    background-image:url('img/leftMenu_goverment.png') !important;
+}
+.goverment-1{
+    background-image:url('img/oin10-1.png') !important;
+}
+.pay{
+    background-image:url('img/leftMenu_convenience.png') !important;
+}
+.pay-1{
+    background-image:url('img/oin11-1.png') !important;
+}
+.travel{
+    background-image:url('img/leftMenu_active.png') !important;
+}
+.travel-1{
+    background-image:url('img/oin12-1.png') !important;
+}
+.consumption{
+    background-image:url('img/oin11.png') !important;
+}
+.consumption-1{
+    background-image:url('img/oin11-1.png') !important;
+}
+.entertainment{
+    background-image:url('img/leftMenu_special.png') !important;
+}
+.entertainment-1{
+    background-image:url('img/oin6-1.png') !important;
+}
+
+.govermentMenu{
+    height:2.2em;
+    background-color:#eeeeee;
+    border-color:#e4e4e4;
+    font-size:0.95em;
+}
+.box01{
+    background-color:#F4F4F4;
+    height:1.5em;
+    padding: 0.5em 1.5em;
+}
+.box02{
+    font-size:1.085em;
+    height: 1.2em;
+    padding: 0.5em 1em;
+}
+.itemBigPic{
+    height:8em;
+    width:100%;
+}
+.showPics{
+    background-color: rgba(0,0,0,0.4);!important;
+    color:#fff;!important;
+}
+.myItem_padding{
+    padding:0.75em;
+}
+
+.pos-x{
+    position: absolute;
+    right: 3em;
+    font-size: .5em;
+    top: 0;
+    background-color: #ff8a00;
+    color: #ffffff;
+    padding: 0 0.5em;
+    border-radius: 30%;
+}
+.tagStyle{
+    color: #ff2a00;
+    position: absolute;
+    bottom: 0;
+    right: 0.5em;
+}
+.tagStyle01{
+    color: #FF8A00;
+    position: relative;
+    bottom: 0;
+    right: 0.5em;
+}
+.tagChild{
+    color: #ff2a00;
+    border: 1px solid #ff2a00;
+    border-radius: 6px;
+    padding: 0 0.2em;
+    margin:0.05em;
+}
+.tagChild01{
+    color: #FF8A00;
+    border: 1px solid #FF8A00;
+    border-radius: 6px;
+    padding: 0 0.2em;
+    margin:0.05em;
+}
+#content p img{
+    width:100%;
+}
+.f_government{
+    background-image: url('../image/home/zhengwu.png');
+}
+.f_government_on{
+    background-image: url('../image/home/zhengwu_on.png');
+}
+.f_life{
+    background-image: url('../image/home/life.png');
+}
+.f_life_on{
+    background-image: url('../image/home/life_on.png');
+}
+.f_activity{
+    background-image: url('../image/home/active.png');
+}
+.f_activity_on{
+    background-image: url('../image/home/active_on.png');
+}
+.f_shoot{
+    background-image: url('../image/home/photo.png');
+}
+.f_shoot_on{
+    background-image: url('../image/home/photo_on.png');
+}
+.vice_w20{
+    width:20%;
+}
+.twoWater_wh20{
+    width: 2.25em;
+    height: 2.25em;
+}
+.chlidColumn_wh{
+    width:3.2em;
+    height:3.2em;
+    border:1px solid #fff;
+    border-radius:50%;
+}
+.border_chlidColumn{
+    border:1px solid #FF8A00;
+    border-radius:50%;
+}
+.tag-l{
+    margin-left:1.5em;
+}
+.btn_bgColor{
+    background-color:#EEEEEE;
+}
+.feednum {
+    margin-left: 0.5em;
+    border-radius: 50%;
+    height: 1.3em;
+    width: 1.3em;
+    background-color: #FF8A00;
+    font-size: 85%;
+    color: white
+}

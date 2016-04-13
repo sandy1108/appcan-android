@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+    <head>
+        <title></title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="target-densitydpi=device-dpi, width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <link rel="stylesheet" href="css/fonts/font-awesome.min.css">
+        <link rel="stylesheet" href="css/ui-box.css">
+        <link rel="stylesheet" href="css/ui-base.css">
+        <link rel="stylesheet" href="css/ui-color.css">
+        <link rel="stylesheet" href="css/appcan.icon.css">
+        <link rel="stylesheet" href="css/appcan.control.css">
+        <link rel="stylesheet" href="css/new_file.css">
+        <link rel="stylesheet" href="css/loader.css">
+    </head>
+    <body class="um-vp oc_gray" ontouchstart>
+        <div class="ub ub-ver">
+            <div class="ub ub-ac oc_white" style="margin:1em 0;">
+                <div class=" uinput ub ub-f1  bc-border">
+                    <input id="oput" maxlength="10" placeholder="请输入昵称" type="text" class="ub-f1">
+                </div>
+                <div onclick="ocancle()" class="ub ub-ac ub-pc" style="height:2em;width:2em;">
+                    <div class="ub-img ocancle"></div>
+                </div>            
+            </div>
+        </div>
+    </body>
+    <script src="js/appcan.js"></script>
+    <script src="js/appcan.control.js"></script>
+    <script src="js/common.js"></script>
+    <script>
+        var userInfo=isDefine(getLocVal('userInfo')) ? getLocVal('userInfo'):"";
+        var userId="";
+        appcan.ready(function() {
+            userInfo=isDefine(userInfo) ? JSON.parse(userInfo) : "";
+            userId = isDefine(userInfo)?userInfo.userId:"";
+            $("#oput").val(appcan.locStorage.val("nickname"));
+        });
+        
+        function ocancle(){
+            $("#oput").val("");
+        }
+        
+        function change() {
+            loader.open();
+            var newname=$("#oput").val();
+            if(newname==""){
+                 uexWindow.toast(0,5,"请输入昵称",2000);
+                 loader.close();
+                 return;
+            }
+            if(newname.length>10){
+                uexWindow.toast(0,5,"输入昵称的长度不能超过10个字符",2000);
+                loader.close();
+                return;
+            }
+            var list={
+                "transcode":"userInfo_modify",
+                "info": "changeNickName",
+                "content":{
+                        "nickName": newname,
+                        "userId": userId
+                }
+            };
+            console.log(JSON.stringify(list));
+            var tok=appcan.locStorage.val("token")||"";
+            var dev=appcan.locStorage.val("deviceId")||"";
+            //alert(objectId+" "+newname);
+            appcan.request.ajax({
+                url :chongqingUrl,
+                headers : {
+                    token : tok,
+                    deviceId : dev
+                },
+                data : list,
+                type : "POST",
+                appVerify:true,
+                timeout : "15000",
+                contentType : "application/json",
+                dataType:"json",
+                success : function(res) {//数据请求成功
+                    console.log("修改昵称结果返回=====>");
+                    console.log(JSON.stringify(res));
+                    loader.close();
+                    if(res.status=="000"){
+                        userInfo.nickName=newname;
+                        appcan.locStorage.setVal("userInfo", JSON.stringify(userInfo));
+                        appcan.locStorage.setVal("nickname",newname);
+                        appcan.window.publish("changename",newname);
+                        uexWindow.toast(0,5,"修改成功",2000);
+                        setTimeout('closeWindow()',2000);
+                    }else{
+                        uexWindow.toast(0,5,"修改失败，请稍后重试",2000);
+                    }
+                },
+                error : function() {
+                   loader.close();
+                }
+            });
+        }
+        
+        function closeWindow(){
+            appcan.window.publish("closeChangeName","");
+        }
+    </script>
+</html>

@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+    <head>
+        <title></title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="target-densitydpi=device-dpi, width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <link rel="stylesheet" href="css/fonts/font-awesome.min.css">
+        <link rel="stylesheet" href="css/ui-box.css">
+        <link rel="stylesheet" href="css/ui-base.css">
+        <link rel="stylesheet" href="css/ui-color.css">
+        <link rel="stylesheet" href="css/appcan.icon.css">
+        <link rel="stylesheet" href="css/appcan.control.css">
+        <link rel="stylesheet" href="css/new_file.css">
+        <link rel="stylesheet" href="css/common.css">
+    </head>
+    <body class="um-vp f-f1" ontouchstart>
+        <div id="page_0" class="up ub ub-ver" style="background-color:rgba(0,0,0,1);" tabindex="0">
+            <!--header开始-->
+            <div id="header" class="uh ub" style="height: 3em;">
+                <div class="nav-btn" id="nav-left">
+                    <div class="ub-img oback"></div>
+                </div>
+                <h1 class="ut ub-f1 ulev-3 ut-s tx-c" id="goTop" tabindex="0"> </h1>
+                <div class="nav-btn nav-bt" id="nav-right">
+                    
+                </div>
+            </div>
+            <div id="content" class="ub-f1 tx-l" style="margin-top:1em;">
+               
+            </div>
+            <div id="footer" class="ub ubt uinn c-66">
+                <div class="ub ub-ac ub-f1 ubr Hcomment" id="doComment">
+                    <div class="pic_foot1 ub-img foot_wh"></div>
+                    <span style="color:#FFFFFF;">写评论</span>
+                </div>
+                <div class="ub ub-f4 ub-ac ub-pj">
+                    <div class="ub ub-f1 pic_foot2 ub-img foot_wh" id="commentDetailCheck">
+                        <div class="pos-x" style="display: none;" id="pluns"></div>
+                    </div>
+                    <div class="ub ub-f1 pic_foot3 ub-img foot_wh" id="collect"></div>
+                    <div class="ub ub-f1 pic_foot4 ub-img foot_wh" id="shareType"></div>
+                </div>
+            </div>
+        </div>
+        <script src="js/appcan.js"></script>
+        <script src="js/appcan.control.js"></script>
+        <script src="js/common.js"></script>
+        <script src="js/interface.js"></script>
+    </body>
+    <script>
+        var userInfo=isDefine(getLocVal('userInfo')) ? getLocVal('userInfo'):"";
+        var userId="";
+        var newsItemInfo = isDefine(getLocVal('newsItemInfo')) ? getLocVal('newsItemInfo'):"";
+        newsItemInfo=JSON.parse(newsItemInfo);   
+        var newsId = newsItemInfo.newsId;
+        var objectType=1;
+        var shareTitle="";
+        var shareSummary="";
+        
+        appcan.ready(function() {
+            var titHeight = $('#header').offset().height;
+            var fooHeight = $('#footer').offset().height;
+            var height = window.getComputedStyle(document.getElementById("content"),null);
+            uexWindow.openPopover("content","0","home_DetailsPictures_content.html","",0,titHeight,parseInt(document.body.clientWidth),parseInt(height.height),0,0,parseInt(fooHeight),'{"extraInfo":{"opaque":"true","bgColor":"#fff"}}');
+            if(isDefine(newsItemInfo.commentNum) && newsItemInfo.commentNum>0){
+                $("#pluns").show();
+                $("#pluns").html(newsItemInfo.commentNum);
+            }
+            
+            var $header=$("#header");
+            var $footer=$("#footer");
+            //收听主页是否隐藏
+            appcan.window.subscribe('hideRootPage',function (num){
+                if(num == 1){
+                    $header.addClass('uhide');
+                    $footer.addClass('uhide');
+                }else{
+                    $header.removeClass('uhide');
+                    $footer.removeClass('uhide');
+                }
+            })
+            
+            //监听是否允许评论
+            appcan.window.subscribe('detailIsAllowComment',function(msg){
+                if(msg==0){
+                    $("#doComment").addClass("uhide");
+                    $("#commentDetailCheck").addClass("uhide");
+                }
+            });
+            
+            //收听是否已收藏
+            appcan.window.subscribe('isCollect',function (num){
+                if(num == 1){
+                    $("#collect").addClass('pic_foot3-1').removeClass('pic_foot3');
+                }
+            })
+            //动态显示评论数
+            appcan.window.subscribe('home_wordCnt',function (str){
+                if(str == '0'){
+                    $("#pluns").hide();
+                }else{
+                    $("#pluns").show();
+                    $("#pluns").html(str);
+                }
+            })
+            //监听评论更新
+            appcan.window.subscribe('changeCommentCount',function (msg){
+               if(msg==newsId){
+                   var num= $("#pluns").html();
+                   $("#pluns").show();
+                   if(num==""){
+                       $("#pluns").show();
+                       $("#pluns").html(1);  
+                   }else{
+                       $("#pluns").html(parseInt(num)+1);
+                   }
+               }
+            })
+        });
+        
+ //*****分享代码开始******
+        //弹出第三方分享选择
+        appcan.button('#shareType','btn-act',function(){
+            shareTitle=newsItemInfo.newsTitle;
+            shareSummary=(newsItemInfo.summary).substring(0,30);
+            appcan.locStorage.setVal('shareId',newsId+"_"+objectType);
+            appcan.locStorage.setVal('shareTitle',shareTitle);
+            appcan.locStorage.setVal('shareSummary',shareSummary);
+            appcan.locStorage.setVal('share_type','');//资讯
+            shareTypeChoose();
+        })
+        function shareTypeChoose() {//弹出分享第三方选择(只有footer处调用)
+            uexWindow.openPopover("share_content",0,'share_content.html','',0,0,document.body.clientWidth,document.body.clientHeight,32,0,0);
+        }
+        function sceneChoose() {//弹出分享场景选择
+             uexWindow.openPopover("scene_content",0,'scene_content.html','',0,0,document.body.clientWidth,document.body.clientHeight,32,0,0);
+        }
+        function getNewsdetail(){//记录分享内容
+             shareTitle=appcan.locStorage.val('shareTitle');
+             shareSummary=appcan.locStorage.val('shareSummary');
+        }
+//*****分享代码结束******  
+     
+        //跳转到写评论页面(对资讯的评论)
+        appcan.button(".Hcomment",'btn-act',function(){
+                //传入评论参数
+                var commentParameter={
+                    "objId": newsId,
+                    "objType": 1,
+                    "parentCommentId":"",
+                    "commentedUserId":""
+                }
+                setLocVal("commentParameter",JSON.stringify(commentParameter));
+                appcan.window.open('home_Comment','home_Comment.html',10);
+        })
+        
+        //跳转资讯评论详情列表
+        appcan.button('#commentDetailCheck','btn-act',function(){
+            setLocVal('objId',newsId);
+            setLocVal('objType',1);
+            appcan.window.open('home_Details_Comment','home_Details_Comment.html',10);
+        })
+        
+        //收藏
+        var isCollect=0;
+        appcan.button('#collect','btn-act',function(){
+            var loginTat = getLocVal('loginState');
+            if(loginTat != 'yes'){
+                appcan.window.open('login','login.html');
+                return false;
+            }
+            userInfo=isDefine(getLocVal('userInfo')) ? getLocVal('userInfo'):"";
+            userId = isDefine(userInfo)?JSON.parse(userInfo).userId:"";
+            var cla = this.className;
+            if(cla.indexOf('pic_foot3-1') > 0){
+                //取消收藏
+                isCollect=0;
+                userActionRemove(newsId,1,2,userId,collectCallBack);
+            }else{
+                //收藏
+                isCollect=1;
+                userAction(newsId,1,2,'',userId,collectCallBack);
+            }
+        })
+        
+        //收藏回调callback
+        function collectCallBack(res){
+            console.log("收藏接口返回=====>");
+            console.log(JSON.stringify(res));
+            var newDetailInfo=getLocVal('newDetailInfo');
+            newDetailInfo=isDefine(newDetailInfo)?JSON.parse(newDetailInfo):{};
+            if(res.status=="000"){
+                switch(isCollect){
+                    case 1:
+                        uexWindow.toast(0,5,"已成功收藏",2000);
+                        $("#collect").addClass('pic_foot3-1').removeClass('pic_foot3');
+                        newDetailInfo[newsId].detail.isCollect=1;
+                        appcan.locStorage.setVal("newDetailInfo",JSON.stringify(newDetailInfo));
+                        break;
+                    case 0:
+                        uexWindow.toast(0,5,"已取消收藏",2000);
+                        $("#collect").addClass('pic_foot3').removeClass('pic_foot3-1');
+                        //修改缓存数据
+                        newDetailInfo[newsId].detail.isCollect=0;
+                        appcan.locStorage.setVal("newDetailInfo",JSON.stringify(newDetailInfo));
+                        break;
+                    default:
+                        return;
+                }
+                appcan.window.publish("refreshCollection",""); 
+            }else if (res.status == "4061") {
+                uexWindow.toast(0, 5, "已收藏", 2000);
+                $("#collect").addClass('pic_foot3-1').removeClass('pic_foot3');
+            } else {
+                uexWindow.toast(0, 5, "操作失败", 2000);
+            }
+    }
+
+    appcan.button("#nav-left", "btn-act", function() {
+        appcan.locStorage.setVal('itemIfon','');
+        appcan.window.close(-1);
+    })
+    
+ //双击回到顶部测试
+    $("#goTop").on("doubleTap",function(){
+        appcan.window.evaluatePopoverScript("","content","goTop()");
+    })
+
+    </script>
+</html>

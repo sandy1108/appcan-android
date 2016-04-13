@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+    <head>
+        <title></title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="target-densitydpi=device-dpi, width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <link rel="stylesheet" href="css/ui-box.css">
+        <link rel="stylesheet" href="css/ui-base.css">
+        <link rel="stylesheet" href="css/appcan.icon.css">
+        <link rel="stylesheet" href="css/appcan.control.css">
+    </head>
+    <body class="um-vp bc-bg" ontouchstart>
+        <div id="startPage" class='ub ub-ver ub-fv utra uof'>
+            
+        </div>
+        <script src="js/newAppcan.js"></script>
+        <script src="js/appcan.control.js"></script>
+        <script src="js/common.js"></script>
+        <script src="js/zy_slide.js"></script>
+ </body>
+    <script>
+    appcan.ready(function() {
+        //校验服务器栏目信息是否修改过，并做相应的处理
+        getStartData();
+    })
+    
+    function getStartData(){
+        var if_list={
+            "transcode" : "startinfo_getList",
+            "content" : {
+                "isStartPage":0
+            }
+        };
+        appcan.request.ajax({
+            url : chongqingUrl,
+            headers : {
+                token : appcan.locStorage.val("token") || '',
+                deviceId : appcan.locStorage.val("deviceId") || ''
+            },
+            appVerify:true,
+            data : JSON.stringify(if_list),
+            timeout : "15000",
+            type : "POST",
+            contentType : "application/json",
+            dataType : "json",
+            success : function(res) {
+                console.log("启动页数据返回>>>");
+                console.log(res);
+                if(res.status != '000'){
+                    uexWindow.toast(1, 5, res.msg, 2000);
+                    return false;
+                }
+                var datas=res.data;//后台数据库请求
+                if(isDefine(datas.list)){
+                    var startDom=$('<div id="slider" class="ub-con ub ub-fh" ></div>');
+                    var tempDom="";
+                    var imageUrl="";
+                    var imgDom="";
+                    for(var i in datas.list){
+                        imageUrl=getImgUrl("0",datas.list[i].startUrls,5);
+                        tempDom=$('<div '+((i==(datas.list.length-1))?"id=goPage":"")+' class="ub ub-fh">'
+                                    +'<div class="ub ub-img7" style="width:100%; background-image:url('+imageUrl+')"></div>'
+                                +'</div>');
+                        startDom.append(tempDom);
+                    }
+                    setLocVal('homeStartList',JSON.stringify(datas.list));
+                    
+                    $("#startPage").append(startDom);
+                    document.getElementById("slider").slide = new zySlide("slider", "H", function(){}, false, function(e){});
+                    appcan.button("#goPage",'btn-act',function(){
+                        setLocVal('flagstatus',"false");
+                        appcan.window.open("home_page","home_page.html",0,256);
+                        appcan.window.close(0);
+                    })   
+                }
+            },
+            error : function(xhr, errorType, error,msg) {
+                setLocVal('flagstatus',"false");
+                appcan.window.open("home_page","home_page.html",0,256);
+                appcan.window.close(0);
+            }
+        });
+    }
+            
+ </script>
+</html>

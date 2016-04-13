@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+    <head>
+        <title></title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="target-densitydpi=device-dpi, width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <link rel="stylesheet" href="css/fonts/font-awesome.min.css">
+        <link rel="stylesheet" href="css/ui-box.css">
+        <link rel="stylesheet" href="css/ui-base.css">
+        <link rel="stylesheet" href="css/ui-color.css">
+        <link rel="stylesheet" href="css/appcan.icon.css">
+        <link rel="stylesheet" href="css/appcan.control.css">
+        <link rel="stylesheet" href="css/new_file.css">
+        <link rel="stylesheet" href="css/common.css">
+    </head>
+    <body class="um-vp bg-wh" ontouchstart>
+         <div id="data" class="ub ub-ver bg-wh" style="display:none;">
+            <div style="font-size:0.825em; background-color:#F4F4F4;padding:1em 1em 0.35em">我的栏目</div>
+            <div class=""  style="margin-top:0.8em;padding:0 0.625em;">
+                <div id="columns01"></div>
+                <div style="clear:both;"></div>
+            </div>
+            <div style="font-size:0.825em; background-color:#F4F4F4;padding:1em 1em 0.35em;margin-top:1.5em;">
+                点击添加更多栏目
+            </div>
+            <div class="ub-f1" style="margin-top:0.8em;padding:0 0.625em;">
+                <div id="columns02">
+                    <!-- <div class="uc-a1 ufl c-82 ulev-1 box01" style="margin:0.625em 0.625em 0 0">中国网事</div> -->
+                </div>
+                <div style="clear:both;"></div>
+            </div>
+        </div>
+    </body>
+    <script src="js/appcan.js"></script>
+    <script src="js/appcan.control.js"></script>
+    <script src="js/common.js"></script>
+    <script>
+        var resFileData="";//读取文件返回存放
+        var dataType=0;
+        // 存放用户自定义最终栏目对应的是否显示的状态
+        var columnStatus=isDefine(appcan.locStorage.setVal("columnStatus"))?appcan.locStorage.setVal("columnStatus"):[];
+        appcan.ready(function() {
+            //设置是否可以弹动及弹动的背景色
+            uexWindow.setBounce("1");
+            uexWindow.showBounceView("0","#fff","0");
+            uexWindow.showBounceView("1","#fff","0");
+            //打开读取读取文件回调
+            uexFileMgr.cbReadFile = function(opCode, dataType, data) {
+                if (opCode == path_sign && dataType == 0) {
+                    showColumnOrder(data);
+                    uexFileMgr.closeFile(path_sign); 
+                }
+            }
+            
+            var columnsDataTemp="";
+            columnsDataTemp=appcan.locStorage.val("columnsDataTemp");
+            if(isDefine(columnsDataTemp)){
+                 dataType=0;
+                 showColumnOrder(columnsDataTemp);
+            }else{
+                dataType=1;
+                //读取本地文件
+                readFile(path_sign,path_myColumns);
+            }
+        })
+        
+        function showColumnOrder(data){
+                appcan.locStorage.setVal("resFileData",data);//作为源文件是否有改动的依据
+                console.log("个人栏目管理=====>");
+                console.log(JSON.parse(data));
+                resFileData=JSON.parse(data);
+                var html_res=""; //用户固定栏目
+                var html_res01=""; //用户自定义栏目
+                var html_res02=""; //系统栏目
+                var columnId="";
+                var columnName="";
+                for(var i=0;i<resFileData.topColumns.content.length;i++){
+                    columnDomId = resFileData.topColumns.content[i].id;
+                    columnName = resFileData.topColumns.content[i].columnName;
+                    columnStatus[columnDomId.split("_")[1]] = resFileData.topColumns.content[i].status;
+                    if(resFileData.topColumns.content[i].isDefined==1){//是否可自定义
+                        if(resFileData.topColumns.content[i].status==1){
+                            html_res01+='<div id="'+columnDomId+'" class="uc-a1 ufl c-82 ulev-1 box01" style="margin:0.625em 0.625em 0 0" onclick="dropColumn(\''+i+'\')">'+columnName+'</div>';    
+                        }else{
+                            html_res02+='<div id="'+columnDomId+'" class="uc-a1 ufl c-82 ulev-1 box01" style="margin:0.625em 0.625em 0 0" onclick="addColumn(\''+i+'\')">'+columnName+'</div>';
+                        } 
+                    }else{
+                        html_res+='<div id="'+columnDomId+'" class="uc-a1 ufl c-82 ulev-1 box02" style="margin:0.625em 0.625em 0 0">'+columnName+'</div>';    
+                    }
+                }
+                
+                appcan.locStorage.setVal("columnStatus",columnStatus);
+                $("#columns01").html(html_res+html_res01);
+                $("#columns02").html(html_res02);
+                $("#data").show();
+        }
+        
+        //撤销栏目******************还是以status状态来判断比较合适*****2015-8-28改*********
+        function dropColumn(num){
+            resFileData.topColumns.content[num].status=0;
+            if(dataType==1){
+                writeFile(path_sign,path_myColumns,JSON.stringify(resFileData));
+                readFile(path_sign,path_myColumns);//重新读取
+            }else{
+                appcan.locStorage.setVal("columnsDataTemp",JSON.stringify(resFileData));
+                var newColumnsData="";
+                newColumnsData=appcan.locStorage.val("columnsDataTemp");
+                showColumnOrder(newColumnsData);
+            }
+            
+        }
+        //添加栏目
+        function addColumn(num){
+            resFileData.topColumns.content[num].status=1;
+            if(dataType==1){
+                writeFile(path_sign,path_myColumns,JSON.stringify(resFileData));
+                readFile(path_sign,path_myColumns);//重新读取
+            }else{
+                appcan.locStorage.setVal("columnsDataTemp",JSON.stringify(resFileData));
+                var newColumnsData="";
+                newColumnsData=appcan.locStorage.val("columnsDataTemp");
+                showColumnOrder(newColumnsData);
+            }
+        }
+
+    </script>
+</html>

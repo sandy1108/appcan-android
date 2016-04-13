@@ -18,6 +18,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.zywx.wbpalmstar.base.BDebug;
 import org.zywx.wbpalmstar.base.BUtility;
 import org.zywx.wbpalmstar.engine.external.Compat;
 import org.zywx.wbpalmstar.engine.universalex.EUExUtil;
@@ -41,6 +42,7 @@ public class LoadingActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        BDebug.i("optimize", "LoadingActivity onCreate start");
         try {
             Intent intent = getIntent();
             if (intent != null) {
@@ -107,6 +109,7 @@ public class LoadingActivity extends Activity {
                             "FLAG_NEEDS_MENU_KEY").getInt(null));
         } catch (Exception e) {
         }
+        BDebug.i("optimize", "LoadingActivity onCreate end");
     }
 
     @Override
@@ -125,6 +128,7 @@ public class LoadingActivity extends Activity {
 
     @Override
     public void onBackPressed() {
+    	BDebug.i("optimize", "LoadingActivity onBackPressed!!!!!!!!!!");
     }
 
     @Override

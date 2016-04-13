@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+    <head>
+        <title></title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="target-densitydpi=device-dpi, width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <link rel="stylesheet" href="css/fonts/font-awesome.min.css">
+        <link rel="stylesheet" href="css/ui-box.css">
+        <link rel="stylesheet" href="css/ui-base.css">
+        <link rel="stylesheet" href="css/ui-color.css">
+        <link rel="stylesheet" href="css/appcan.icon.css">
+        <link rel="stylesheet" href="css/appcan.control.css">
+        <link rel="stylesheet" href="css/new_file.css">
+        <style>
+            .activityPic01 {
+                height: 10em;
+                width: 100%;
+            }
+            .activityPic02 {
+                height: 12.5em;
+                width: 100%;
+            }
+            #list{
+                box-sizing: border-box;
+                padding: 0.6em 0.4em;
+            }
+            #list>div{
+                margin-top: 0.6em;
+                width:100%;
+                box-sizing: border-box;
+                padding:0.4em;
+                background-color: #F0F0F0;
+            }
+            #list>div:first-child{
+                margin-top: 0;
+            }
+            .listItemTitle{
+                width:100%;
+                line-height: 1.5;
+                color:#000;
+            }
+            .listItemTime{
+                width:100%;
+                line-height: 1;
+                color:#ccc;
+                height: 1.2em;
+            }
+            .listItemTime span{
+                font-size: 0.8em;
+            }
+            .listItemPic{
+                width:100%;
+                height:10em;
+                margin-top:0.5em;
+                background-image: url('image/cqAd.jpg');
+            }
+        </style>
+    </head>
+    <body class="um-vp bg-wh f-f" ontouchstart>
+        <div id="chooseBox" class="ub uinn ub-f1 ub-ac ub-pc uhide" style="padding: 1em 1.15em 0em 1.15em;">
+            <div id="allAct" class="ub ub-img7 res-actButton ub-f1 ub-ac ub-pc" style="margin-right:0.36em;height:2.15em;">
+                <div id="kind" class="ub ub-f1 ub-pc" style="color:#878787">全部活动</div>
+                <div class="ub ub-ac ub-pc umar-r iconSpace15">
+                    <div id="angle01" class="ub ub-img res-downAngle" style="height: .5em;width:.5em"></div>
+                </div>
+            </div>
+            <div id="actType" class="ub ub-img7 res-actButton ub-f1 ub-ac ub-pc" style="margin-left:0.36em;height:2.15em;">
+                <div id="type" class="ub ub-f1 ub-pc" style="color:#878787">全部类型</div>
+                <div class="ub ub-ac ub-pc umar-r iconSpace15">
+                    <div id="angle02"  class="ub ub-img res-downAngle" style="height: .5em;width:.5em"></div>
+                </div>
+            </div>
+        </div>
+        <div class="ub ub-f1 uhide" style="height:1em;border-bottom:1px solid #dddddd"></div>
+        <div id="list" class="ub ub-ver">
+            
+        </div>
+        <script src="js/appcan.js"></script>
+        <script src="js/appcan.control.js"></script>
+        <script src="js/common.js"></script>
+    </body>
+    <script>
+        var newslist = "";
+        var overFlag = "0";
+        var actType = "";
+        var oflag1 = 0;
+        var oflag2 = 0;
+        //下拉符号表示
+        var signAll = 0;
+        var signType = 0;
+        var objSerInfo = {};
+        //分享数据
+        var share_actId = "";
+        //活动id定位
+        var pageNo = 1;
+        var totalPage = 0;
+        var slideType=1;
+        appcan.ready(function() {
+            appcan.initBounce();
+            appcan.window.subscribe("changeChoice", function(msg) {
+                var tag = appcan.locStorage.val("whichBox");
+                if (tag == "1") {
+                    $("#kind").html(msg);
+                    switch(msg) {
+                    case "全部活动":
+                        overFlag = 0;
+                        break;
+                    case "&nbsp;&nbsp;进行中&nbsp;&nbsp;":
+                        overFlag = 1;
+                        break;
+                    case "&nbsp;&nbsp;已结束&nbsp;&nbsp;":
+                        overFlag = 2;
+                        break;
+                    default:
+                        return;
+                    }
+                    newslist = "";
+                    getThemes(overFlag, actType);
+                } else {
+                    $("#type").html(msg);
+                    switch(msg) {
+                    case "全部类型":
+                        actType = "";
+                        break;
+                    case "公告类型":
+                        actType = "01";
+                        break;
+                    case "投票类型":
+                        actType = "02";
+                        break;
+                    case "抽奖类型":
+                        actType = "03";
+                        break;
+                    default:
+                        return;
+                    }
+                    newslist = "";
+                    $("#list").html(newslist);
+                    getThemes(overFlag, actType);
+                }
+                signAll = 0;
+                signType = 0;
+                $("#angle01").removeClass("res-upAngle");
+                $("#angle02").removeClass("res-upAngle");
+                $("#angle01").addClass("res-downAngle");
+                $("#angle02").addClass("res-downAngle");
+            })
+            var cbHeight = $("#chooseBox").offset().height;
+            appcan.locStorage.setVal("cbHeight", cbHeight);
+            var boxWidth = $("#allAct").offset().width;
+            appcan.locStorage.setVal("boxWidth", boxWidth);
+            //getThemes(overFlag);
+
+            appcan.window.subscribe("actCommentOk", function(msg) {
+                var numStr = $("#actCom" + msg).html();
+                $("#actCom" + msg).html(parseInt(numStr) + 1);
+            });
+            
+            appcan.frame.setBounce([0,1], null, null, function(type){
+                slideType=type;
+                if(type == 0){
+                    pageNo = 1;
+                    getAcList();
+                }else{
+                    pageNo = pageNo + 1;
+                    if(pageNo > totalPage){
+                        appcan.window.openToast('暂无更多',1000,5,0);
+                        pageNo = pageNo - 1;
+                        appcan.frame.resetBounce(slideType);
+                    }else{
+                        getAcList();
+                    }
+                }
+            },bounceBgColor,imgSettingsVal);
+            
+            //获取活动列表
+            getAcList();
+        })
+
+        // isOver(int): "0",全部，"1",进行中，"2",已结束
+        function getThemes(isOver, type) {
+            uexWindow.toast(1, 5, "", "");
+            var data_str = {
+                "ifno" : "CMS-ACTV-0001",
+                "condition" : {
+                    "dmnId" : "cq",
+                    "rowCnt" : "10",
+                    "pageNo" : "1",
+                    "findCtt" : "",
+                    "actvType" : type //01:普通 02：投票03:抽奖
+                },
+                "content" : {}
+            };
+            var objectid = {};
+            var actvid = {};
+            appcan.request.ajax({
+                url : chongqingUrl_old,
+                headers : {
+                    token : appcan.locStorage.val("token") || '',
+                    deviceId : appcan.locStorage.val("deviceId") || ''
+                },
+                type : 'POST',
+                appVerify:true,
+                data : data_str,
+                contentType : "application/json",
+                dataType : 'json',
+                timeout : "15000",
+                success : function(data) {
+                    appcan.window.closeToast();
+                    var listcontent = data.info.list;
+                    for (var i = 0; i < listcontent.length; i++) {
+                        if (listcontent[i].actvId != "E14dbd76f7c46236") {//临时隐藏
+                            var toTime = listcontent[i].toTime;
+                            var currentTime = new Date().getTime();
+                            var isEnd = currentTime - toTime > 0 ? true : false;
+                            if (isOver == 1) {
+                                if (isDefine(isEnd)) {
+                                    continue;
+                                }
+                            }
+                            if (isOver == 2) {
+                                if (!isEnd) {
+                                    continue;
+                                }
+                            }
+                            var objId = listcontent[i].objectId;
+                            var actvId = listcontent[i].actvId;
+                            var title = listcontent[i].actvTtl;
+                            objSerInfo[actvId] = title;
+                            //获取分享的title
+                            var fromTime = listcontent[i].fromTime;
+                            var stdFromTime = UnixToDate(fromTime, true, 8);
+                            var beginDate = stdFromTime.substring(0, 10);
+                            var prsnum = listcontent[i].prseCnt;
+                            var wordnum = listcontent[i].wordCnt;
+                            //var beginTime=stdFromTime.substring(11,19);
+
+                            var toTime = listcontent[i].toTime;
+                            var stdToTime = UnixToDate(toTime, true, 8);
+                            var stopDate = stdToTime.substring(0, 10);
+                            var type = listcontent[i].actvType;
+                            //var stopTime=stdToTime.substring(11,19);
+                            var timeValue = '<div class="ub uinn1 ulev-1" style="color:#8d8d8d">活动时间：' + beginDate + '　' + stopDate + '</div>';
+                            if (toTime == "" || toTime == undefined) {
+                                timeValue = '';
+                            }
+                            var endIcon = "";
+                            if (isDefine(isEnd)) {
+                                endIcon = '<div class="ub ub-img res-actEnd iconSpace40 umar-a"></div>';
+                            }
+                            getTops(listcontent[i].attachment, 0, "01", function(picId) {
+                                if (isDefine(picId)) {
+                                    var picUrl = getPictureUrl("0", picId, 1);
+                                } else {
+                                    var picUrl = "iamge/noPic.png";
+                                }
+                                var newstr = '<div id="' + actvId + '"class="ub ub-f1 ub-ver">' + '<div onclick="opendetail(\'' + objId + '\',\'' + actvId + '\',\'' + type + '\')" id="act" class="ub ub-ver ub-f1">' + '<div class="ub umar-t uinn" style="font-size:1.1em;line-height: 1.3em;max-height: 2.1em;overflow: hidden;color:#464646" id="s_' + objId + '">' + title + '</div>' + timeValue + '<div class="ub ub-f1 umar-a">' + '<div class="ub ub-img7 ub-pe activityPic01" name="activityPic" style="background-image: url(' + picUrl + ')">' + endIcon + '</div>' + '</div>' + '</div>' + '<div class="ub ub-f1 umar-a ubb" style="padding-bottom: 0.6em;border-color:#e0e0e0">' + '<div onclick="dianzan(\'' + actvId + '\')"class="ub ub-f1 umar-r ub-pc ub-ac uinn" style="width:30%;background-color: #eeeeee;color:#fe8c04">' + '<div class="ub ub-img res-praiseIcon" id="dg_' + actvId + '" style="height:1.5em;width:1.5em;"></div>' + '<div class="ub numprs" style="margin-left:.4em;color:#999CA5;" id="s_' + actvId + '">' + prsnum + '</div>' + '</div>' + '<div onclick="openComment(\'' + actvId + '\')" class="ub ub-f1 umar-r ub-pc ub-ac uinn" style="width:30%;background-color: #eeeeee;color:#fe8c04">' + '<div class="ub ub-img res-commentIcon" style="height:1.5em;width:1.5em;"></div>' + '<div id="actCom' + actvId + '" class="ub" style="margin-left:.4em;color:#999CA5;">' + wordnum + '</div>' + '</div>' + '<div class="ub ub-f1 ub-pc uinn ub-ac Shares" style="width:30%;background-color: #eeeeee" name="' + objId + '_' + actvId + '">' + '<div class="ub ub-img res-shareIcon" style="height:1.5em;width:1.5em;"></div>' + '</div>' + '</div>' + '</div>';
+                                newslist += newstr;
+                            })
+                        }
+                    }
+
+                    if (newslist == "") {
+                        newslist = '<div class="ub ub-f1 ub-ac ub-pc umar-t" style="color:#dedede ulev1">无此类型数据</div>'
+                    }
+                    $("#list").html(newslist);
+                    //文字内容字号适配
+                    var x = $(window).width();
+                    if (isAndroid && x > 1080) {
+                        $("div[name='activityPic']").attr("class", "ub ub-img7 ub-pe activityPic02");
+                    }
+                    if (!isAndroid && x > 375) {
+                        $("div[name='activityPic']").attr("class", "ub ub-img7 ub-pe activityPic02");
+                    }
+                    //分享
+                    appcan.button('.Shares', 'btn-act', function() {
+                        share_actId = $(this).attr("name").split("_")[1];
+                        //获取当前的活动actId
+                        appcan.locStorage.setVal('shareId', $(this).attr("name"));
+                        appcan.locStorage.setVal('shareTitle', objSerInfo[share_actId]);
+                        appcan.locStorage.setVal('shareSummary', '');
+                        appcan.locStorage.setVal('share_type', 'active');
+                        createActionSheet();
+                    })
+                },
+                error : function(xhr, erroType, error, msg) {
+
+                }
+            })
+        }
+         
+        //获取活动列表  
+        function getAcList(){
+            loader.open();
+            var dataObj = {
+                transcode : "activityInfo_getList",
+                content : {
+                    page : 1,
+                    pageSize : 10
+                }
+            };
+            console.log(JSON.stringify(dataObj));
+            appcan.request.ajax({
+                url : chongqingUrl_old,
+                headers : {
+                    token : appcan.locStorage.val("token") || '',
+                    deviceId : appcan.locStorage.val("deviceId") || ''
+                },
+                appVerify:true,
+                data : JSON.stringify(dataObj),
+                timeout : "15000",
+                type : "POST",
+                contentType : "application/json",
+                dataType : "json",
+                success:function(data){
+                    loader.close();
+                    console.log('活动列表===》',JSON.stringify(data));
+                    if(data.status == '000'){
+                        if(data.data.totalNum == 0){
+                            appcan.window.openToast('暂无数据',1000,5,0);
+                            $('#list').html('');
+                            return;
+                        }
+                        appcan.frame.resetBounce(slideType);
+                        totalPage = (data.data.totalNum%10==0)?data.data.totalNum/10:Math.ceil(data.data.totalNum/10);
+                        var list = data.data.list,
+                            html = '';
+                        for(var i=0;i<list.length;i++){
+                            var title = list[i].title;
+                            var pic = list[i].picUrl;
+                            var sTime = list[i].sTime;
+                            var eTime = list[i].eTime;
+                            var timeStr = '';
+                            if(sTime&&eTime){
+                                sTime = new Date(sTime);
+                                eTime = new Date(eTime);
+                                sTime = sTime.getFullYear()+'-'+(sTime.getMonth()+1<10)?('0'+(sTime.getMonth()+1)):sTime.getMonth()+1;
+                                eTime = eTime.getFullYear()+'-'+(eTime.getMonth()+1<10)?('0'+(eTime.getMonth()+1)):eTime.getMonth()+1;
+                                timeStr = '活动时间：'+sTime+'至'+eTime;
+                            }else if(sTime&&(!eTime)){
+                                sTime = new Date(sTime);
+                                sTime = sTime.getFullYear()+'-'+(sTime.getMonth()+1<10)?('0'+(sTime.getMonth()+1)):sTime.getMonth()+1;
+                                timeStr = '活动时间：'+sTime+'开始';
+                            }else if((!sTime)&&eTime){
+                                eTime = new Date(eTime);
+                                eTime = eTime.getFullYear()+'-'+(eTime.getMonth()+1<10)?('0'+(eTime.getMonth()+1)):eTime.getMonth()+1;
+                                timeStr = '活动时间：'+eTime+'结束';
+                            }else{
+                                timeStr = '活动时间：永久活动';
+                            }
+                            var acId = list[i].activityId;
+                            var linkUrl = list[i].linkUrl;
+                            //<div class="listItemTime ub ub-pc ub-ac"><span>'+timeStr+'</span></div>
+                            html += '<div class="listItem" acId="'+acId+'" linkUrl="'+linkUrl+'"><div class="listItemTitle ub ub-ac ub-pc">'+title+'</div><div class="listItemPic ub-img7" style="background-image:url('+pic+')"></div></div>';
+                        }
+                        if(pageNo == 1){
+                            $('#list').html(html);
+                        }else{
+                            $('#list').append(html);
+                        }
+                        var item = $('.listItem');
+                        for(var i=0;i<item.length;i++){
+                            appcan.button($(item[i]),'btn-act',function(){
+                                var acId = $(this).attr('acId');
+                                var linkUrl = $(this).attr('linkUrl');
+                                var acData = {
+                                    'acId':acId,
+                                    'linkUrl':linkUrl
+                                };
+                                appcan.locStorage.setVal('acData',JSON.stringify(acData));
+                                appcan.window.open("activityChoice", "activityChoice.html", 10);
+                            });
+                        }
+                    }else{
+                        appcan.window.openToast('数据获取失败', 1000, 5, 0);
+                    }
+                },
+                error : function(xhr, errorType, error,msg) {
+                    loader.close();
+                }
+            });
+        }
+        
+        appcan.button("#act", "", function() {
+            appcan.window.open("activity", "activityChoice.html", 10);
+        })
+
+        appcan.button("#allAct", "btn-act", function() {
+            if (signAll == 0) {
+                appcan.window.evaluateScript('', 'openPop(1)');
+                $("#angle01").removeClass("res-downAngle");
+                $("#angle01").addClass("res-upAngle");
+                signAll = 1;
+            } else {
+                appcan.window.evaluateScript('', 'closePop()');
+                $("#angle01").removeClass("res-upAngle");
+                $("#angle01").addClass("res-downAngle");
+                signAll = 0;
+            }
+        })
+
+        appcan.button("#actType", "btn-act", function() {
+            if (signType == 0) {
+                appcan.window.evaluateScript('', 'openPop(2)');
+                $("#angle02").removeClass("res-downAngle");
+                $("#angle02").addClass("res-upAngle");
+                signType = 1;
+            } else {
+                appcan.window.evaluateScript('', 'closePop()');
+                $("#angle02").removeClass("res-upAngle");
+                $("#angle02").addClass("res-downAngle");
+                signType = 0;
+            }
+        })
+
+        function createActionSheet() {//调用actionsheet分享
+            appcan.window.evaluateScript('', 'shareTypeChoose()');
+        }
+
+        function opendetail(oId, aId, type) {
+            appcan.locStorage.setVal("objectId", oId);
+            appcan.locStorage.setVal("actvId", aId);
+            if (aId == 'E14dbd76f7c46236') {
+                appcan.window.open("activityChoice1", "activityChoice1.html", 10);
+                return false;
+            }
+            if (aId == 'E14f1a860f5a3929') {
+                appcan.window.open("activityChoice_pre", "activityChoice_pre.html", 10);
+                return false;
+            }
+            if (type == "01") {
+                appcan.window.open("activityCommon", "activityCommon.html", 10);
+            }
+            if (type == "02") {
+                appcan.window.open("activityChoice", "activityChoice.html", 10);
+            }
+            if (type == "03") {
+                appcan.window.open("luckdraw", "luckDraw.html", 10);
+            }
+        }
+
+        function opendetail_tour() {
+            appcan.window.open("activitytour", "activityTour.html", 10);
+        }
+
+        function openComment(id) {
+            appcan.locStorage.setVal("actvCommentId", id);
+            appcan.window.open("actComment", "actComment.html", 10);
+        }
+
+        function dianzan(id) {
+            appcan.window.openToast('');
+            var list = {
+                "ifno" : "CMS-NEWS-0003",
+                "condition" : {
+                    "dmnId" : "cq",
+                    "grpId" : "",
+                    "roleId" : "",
+                    "chnlId" : ""
+                },
+                "content" : {
+                    "entity" : [{
+                        "oprTypeId" : "17",
+                        "enttTypeId" : "14",
+                        "enttId" : id
+                    }]
+                }
+            };
+            appcan.request.ajax({
+                url : chongqingUrl_old,
+                headers : {
+                    token : appcan.locStorage.val("token")||"",
+                    deviceId : appcan.locStorage.val("deviceId")||""
+                },
+                appVerify:true,
+                data : list,
+                type : "POST",
+                timeout : "15000",
+                dataType : "json",
+                contentType : "application/json",
+                success : function(data) {
+                    appcan.window.closeToast();
+                    if (data.info.entity[0].status == "000") {
+                        var num = parseInt($("#" + id).find(".numprs").html());
+                        $("#" + id).find(".numprs").html(num + 1);
+                        $("#dg_" + id).removeClass("res-praiseIcon");
+                        $("#dg_" + id).addClass('dogood');
+                        return;
+                    }
+                    if (data.info.entity[0].status == "001") {
+                        uexWindow.toast(0, 5, "你已点过赞", 2000);
+                        return;
+                    }
+                    uexWindow.toast(0, 5, "网络出错，请稍后重试", 2000);
+                },
+                error : function() {
+                }
+            });
+        }
+
+        function getTops(data1, idx, no, callback) {
+            if (idx >= data1.length) {
+                callback(false);
+                return;
+            } else if (data1[idx].attcTypeId == no) {
+                var attcId = data1[idx].attcId;
+                callback(attcId);
+                return;
+            }
+            getTops(data1, ++idx, no, callback);
+        }
+
+        //更新点赞
+        function actvDianzan(id) {
+            var sid = appcan.locStorage.val("actvId");
+            var num = $("#s_" + sid).html();
+            $("#s_" + sid).html(parseInt(num) + 1);
+            $("#dg_" + id).removeClass("res-praiseIcon");
+            $("#dg_" + id).addClass('dogood');
+        }
+        
+        function goTop() {
+            window.scrollTo(0, 0);
+        }
+    </script>
+</html>

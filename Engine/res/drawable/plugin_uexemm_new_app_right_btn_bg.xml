@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item
+        android:drawable="@drawable/plugin_uexemm_new_app_right_btn_press"
+        android:state_pressed="true">
+    </item>
+    
+    <item
+        android:drawable="@drawable/plugin_uexemm_new_app_right_btn_normal">
+    </item>
+</selector>

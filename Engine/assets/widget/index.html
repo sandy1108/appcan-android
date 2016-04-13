@@ -1,133 +1,862 @@
-<!DOCTYPE HTML>
-<html>
-<head>
-   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="viewport"
-	content="target-densitydpi=device-dpi,width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-	<link rel="stylesheet" type="text/css" href="css/index.css">
-    <script type="text/javascript" src="js/main.js"></script>
-	<script type="text/javascript">
-        window.uexOnload = function(type){
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+    <head>
+        <title></title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="target-densitydpi=device-dpi, width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <link rel="stylesheet" href="css/fonts/font-awesome.min.css">
+        <link rel="stylesheet" href="css/ui-box.css">
+        <link rel="stylesheet" href="css/ui-base.css">
+        <link rel="stylesheet" href="css/ui-color.css">
+        <link rel="stylesheet" href="css/appcan.icon.css">
+        <link rel="stylesheet" href="css/appcan.control.css">
+        <link rel="stylesheet" href="css/new_file.css">
+        <link rel="stylesheet" href="css/common.css">
+    </head>
+    <body class="um-vp f-f res-bg" ontouchstart>
+        <div id="page_0" class="up ub ub-ver" tabindex="0">
+            <!-- 时间和地名显示 -->
+            <div class="ub ub-ver ub-pc ub-ac uhide cqDate" style="color:white;width: 70%;margin: 1em 0em 0em;">
+                <h3 class="uinn" style="font-size: 1.2em;">重庆市</h3>
+                <div id="date" class="uinn"></div>
+                <div id="chinaDate" class="uinn"></div>
+            </div>
 
-            uexWidget.onLoadByOtherApp = onLoadByOtherApp;
+            <div id="ocontent" class="ub ub-ver res-bg">
+                <!-- 左侧栏 -->
+                <div class="ub ub-ac uhide" id="leftItem">
+                    <div class="ub ub-ver ub-f1 uinn-t1">
+                        <div class="res-line ub-img7" id="news_line"></div>
+                        <div class="ub ub-ac uinn gInfo ofont1" id="news">
+                            <div class="ub-img7 oc_hw6 news"></div>
+                            <div class="ub ub-f1" style="margin-left:0.5em;">
+                                新闻
+                            </div>
+                            <div class="ub-img iconSpace15 plusImg" id="news_choice"></div>
+                        </div>
+                        <div class="res-line ub-img7" id="news_line"></div>
+                        <div class="ub ub-ver ub-f1 ofont1 sideItemBg uhide"  id="news_item">
+                            <!-- <div class="ub ub-ac uinn-all indexInfo" id="id_cq">重庆</div>
+                            <div class="res-line1 ub-img7"></div>
+                            <div class="ub ub-ac uinn-all indexInfo" id="id_rw">热闻</div>
+                            <div class="res-line1 ub-img7"></div>
+                            <div class="ub ub-ac uinn-all indexInfo" id="id_zs">正事儿</div>
+                            <div class="res-line1 ub-img7"></div>
+                            <div class="ub ub-ac uinn-all indexInfo uhide" id="id_ws">中国网事</div>
+                            <div class="res-line1 ub-img7"></div>
+                            <div class="ub ub-ac uinn-all indexInfo" id="id_world">娱乐</div>
+                            <div class="res-line1 ub-img7"></div>
+                            <div class="ub ub-ac uinn-all indexInfo uhide" id="id_finance">财经</div>
+                            <div class="res-line1 ub-img7"></div> -->
+                        </div>
+                        <div class="ub ub-img7 ub-ac uinn gInfo ofont1" id="entertainment">
+                            <div class="ub-img7 oc_hw6 entertainment"></div>
+                            <div class="ub ub-f1" style="margin-left:0.5em;">
+                                特色
+                            </div>
+                            <div class="ub-img iconSpace15 plusImg" id="entertainment_choice"></div>
+                        </div>
+                        <div class="res-line ub-img7" id="entertainment_line"></div>
+                        <div class="ub ub-ver ub-f1 ofont1 sideItemBg uhide" id="entertainment_item">
+                            <!-- <div class="ub ub-ac uinn-all indexInfo" id="id_jy">椒言</div>
+                            <div class="res-line1 ub-img7"></div>
+                            <div class="ub ub-ac uinn-all indexInfo" id="id_mj">鸣家</div>
+                            <div class="res-line1 ub-img7"></div>
+                            <div class="ub ub-ac uinn-all indexInfo" id="id_yt">体育</div>
+                            <div class="res-line1 ub-img7"></div>
+                            <div class="ub ub-ac uinn-all indexInfo" id="id_hd">活动</div>
+                            <div class="res-line1 ub-img7"></div>
+                            <div class="ub ub-ac uinn-all indexInfo" id="id_pai">随手拍</div>
+                            <div class="res-line1 ub-img7"></div> -->
+                        </div>
+                        <div class="ub ub-ac uinn gInfo ofont1" id="goverment">
+                            <div class="ub-img7 oc_hw6 goverment"></div>
+                            <div class="ub ub-f1" style="margin-left:0.5em;">
+                                政务
+                            </div>
+                            <div class="ub-img iconSpace15 plusImg" id="goverment_choice"></div>
+                        </div>
+                        <div class="res-line ub-img7" id="goverment_line"></div>
+                        <div class="ub ub-ver ub-f1 ofont1 sideItemBg uhide" id="goverment_item">
+                            <!-- <div class="ub ub-ac uinn-all indexInfo" id="id_wz">问政</div>
+                            <div class="res-line1 ub-img7"></div>
+                            <div class="ub ub-ac uinn-all indexInfo" id="id_zn">办事指南</div>
+                            <div class="res-line1 ub-img7"></div>
+                            <div class="ub ub-ac uinn-all indexInfo" id="id_rx">政府热线</div>
+                            <div class="res-line1 ub-img7"></div>
+                            <div class="ub ub-ac uinn-all indexInfo" id="id_gg">公告公示</div>
+                            <div class="res-line1 ub-img7"></div>
+                            <div class="ub ub-ac uinn-all indexInfo" id="id_fg">政策法规</div>
+                            <div class="res-line1 ub-img7"></div> -->
+                        </div>
+                        <div class="ub ub-ac uinn gInfo ofont1" id="travel">
+                            <div class="ub-img7 oc_hw6 travel"></div>
+                            <div class="ub ub-f1" style="margin-left:0.5em;">
+                                互动
+                            </div>
+                            <div class="ub-img iconSpace15 plusImg" id="travel_choice"></div>
+                        </div>
+                        <div class="res-line ub-img7" id="goverment_line"></div>
+                        <div class="ub ub-ver ub-f1 ofont1 sideItemBg uhide" id="travel_item">
+                            <div class="ub ub-ac uinn-all indexInfo" id="travel_pai">
+                                随手拍
+                            </div>
+                            <div class="res-line1 ub-img7"></div>
+                            <div class="ub ub-ac uinn-all indexInfo" id="travel_hd">
+                                活动
+                            </div>
+                            <div class="res-line1 ub-img7"></div>
+                        </div>
+                        <div class="ub ub-ac uinn gInfo ofont1" id="pay">
+                            <div class="ub-img7 oc_hw6 pay"></div>
+                            <div class="ub ub-f1" style="margin-left:0.5em;">
+                                便民
+                            </div>
+                            <div class="ub-img iconSpace15 plusImg" id="pay_choice"></div>
+                        </div>
+                        <div class="res-line ub-img7" id="pay_line"></div>
+                        <div class="ub ub-ver ub-f1 ofont1 sideItemBg uhide" id="pay_item">
+                            <div class="ub ub-ac uinn-all indexInfo" id="pay_register">
+                                预约挂号
+                            </div>
+                            <div class="res-line1 ub-img7"></div>
+                            <div class="ub ub-ac uinn-all indexInfo" id="pay_wz">
+                                违章查询
+                            </div>
+                            <div class="res-line1 ub-img7"></div>
+                            <div class="ub ub-ac uinn-all indexInfo" id="pay_sdk10364">
+                                有线电视
+                            </div>
+                            <div class="res-line1 ub-img7"></div>
+                            <div class="ub ub-ac uinn-all indexInfo" id="pay_sdk10558">
+                                手机话费
+                            </div>
+                            <div class="res-line1 ub-img7"></div>
+                            <div class="ub ub-ac uinn-all indexInfo" id="pay_sdk10352">
+                                水费
+                            </div>
+                            <div class="res-line1 ub-img7"></div>
+                            <div class="ub ub-ac uinn-all indexInfo" id="pay_sdk10353">
+                                电费
+                            </div>
+                            <div class="res-line1 ub-img7"></div>
+                            <div class="ub ub-ac uinn-all indexInfo" id="pay_sdk10354">
+                                气费
+                            </div>
+                            <div class="res-line1 ub-img7"></div>
 
-            var name = uexWidgetOne.platformName;
+                        </div>
 
-//            alert(name);
+                        <!-- <div class="ub ub-ac uinn gInfo ofont1" id="travel">
+                        <div class="ub-img7 oc_hw5 travel"></div>
+                        <div class="ub ub-f1" style="margin-left:0.5em;">
+                        出行
+                        </div>
+                        <div class="ub-img iconSpace15 plusImg" id="travel_choice"></div>
+                        </div>
+                        <div class="res-line ub-img7" id="travel_line"></div>
+                        <div class="ub ub-ver ub-f1 ofont1 sideItemBg uhide" id="travel_item">
+                        <div class="ub ub-ac uinn-all indexInfo" id="travel_gj">
+                        公交查询
+                        </div>
+                        <div class="res-line1 ub-img7"></div>
+                        <div class="ub ub-ac uinn-all indexInfo" id="travel_airplane">
+                        机票
+                        </div>
+                        <div class="res-line1 ub-img7"></div>
+                        <div class="ub ub-ac uinn-all indexInfo" id="travel_train">
+                        火车票
+                        </div>
+                        <div class="res-line1 ub-img7"></div>
+                        <div class="ub ub-ac uinn-all indexInfo" id="travel_wz">
+                        违章查询
+                        </div>
+                        <div class="res-line1 ub-img7"></div>
+                        <div class="ub ub-ac uinn-all indexInfo" id="travel_lk">
+                        实时路况
+                        </div>
+                        <div class="res-line1 ub-img7"></div>
+                        <div class="ub ub-ac uinn-all indexInfo" id="travel_jf">
+                        违章记分
+                        </div>
+                        <div class="res-line1 ub-img7"></div>
+                        </div>
+                        <div class="ub ub-ac uinn gInfo ofont1" id="consumption">
+                        <div class="ub-img7 oc_hw5 consumption"></div>
+                        <div class="ub ub-f1" style="margin-left:0.5em;">
+                        消费
+                        </div>
+                        <div class="ub-img iconSpace15 plusImg" id="consumption_choice"></div>
+                        </div>
+                        <div class="res-line ub-img7" id="consumption_line"></div>
+                        <div class="ub ub-ver ub-f1 ofont1 sideItemBg uhide" id="consumption_item">
+                        <div class="ub ub-ac uinn-all indexInfo" id="consumption_hg">
+                        火锅
+                        </div>
+                        <div class="res-line1 ub-img7"></div>
+                        <div class="ub ub-ac uinn-all indexInfo" id="consumption_zzc">
+                        自助餐
+                        </div>
+                        <div class="res-line1 ub-img7"></div>
+                        <div class="ub ub-ac uinn-all indexInfo" id="consumption_dy">
+                        电影
+                        </div>
+                        <div class="res-line1 ub-img7"></div>
+                        <div class="ub ub-ac uinn-all indexInfo" id="consumption_KTV">
+                        KTV
+                        </div>
+                        <div class="res-line1 ub-img7"></div>
+                        <div class="ub ub-ac uinn-all indexInfo" id="consumption_mf">
+                        美发
+                        </div>
+                        <div class="res-line1 ub-img7"></div>
+                        <div class="ub ub-ac uinn-all indexInfo" id="consumption_mr">
+                        美容/SPA
+                        </div>
+                        <div class="res-line1 ub-img7"></div>
+                        <div class="ub ub-ac uinn-all indexInfo" id="consumption_yj">
+                        瑜伽
+                        </div>
+                        <div class="res-line1 ub-img7"></div>
+                        <div class="ub ub-ac uinn-all indexInfo" id="consumption_js">
+                        健身中心
+                        </div>
+                        <div class="res-line1 ub-img7"></div>
+                        <div class="ub ub-ac uinn-all indexInfo" id="consumption_jj">
+                        经济
+                        </div>
+                        <div class="res-line1 ub-img7"></div>
+                        <div class="ub ub-ac uinn-all indexInfo" id="consumption_djc">
+                        度假村
+                        </div>
+                        <div class="res-line1 ub-img7"></div>
+                        </div> -->
+                    </div>
+                </div>
 
-            var w_1 = 240;      /// just for testing
+                <!-- 右侧栏 -->
+                <div class="ub ub-ac uhide" id="rightItem">
+                    <div class="ub ub-ver ub-f1" style="padding:0.325em;margin-top:1.5em;">
+                        <div class="ub ub-ac">
+                            <div id="photo"class="ub-img7 oheadpic" style="height:4em;width:4em;border-radius:2em"></div>
+                            &nbsp;&nbsp;
+                            <div class="ub-ver" id="userInfo" style="display:none">
+                                <div id="nickname" class="bc-text-head ub ub-ac" style="font-weight:bold;min-width: 3em;"></div>
+                                <div id="phone" class="ofont ub ub-ac ub-pc" style="min-width: 3em;"></div>
+                            </div>
+                            <div class="ub" id="loginButton">
+                                <div class="bc-text-head ub ub-ac" style="margin-left:.5em;">
+                                    立即
+                                </div>
+                                <div onclick="login()" class="bc-text-head bg-ff ub-ac ub ub-pc oradiu1" style="font-weight:bold;min-height: 2em;min-width:5em;margin-left:1em;">
+                                    登&nbsp;&nbsp;录
+                                </div>
+                            </div>
+                        </div>
+                        <div onclick="registered()" id="NoUser" class="ub ub-ac" style="height:2em;border-top:1px solid#a79e92;border-bottom:1px solid#a79e92">
+                            <div class="ofont1 ub-f1 uinn" style="font-size:0.865em;">
+                                您没有帐号？请在这里注册
+                            </div>
+                            <div class="ub-img7 or7"></div>
+                        </div>
+                        <div onclick="getperson('6',this)" class="ub ub-ac uinn" style="min-heigth:3em;">
+                            <div class="ub-img7 oc_hw5 or1"></div>
+                            <div class="ofont1" style="margin-right:0.3em;margin-left:0.5em;">
+                                个人资料
+                            </div>
+                        </div>
+                        <div class="res-line ub-img7"></div>
+                        <div onclick="getperson('1',this)" class="ub ub-ac uinn" style="min-heigth:3em;">
+                            <div class="ub-img7 oc_hw5 or2"></div>
+                            <div class="ofont1 " style="margin-left:0.5em;">
+                                我的收藏
+                            </div>
+                        </div>
+                        <div class="res-line ub-img7"></div>
+                        <div onclick="getperson('2',this)" class="ub ub-ac uinn " style="min-heigth:3em;">
+                            <div class="ub-img7 oc_hw5 or3"></div>
+                            <div class="ofont1 " style="margin-left:0.5em;">
+                                我的评论
+                            </div>
+                        </div>
+                        <div class="res-line ub-img7"></div>
+                        <div onclick="getperson('3',this)" class="ub ub-ac uinn" style="min-heigth:3em;">
+                            <div class="ub-img7 oc_hw5 or4"></div>
+                            <div class="ofont1 " style="margin-left:0.5em;">
+                                收到的赞
+                            </div>
+                        </div>
+                        <div class="res-line ub-img7"></div>
+                        <div onclick="getperson('7',this)" class="ub ub-ac uinn" style="min-heigth:3em;">
+                            <div class="ub-img7 oc_hw5 or8"></div>
+                            <div class="ofont1" style="margin-left:0.5em;">
+                                联系我们
+                            </div>
+                        </div>
+                        <div class="res-line ub-img7"></div>
+                        <div onclick="getperson('4',this)" class="ub ub-ac uinn" style="min-heigth:3em;">
+                            <div class="ub-img7 oc_hw5 or5"></div>
+                            <div class="ofont1" style="margin-left:0.5em;">
+                                设置
+                            </div>
+                        </div>
+                        <div class="res-line ub-img7"></div>
+                        <div onclick="getperson('5',this)" class="ub ub-ac uinn" style="min-heigth:3em;">
+                            <div class="ub-img7 oc_hw5 or6"></div>
+                            <div class="ofont1" style="margin-left:0.5em;">
+                                反馈
+                            </div>
+                            <div class="feedNum tx-c"></div>
+                        </div>
+                        <div class="res-line ub-img7"></div>
+                    </div>
+                </div>
 
-            if (name == "android") {
+            </div>
+        </div>
+        <script src="js/appcan.js"></script>
+        <script src="js/appcan.control.js"></script>
+        <script src="js/GetCNDate.js"></script>
+        <script src="js/config.js"></script>
+        <script src="js/common.js"></script>
+        <script src="js/emmList.js"></script>
+        <script>
+            var newWidth = "";
+            var appIsOpen = 0;
+            var columnsDataTemp = appcan.locStorage.val("columnsDataTemp");
+            var userInfo = isDefine(getLocVal('userInfo')) ? getLocVal('userInfo') : "";
+            var deviceId="";
+            var token="";
+            //用户点击推送消息后
+            appcan.ready(function() {
+                //所有浮动窗口加载完的监听
+                uexWindow.onPopoverLoadFinishInRootWnd = function(name, url) {
+                    // alert(name+"===>"+url);
+                    if (name == "newsLinkPage") {//控制外链网页音频的自动播放
+                        uexWindow.evaluatePopoverScript("home_Details", "newsLinkPage", "if($('audio').length>0){$('audio')[0].play();}");
+                    }
+                }
+                
+                //获取用户设备信息deviceId和token
+                deviceId = isDefine(getLocVal("deviceId"))?getLocVal("deviceId"):"";
+                token = isDefine(getLocVal("token"))?getLocVal("token"):"";
+                if (!isDefine(deviceId)) {
+                    appcan.device.getInfo(10, function(err, data, dataType, optId) {
+                        deviceId = (JSON.parse(data)).imei || (JSON.parse(data)).uuid;
+                    })
+                    if (!isDefine(deviceId)) {
+                        deviceId = new Date().getTime();
+                    }
+                    appcan.locStorage.setVal("deviceId", deviceId);
+                }
+                if (!isDefine(token)) {
+                    appcan.device.getInfo(11, function(err, data, dataType, optId) {
+                        token = (JSON.parse(data)).deviceToken || (JSON.parse(data)).softToken;
+                    })
+                    if (!isDefine(token)) {
+                        token = new Date().getTime();
+                    }
+                    appcan.locStorage.setVal("token", token);
+                }
+                
+                userInfo=isDefine(userInfo) ? JSON.parse(userInfo) : "";
+                //抽屉日历 <div id="date">星期2</div>id="chinaDate">正月</div>
+                $("#date").html(GetCurrentDateTime());
+                $("#chinaDate").html(GetLunarDay(yy, mm, dd));
+                
+                //判断app是否已打开，赋初始值
+                appcan.locStorage.setVal("appIsOpen", 0);
+                if (!isDefine(columnsDataTemp)) {
+                    appcan.locStorage.setVal("columnsDataTemp", JSON.stringify(columnsDataDefault));
+                }
+                //创建本地栏目文件
 
-                var ratio = window.devicePixelRatio;
+                createFile(path_myColumns);
 
-//                alert(ratio);
+                //写入文件
+                uexFileMgr.cbWriteFile = function(opCode, dataType, data) {
+                    if (data == 0) {
+                        console.log("===>初始化文件写入成功");
+                    } else {
+                        //uexWindow.toast(0, 5, "写入文件失败", 2000);
+                    }
+                }
+                //创建文件回掉
+                uexFileMgr.cbCreateFile = function(opId, dataType, data) {
+                    if (data == 0) {//创建成功
+                        console.log("===>创建文件成功");
+                        //并写入初始数据
+                        writeFile(path_sign, path_myColumns, JSON.stringify(columnsDataDefault));
+                    } else {
+                        //uexWindow.toast(0, 5, "创建文件失败", 2000);
+                    }
+                }
+                //根据路径判断文件是否存在
+                uexFileMgr.cbIsFileExistByPath = function(opId, dataType, data) {
+                    if (data == 0) {//不存在该文件先传创建并 写入初始本地默认数据
+                        //不存在文件就先创建默认文件
+                        uexFileMgr.createFile(path_sign, path_myColumns);
+                    } else {
+                        //alert("文件已创建");
+                    }
+                }
+                if (!isSML) {
+                    appcan.locStorage.setVal("isDownLoadAppList", 0);
+                    getlogin();
+                    //加载emm回调
+                    //用户点击推送消息后
+                    uexJPush.onReceiveNotificationOpen = function(data) {
+                        //alert("用户点击推送消息后===>\n"+data);
+                        var pushData = JSON.parse(data).extras;
+                        appcan.locStorage.setVal("pushData", pushData);
+                        appIsOpen = appcan.locStorage.val("appIsOpen");
+                        if (appIsOpen == 1) {
+                            uexWindow.evaluateScript("home_page", 0, "showPushData();");
+                        }
+                    }
+                }
+                //监听左右侧栏需要滑动恢复的距离
+                appcan.window.subscribe('windowMoveLength', function(msg) {
+                    //alert("windowMoveLength===>"+msg+"\n offsetWidth===>"+document.body.offsetWidth);
+                    var windowMoveLength = msg;
+                    var offsetWidth = document.body.offsetWidth;
+                    newWidth = parseInt(offsetWidth) - parseInt(windowMoveLength);
+                    $("#leftItem").css("width", parseInt(windowMoveLength));
+                    $("#rightItem").css("width", parseInt(windowMoveLength));
+                    $("#rightItem").css("margin-left", newWidth);
+                })
+                //打开预加载页
+                uexWindow.openPopover("advertShow", "0", "advertShow.html", "", 0, 0, parseInt(document.body.clientWidth), parseInt(document.body.clientHeight), 16, "0");
+                //获取登录状态
 
-                if (ratio >= 3) {
-                    w_1 = 720;    /// just for testing
-                } else if (ratio >= 2) {
-                    w_1 = 360;
+                var loginState = appcan.locStorage.val("loginState");
+                if (loginState != "yes") {
+                    appcan.locStorage.setVal('nickname', '');
+                    appcan.locStorage.setVal("loginState", "no");
+                }
+                
+                //程序恢复的监听方法
+                uexWidget.onResume = function() {
+                    //判断栏目时间
+                }
+                //程序挂起的监听方法
+                uexWidget.onSuspend = function() {
+                }
+                
+                //*********************测栏ready代码开始***************
+                uexWindow.onSwipeLeft = function() {//滑动关闭左侧栏
+                    if (appcan.locStorage.val("moveFlag") == "left") {
+                        appcan.window.evaluateScript("home_page", "moveleft()");
+                    }
+                }
+                uexWindow.onSwipeRight = function() {//滑动关闭右侧栏
+                    if (appcan.locStorage.val("moveFlag") == "right") {
+                        appcan.window.evaluateScript("home_page", "moveright()");
+                    }
+                }
+                //动态渲染与显示(减少重绘和重排)
+                appcan.window.subscribe('home_page', function(num) {
+                    //alert(num);
+                    if (num == 1) {
+                        leftlist();
+                        appcan.window.evaluateScript("home_page", "shadowWindow(1)");
+                    } else if (num == 2) {
+                        appcan.window.evaluateScript("home_page", "shadowWindow(0)");
+                    }else if (num == 3) {
+                        rightlist();
+                        appcan.window.evaluateScript("home_page", "shadowWindow(1)");
+                        //气泡显示
+                        if(loginState == "yes"){
+                            getFeedbackNum();
+                        }
+                    }
+                })
+                
+                //监听气泡
+                appcan.window.subscribe("feedNum", function(msg) {
+                    $(".feedNum").html("");
+                })
+                
+                appcan.window.subscribe("changename", function(msg) {
+                    isDefine(msg) ? $("#nickname").html(msg) : $("#nickname").html('');
+                })
+                //本地文件读取后栏目的监听
+                appcan.window.subscribe("sideColumns", function(msg) {
+                    var sideColumns = JSON.parse(msg);
+                    console.log("侧栏监听结果====>");
+                    console.log(sideColumns);
+                    var news = "";
+                    var enter = "";
+                    var goverment = "";
+
+                    //新闻
+                    if (sideColumns.News.length > 0) {
+                        for (index in sideColumns.News) {
+                            news += '<div class="ub ub-ac uinn-all indexInfo" id="id_' + sideColumns.News[index].columnId + '">' + sideColumns.News[index].columnName + '</div><div class="res-line1 ub-img7"></div>';
+                        }
+                    } else {
+                        $("#news").addClass("uhide");
+                        $("#news_line").addClass("uhide");
+                    }
+
+                    //特色
+                    if (sideColumns.Enter.length > 0) {
+                        for (index in sideColumns.Enter) {
+                            enter += '<div class="ub ub-ac uinn-all indexInfo" id="id_' + sideColumns.Enter[index].columnId + '">' + sideColumns.Enter[index].columnName + '</div><div class="res-line1 ub-img7"></div>';
+                        }
+                    } else {
+                        $("#entertainment").addClass("uhide");
+                        $("#entertainment_line").addClass("uhide");
+                    }
+
+                    //政务
+                    if (sideColumns.Goverment.length > 0) {
+                        for (index in sideColumns.Goverment) {
+                            if (index == 0) {
+                                goverment += '<div class="ub ub-ac uinn-all indexInfo" id="id_wz">网络问政</div><div class="res-line1 ub-img7"></div>';
+                            } else if (index == 1) {
+                                goverment += '<div class="ub ub-ac uinn-all indexInfo" id="id_hotline">政务热线</div><div class="res-line1 ub-img7"></div>';
+                            }
+                            goverment += '<div class="ub ub-ac uinn-all indexInfo" id="id_' + sideColumns.Goverment[index].columnId + '">' + sideColumns.Goverment[index].columnName + '</div><div class="res-line1 ub-img7"></div>';
+                        }
+                    } else {
+                        $("#goverment").addClass("uhide");
+                        $("#goverment_line").addClass("uhide");
+                    }
+                    $("#news_item").html(news);
+                    $("#entertainment_item").html(enter);
+                    $("#goverment_item").html(goverment);
+                })
+
+                appcan.window.subscribe("isLogined", function(msg) {
+                    userInfo = isDefine(getLocVal('userInfo')) ? getLocVal('userInfo') : "";
+                    userInfo=isDefine(userInfo)?JSON.parse(userInfo):"";
+                    if((msg=="yes") && isDefine(userInfo)){
+                        $("#loginButton").addClass("uhide");
+                        var userIcon = isDefine(userInfo)?userInfo.userIcon:"";
+                        if (isDefine(userIcon)) {
+                            userIcon = getImgUrl("1", userIcon, 2);
+                        }else{
+                             userIcon = 'css/img/oheadpic.png';
+                        }
+                        $("#userInfo").show();
+                        if (userIcon != "?imageView2/2/w/125/h/125"){
+                            $("#photo").css("background-image", "url(" + userIcon + ")");
+                        }
+                        var phoneVal=isDefine(userInfo)?userInfo.loginName:"";
+                        $("#phone").html(phoneVal.substring(0, 3) + "****" + phoneVal.substring(7, 11));
+                        $("#NoUser").removeClass('ub').attr('style', "display:none;");
+                        //气泡显示
+                        getFeedbackNum();
+                    }
+                })
+                appcan.window.subscribe("changehead", function(msg) {
+                    $("#photo").css("background-image", "url(" + msg + ")");
+                })
+                appcan.window.subscribe("loginout", function() {
+                    $("#nickname").html("");
+                    $("#photo").css("background-image", "url('css/img/oheadpic.png')");
+                    $("#loginButton").removeClass("uhide");
+                    $("#userInfo").hide();
+                    $("#NoUser").addClass('ub').attr('style', "");
+                })
+                //*********************测栏ready代码结束***************
+            })
+            
+            //*********************左侧栏相关 函数***************
+            var selectIndex = "";
+            //跳级栏目定位
+            var preDomId = "news";
+            //父级栏目定位
+            function leftlist() {
+                $("#rightItem").addClass("uhide");
+                $(".cqDate").removeClass("uhide");
+                $("#leftItem").removeClass("uhide");
+                //侧栏默认对应首页当前选择的栏目
+                menuOneTwo('');
+                //一级菜单的实现
+                var domId = "";
+                appcan.button('.gInfo', 'btn-act', function() {
+                    domId = this.id;
+                    $('#' + preDomId + "_item").addClass('uhide');
+                    $('#' + preDomId).attr('class', 'ub ub-ac uinn gInfo ofont1');
+                    $('#' + preDomId + "_choice").removeClass("minusImg").addClass("plusImg");
+                    //$("#"+preDomId).children().first().removeClass(domId+'-1').addClass(domId);
+
+                    $(".iconSpace15").removeClass("minusImg").addClass("plusImg");
+                    $(".sideItemBg").addClass("uhide");
+
+                    if (preDomId == domId) {
+                        preDomId = '';
+                        $("#" + domId).removeClass('bc-text-head bg-ff');
+                        $("#" + domId + "_item").addClass('uhide');
+                        if ((selectIndex.split("_").length) > 1) {
+                            $("#" + selectIndex).attr('class', 'ub ub-ac uinn-all indexInfo');
+                            //恢复下级的背景样式
+                        }
+                        return false;
+                    }
+
+                    $("#" + domId).attr('class', 'ub ub-ac uinn gInfo bc-text-head bg-ff');
+                    //改变背景和字体颜色
+
+                    //$("#"+domId).children().first().removeClass(domId).addClass(domId+'-1');      //改变icon图片
+
+                    $('#' + domId + "_choice").removeClass("plusImg").addClass("minusImg");
+                    //改变为加减号
+                    $("#" + domId + "_item").removeClass('uhide');
+                    //显示二级菜单
+                    if ((selectIndex.split("_").length) > 1) {
+                        $("#" + selectIndex).attr('class', 'ub ub-ac uinn-all indexInfo');
+                        //恢复下级的背景样式
+                    }
+                    preDomId = domId;
+                    //处理父级样式
+                    selectIndex = domId;
+                    //处理子级样式
+                })
+                //二级菜单功能
+                appcan.button('.indexInfo', 'act-btn', function() {
+                    menuOneTwo(this.id);
+                })
+            }
+
+            function menuOneTwo(domId) {
+                var temp = domId;
+                if (!isDefine(domId)) {
+                    domId = getLocVal('idPage');
+                    //首页存过
+                    $(".sideItemBg").addClass("uhide");
+                    $(".iconSpace15").removeClass("minusImg").addClass("plusImg");
+                    presentDomId = ($("#"+domId).parent().attr("id")).split("_")[0];
+                    $('#' + presentDomId + "_choice").removeClass("plusImg").addClass("minusImg");
+                    //改变加减号
+                    $("#" + presentDomId + "_item").removeClass('uhide');
+                    //显示二级菜单
+                } else {
+                    //setLocVal('idPage',domId);
+                    $(".iconSpace15").removeClass("minusImg").addClass("plusImg");
+                    $(".sideItemBg").addClass("uhide");
                 }
 
+                if ((selectIndex.split("_").length) <= 1) {
+                    $("#" + selectIndex).attr('class', 'ub ub-ac uinn gInfo ofont1');
+                    //恢复上级的背景样式
+                } else {
+                    $("#" + selectIndex).attr('class', 'ub ub-ac uinn-all indexInfo');
+                    //恢复同级的背景样式
+                }
+                $("#" + domId).addClass('bc-text-head bg-ff');
+                //修改选中项改变背景和字体颜色
 
+                var domIdParts = domId.split("_");
+                selectIndex = domId;
+                //保存当前选中子栏目，以便下次对比处理
+                if (selectIndex.split("_")[0] === preDomId) {//固定栏目处理
+                    switch(domIdParts[0]) {
+                    case "pay":
+                        if (domIdParts[1] == "register" || domIdParts[1] == "wz") {
+                            setLocVal('navigation_ID', domIdParts[1]);
+                            appcan.window.open('home_navigation', 'home_navigation.html', 10);
+                        } else
+                            getapp(domIdParts[1]);
+                        break;
+                    case "travel":
+                        if (domIdParts[1] == "hd") {
+                            appcan.window.open('home_activity', 'home_activity.html', '10');
+                        } else if (domIdParts[1] == "pai") {
+                            appcan.window.open('shoot', 'shoot.html?pageName=shoot', '10');
+                        } else {
+                            setLocVal('navigation_ID', domIdParts[1]);
+                            appcan.window.open('home_navigation', 'home_navigation.html', 10);
+                        }
+                        break;
+                    case "consumption":
+                        appcan.locStorage.setVal('life_ID', domIdParts[1]);
+                        appcan.window.open('life_page_content', 'life_page_content.html', 10);
+                        break;
+                    }
+                    var str_val = 'flag = 0;moveleft();'
+                    appcan.window.evaluateScript('home_page', str_val);
+                } else {//动态管理栏目处理
+                    if ((preDomId === "news" || preDomId === "entertainment") && isDefine(temp)) {//新闻与娱乐
+                        var str_val = 'flag = 0;moveleft();openFrame(' + domId.split("_")[1] + ');';
+                        appcan.window.evaluateScript('home_page', str_val);
+                        //打开多浮动窗口
 
+                        //恢复最初样式
+                        var presentDomId = ($("#"+domId).parent().attr("id")).split("_")[0];
+                        //$('#'+presentDomId+"_choice").removeClass("minusImg").addClass("plusImg");//隐藏父级菜单
+                        $(".iconSpace15").removeClass("minusImg").addClass("plusImg");
+                        //$("#"+presentDomId+"_item").addClass('uhide');        //关闭二级菜单
+                        $(".sideItemBg").addClass("uhide");
+                        $("#" + selectIndex).attr('class', 'ub ub-ac uinn-all indexInfo');
+                        //恢复同级的背景样式
+                        selectIndex = "";
+                        //跳级栏目定位
+                        preDomId = "news";
+                        //父级栏目定位
+                    } else if (preDomId === "goverment" && isDefine(temp)) {//政务
+                        var str_val = 'flag = 0;moveleft();goGoverment("' + domId.split("_")[1] + '");';
+                        appcan.locStorage.setVal("govermentColumnDomIndex", domId);
+                        appcan.window.evaluateScript('home_page', str_val);
+                        //打开多浮动窗口
+
+                        //恢复最初样式
+                        var presentDomId = ($("#"+domId).parent().attr("id")).split("_")[0];
+                        //$('#'+presentDomId+"_choice").removeClass("minusImg").addClass("plusImg");//隐藏父级菜单
+                        $(".iconSpace15").removeClass("minusImg").addClass("plusImg");
+                        //$("#"+presentDomId+"_item").addClass('uhide');        //关闭二级菜单
+                        $(".sideItemBg").addClass("uhide");
+                        $("#" + selectIndex).attr('class', 'ub ub-ac uinn-all indexInfo');
+                        //恢复同级的背景样式
+                        selectIndex = "";
+                        //跳级栏目定位
+                        preDomId = "news";
+                        //父级栏目定位
+                    }
+
+                }
+            }
+
+            //********右侧栏相关函数********
+            function rightlist() {
+                $(".cqDate").addClass("uhide");
+                $("#leftItem").addClass("uhide");
+                $("#rightItem").removeClass("uhide");
+
+                var userIcon = isDefine(userInfo)?userInfo.userIcon:"";
+                if (isDefine(userIcon)) {
+                    userIcon = getImgUrl("1", userIcon, 2);
+                }else{
+                     userIcon = 'css/img/oheadpic.png';
+                }
+                
+                if (userIcon != "?imageView2/2/w/125/h/125"){
+                    $("#photo").css("background-image", "url(" + userIcon + ")");
+                }
+
+                if(appcan.locStorage.val('loginState') == "yes") {
+                    $("#loginButton").addClass("uhide");
+                    $("#userInfo").show();
+                    $('#nickname').html(appcan.locStorage.val("nickname"));
+                    var phoneVal=isDefine(userInfo)?userInfo.loginName:"";
+                    $("#phone").html(phoneVal.substring(0, 3) + "****" + phoneVal.substring(7, 11));
+                    $("#NoUser").removeClass('ub').attr('style', "display:none;");
+                }
+            }
+
+            function getperson(num, dom) {
+                $(dom).addClass('bg-ff');
+                setTimeout(function() {
+                    $(dom).removeClass('bg-ff');
+                }, 200);
+                var userStar = getLocVal('loginState');
+                switch(num) {
+                    case "1":
+                        if (appcan.locStorage.val("loginState") != "yes") {
+                            appcan.window.open('login', 'login.html', 10);
+                            return;
+                        }
+                        appcan.window.open('aCollection', 'aCollection.html', 10);
+                        break;
+                    case "2":
+                        if (userStar == 'yes') {
+                            appcan.window.open('my_comment', 'my_comment.html', 10);
+                        } else {
+                            appcan.window.open('login', 'login.html', 10);
+                        }
+                        break;
+                    case "3":
+                        if (userStar == 'yes') {
+                            appcan.window.open('my_admire', 'my_admire.html', 10);
+                        } else {
+                            appcan.window.open('login', 'login.html', 10);
+                        }
+                        break;
+                    case "4":
+                        appcan.window.open('my_setup', 'my_setup.html', 10);
+                        break;
+                    case "5":
+                        if (userStar == 'yes') {
+                            appcan.window.open('my_feedback', 'my_feedback.html', 10);
+                        } else {
+                            appcan.window.open('login', 'login.html', 10);
+                        }
+                        break;
+                    case "6":
+                        if (appcan.locStorage.val("loginState") != "yes") {
+                            appcan.window.open('login', 'login.html', 10);
+                            return;
+                        }
+                        appcan.window.open('my_data', 'my_data.html', 10);
+                        break;
+                    case "7":
+                        appcan.window.open("callme", "callme.html", 10);
+                        break;
+                }
+            }
+
+            function registered() {
+                appcan.window.open("registered", "registered.html", 10);
+            }
+
+            function login() {
+                appcan.window.open("login", "login.html", 10);
             }
             
-            var params  = {
-                
-                leftSliding:{
-                    width:w_1,
-                    url:"wintestNav/uexWindow_left.html"
-                },
-                rightSliding:{
-                    width:w_1,
-                    url:"wintestNav/uexWindow_right.html"
-                },
-                animationId:'1', //仿QQ侧滑
-                bg:'res://1_1.jpg' //仿QQ侧滑
-                
-            };
-            
-            var paramStr = JSON.stringify(params);
+            //获得意见反馈气泡
+            function getFeedbackNum() {
+                var userStar = getLocVal('loginState');
+                if (userStar != "yes"){
+                    return false;
+                }
+                var userId = isDefine(userInfo) ? userInfo.userId : "";
+                var list = {
+                    "transcode" : "feedbackinfo_getList",
+                    "content" : {
+                        "userId" : userId,
+                        "page" : {
+                            "pageNo" : 1,
+                            "pageSize" : 10
+                        },
+                        "lastTime" : appcan.locStorage.val("lastTime") || ""
+                    }
+                };
+                appcan.request.ajax({
+                    url : chongqingUrl,
+                    headers : {
+                        token : appcan.locStorage.val("token") || '',
+                        deviceId : appcan.locStorage.val("deviceId") || ''
+                    },
+                    appVerify : true,
+                    data : list,
+                    type : "POST",
+                    timeout : "15000",
+                    contentType : "application/json",
+                    dataType : "json",
+                    success : function(res) {
+                        loader.close();
+                        console.log("意见反馈气泡===>")
+                        console.log(res);
+                        if (res.status == "000") {
+                            var num = res.data.totalNum;
+                            if (num > 0) {
+                                if (num >= 99)
+                                    num = 99 + "+"
+                                var str = '<div class="ub ub-pc ub-ac feednum"><div>' + num + '</div></div>';
+                                $(".feedNum").html(str);
+                            }
+                        } else {
+                            // uexWindow.toast(0, 5, "提交失败", 2000);
+                        }
+                    },
+                    error : function() {
 
-            uexWindow.setSlidingWindow(paramStr);
-        }
+                    }
+                })
+            }
 
-        function onLoadByOtherApp(data){
-            var last=JSON.stringify(data);
-            alert("onLoadByOtherApp:" + last);
-        }
-		
-		function openTest(name){
-        var optInfo = "{'key1':'value1'},{'key2':'value1'}";
-        var extra='{data:"http://www.cnblogs.com"}';
-        uexWidget.startApp(0, "com.tencent.mtt","com.tencent.mtt.MainActivity",optInfo,extra);
-		}
-    
-        function openTestController(name){
-            uexWindow.openWithController("ssss", '0', "system/system.html");
-
-        }
-    
-        function openTest1(name){
-            uexWindow.open(name, '0', name+".html", '2', '', '', 1024);
-        }
-    
-    function openWinInMainWithSliding() {
-        var params  = {
-            mark:0
-            
-        };
-        
-        var paramStr = JSON.stringify(params);
-        uexWindow.toggleSlidingWindow(paramStr);
-        openTest('wintestNav/uexWindow');
-    }
-    
-    function openWinInMainWithRightSliding() {
-        alert('aaaaa');
-        
-        var params  = {
-            mark:1
-
-        };
-        
-        var paramStr = JSON.stringify(params);
-        uexWindow.toggleSlidingWindow(paramStr);
-        openTest('wintestNav/uexWindow');
-    }
-    
-    function openLeftSlidingWin() {
-        var params  = {
-            mark:0
-            
-        };
-        
-        var paramStr = JSON.stringify(params);
-        uexWindow.toggleSlidingWindow(paramStr);
-    }
-	</script>
-</head>
-
-<body>
-	<div class="tit">平台插件汇总</div>
-		<div class="conbor">
-			<div class="consj">
-			     
-<!--			<div onclick="openTest('system/system')" class="testbtn">系统插件</div><br>-->
-<!--                <div onclick="openTest('UI/UI')" class="testbtn">UI界面插件</div><br>-->
-<!--                <div onclick="openTest('network/network')" class="testbtn">网络插件</div><br>-->
-<!--                <div onclick="openTest('media/media')" class="testbtn">多媒体插件</div><br>-->
-<!--                <div onclick="openTest('other/other')" class="testbtn">第三方插件</div><br>-->
-                <div onclick="openTest1('wintestNormal/uexWindow')" class="testbtn">打开普通窗口</div><br>
-				<div onclick="openTest1('wintestNormal/uexWindowFunc')" class="testbtn">window接口测试</div><br>
-				<div onclick="openLeftSlidingWin()" class="testbtn">打开侧边栏窗口</div><br>
-                <div onclick="openTest('wintestNav/uexWindow')" class="testbtn">打开导航视图窗口(iOS)</div><br>
-                <div onclick="openTest('uexWidget')" class="testbtn">uexWidget</div><br>
-                
-<!--                <div onclick="openTest('wintestNav/uexWindow')" class="testbtn">打开导航视图窗口</div><br>-->
-
-			</div>
-		</div>
-</body>
+        </script>
+    </body>
 </html>

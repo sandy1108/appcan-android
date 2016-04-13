@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+    <head>
+        <title></title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="target-densitydpi=device-dpi, width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <link rel="stylesheet" href="css/fonts/font-awesome.min.css">
+        <link rel="stylesheet" href="css/ui-box.css">
+        <link rel="stylesheet" href="css/ui-base.css">
+        <link rel="stylesheet" href="css/ui-color.css">
+        <link rel="stylesheet" href="css/appcan.icon.css">
+        <link rel="stylesheet" href="css/appcan.control.css">
+    </head>
+    <style type="text/css">
+        .box {
+            width: 80%;
+            background-color: #FFF;
+            border: 1px solid #e9e9e9;
+            /*border-radius: 0.8em;*/
+        }
+        .ubb {
+            border-color: #e9e9e9;
+            height: 2.3em
+        }
+        .head {
+            color: #7A7A7A;
+            padding: 0em 0.5em;
+        }
+        .font-line01{
+            border-bottom: 3px solid #FF8A00;
+        }
+        .font-line02{
+            border-bottom: 3px solid #BABABA;
+        }
+        .radiobox {
+            color: #FF8A00;
+            font-size: 0.8em;
+        }
+    </style>
+    <body class="um-vp" ontouchstart style="background-color: rgba(0,0,0,0.4)">
+        <div id="page_0" class="up ub ub-ver ub-ac" tabindex="0">
+            <div class="closebtn bbody" style=" -webkit-box-flex:1;width:100%;" ></div>
+            <div class="box ub ub-ver ub-pc">
+                <div id="quit" class="ubb ub ub-ac ub-pj head">
+                     <div class="ub ub-ac ub-pc" style="width:90%;">
+                        正文字号
+                    </div>
+                    <div class="ub ub-ac ub-pe">
+                        X
+                    </div>
+                </div>
+                <!-- <div class="ub ub-ac ub-pc uinn">
+                    <div class="ub font-line01" style="width:90%;">
+                        <div class="ub ub-ac ub-ver" style="width:33%;font-size:1.35em;">
+                            <p class="ub">大</p>
+                        </div>
+                        <div class="ub ub-ac ub-ver" style="width:33%;font-size:1.2em;">
+                            <p class="ub">中</p>
+                        </div>
+                        <div class="ub ub-ac ub-ver" style="width:33%;font-size:1.05em;">
+                            <p class="ub">小</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="ub ub-ac ub-pc ub-pj uinn">
+                    <div class="ub ub-ac font-line01" style="width:30%;"></div>
+                    <div class="ub ub-ac font-line01" style="width:30%;"></div>
+                    <div class="ub ub-ac ub-pe font-line02" style="width:30%;"></div>
+                </div> -->
+                
+                <div class=" ub ub-ac ub-pc ub-pj uinn" style="width:90%;height:5em;">
+                    <div class="ub ub-ac ub-pc">
+                        <div class="ub radiobox">
+                            <input type="radio" value="1" class="uabs ub-con" name="lv_radio">
+                        </div>
+                        <p class="ub" style="font-size:1.5em;">大</p>
+                    </div>
+                    <div class="ub ub-ac ub-pc">
+                        <div class="ub radiobox">
+                            <input type="radio" value="2" class="uabs ub-con" name="lv_radio">
+                        </div>
+                        <p class="ub" style="font-size:1.35em;">中</p>
+                    </div>
+                    <div class="ub ub-ac ub-pc">
+                        <div class="ub radiobox">
+                            <input type="radio" value="3" class="uabs ub-con" name="lv_radio">
+                        </div>
+                        <p class="ub" style="font-size:1.05em;">小</p>
+                    </div>
+                </div>
+
+            </div>
+            <div style=" -webkit-box-flex:1;width:100%;" ></div>
+        </div>
+        <script src="js/appcan.js"></script>
+        <script src="js/appcan.control.js"></script>
+        <script src="js/common.js"></script>
+    </body>
+    <script>
+        var msg = "";
+        var wordNum = "";
+        var fontSizeNum="";
+        appcan.ready(function() {
+            appcan.initBounce();
+            fontSize=appcan.locStorage.val("fontSize");
+            fontSizeNum=isDefine(fontSize)?fontSize:3;
+            var radio = $('input[name="lv_radio"]');
+            for (var i = 0; i < radio.length; i++) {
+                if ($(radio[i]).val() == fontSizeNum){
+                    $(radio[i]).attr("checked", "checked");
+                }
+            }
+        })
+        appcan.button("#quit", "btn-act", function() {
+            if(fontSizeNum!=$('input[name="lv_radio"]:checked ').val()){
+                appcan.locStorage.val("fontSize", $('input[name="lv_radio"]:checked ').val());
+                appcan.frame.evaluateScript('my_setup', "content", 'refreshFont("' + appcan.locStorage.val("fontSize") + '")');
+            }
+            uexWindow.closePopover("function_setFont");
+        })
+
+    </script>
+</html>

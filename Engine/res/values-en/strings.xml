@@ -1,8 +1,108 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
+    <string name="plugin_uexEmail_select_app_to_send_email">select app to send email</string>
+    <string name="plugin_email_attchment_path_params_error">attachment path error!</string>
+
+	<string name="plugin_file_now_loading_folder">Reading folder...</string>
+    <string name="plugin_file_can_not_open_this_folder">Can\'t open this folder!</string>
+    <string name="plugin_file_file_path_error">File path error!</string>
+    <string name="plugin_file_can_not_mount_sdcard">Can not mount SDCard</string>
+    <string name="plugin_file_are_you_sure_to_exit_file_explorer">Are you sure to exit file explorer?</string>
+    <string name="plugin_file_target_directory_is_not_exist_auto_redirect_to_sdcard">Target directory does not exist ,redirecting to SDCard...</string>
+    <string name="plugin_file_input_path_is_not_valid_path_redirect_to_sdcard">Input file is not valid
+        path,redirecting to SDCard...</string>
+    <string name="plugin_fileMgr_folder">folder</string>
+    <string name="plugin_file_not_exist">File does not exist!</string>
+
+
+    <!-- plugin emm use start -->
+    <!--20150829 add-->
+    <string name="plugin_uexemm_query_ueser_cert_hint_str">The login need to validate user credentials, please enter the authorization code to request the certificate.</string>
+    <string name="plugin_uexemm_auth_code_et_hint_str">Authorization Code</string>
+    <string name="plugin_uexemm_query_ueser_cert_str">Request Certificate</string>
+    <!--20150914 add-->
+    <string name="plugin_uexemm_get_cert_file">Failed to request the certificate!</string>
+
+    <!--20151009 add-->
+    <string name="plugin_uexemm_network_error">Please check your network.</string>
+    <string name="plugin_uexemm_network_error_title">network error</string>
+    <string name="plugin_uexemm_network_error_msg">Your Application Can Only Access The Offline Resources!</string>
+    <string name="plugin_uexemm_exit_app">Exit</string>
+    <string name="plugin_uexemm_exit_sub_app">ExitSubWidget</string>
+    <string name="plugin_uexemm_continue">Continue</string>
+    <string name="plugin_uexemm_prompt_title">NOTICE</string>
+    <string name="plugin_uexemm_mamfail_msg">Network Error or Server Error,Please Check Your Network and Server!</string>
+    <string name="plugin_uexemm_mamforbidden_msg">Your Application\'s Function Will Be Limited!</string>
+    <string name="plugin_uexemm_app_sign_error_msg">Application of signature illegal</string>
+    <string name="plugin_uexemm_warning_title">Warning</string>
+    <string name="plugin_uexemm_parm_error">Param Error</string>
+    <string name="plugin_uexemm_offline_login_error">Offline Login Fail</string>
+    <string name="plugin_uexemm_msg_network_error">Unable connect to the server, please check the network.</string>
+    <string name="plugin_uexemm_not_root_prompt">The app is noly suitable for Root machine, will close.</string>
+    <string name="plugin_uexemm_new_app_default_prompt">Discover the new version, whether to upgrade?</string>
+    <string name="plugin_uexemm_app_upgrade">Upgrade</string>
+    <string name="plugin_uexemm_button_cancel">Cancel</string>
+    <string name="plugin_uexemm_sub_app_suspend_service">The sub app suspended service</string>
+    <string name="plugin_uexemm_downloading_file">Downloading files</string>
+    <string name="plugin_uexemm_download_fail">Download failed</string>
+    <string name="plugin_uexemm_no_sd_card">You phone did not install the SD card!</string>
+    <string name="plugin_uexemm_connect_error">Connection failed, please try again!</string>
+    <string name="plugin_uexemm_download_error">Download error, please try again!</string>
+    <string name="plugin_uexemm_download_again">Download Again</string>
+    <string name="plugin_uexemm_upgrade_later">Upgrade later</string>
+    <string name="plugin_uexemm_install_upgrade">Install updates</string>
+    <string name="plugin_uexemm_download_completed">Download complete</string>
+    <string name="plugin_uexemm_not_found_app">Executable application not found</string>
+    <string name="plugin_uexemm_upgrade_msg">Some content updates, please use the updated</string>
+    <string name="plugin_uexemm_upgrade_prompt">Upgrade Prompt</string>
+    <string name="plugin_uexemm_problems_msg">May be caused by network transmission or other problems, please click Retry</string>
+    <string name="plugin_uexemm_upgrade_fail">Upgrade failed</string>
+    <string name="plugin_uexemm_retry">Try again</string>
+    <string name="plugin_uexemm_continue_upgrade_msg">Last updated unfinished, please continue</string>
+    <string name="plugin_uexemm_continue_upgrade_prompt">Continue</string>
+    <string name="plugin_uexemm_restart_prompt">Update is complete, please reboot!</string>
+    <string name="plugin_uexemm_confirm">Ok</string>
+    <string name="plugin_uexemm_suspend_server">app stop server</string>
+    <!--20151203 add-->
+    <string name="plugin_uexemm_erase_data_msg">Erasing app data, Please restart later!</string>
+    <!--20151222 add-->
+    <string name="plugin_uexemm_update_later">Upgrade later</string>
+    <string name="plugin_uexemm_update_now">Upgrade now</string>
+    <string name="plugin_uexemm_downloading_app">Updating...</string>
+    <string name="plugin_uexemm_downloading_app_msg">To avoid the failure of updating,please stay in this page.</string>
+    <!--20160107 add-->
+    <string name="plugin_uexemm_get_soft_token_error_info">Get MAC and IMEI failed.</string>
+    <!-- plugin emm use end -->
+    
+
+   
+    <!--appstore use start-->    
+    <!--20151105 add-->
+    <string name="plugin_appstore_load_app_list">Loading App list...</string>
+    <string name="plugin_appstore_hint_error_network">Network Error</string>
+    <string name="plugin_appstore_hint_no_data">There is no data.</string>
+    <string name="plugin_appstore_hint_no_more_data">There is no more data.</string>
+    <string name="plugin_appstore_app_refresh_fail">Refresh failure.</string>
+    <!--20150921 add-->
+    <string name="plugin_appstore_display_error_title">NOTICE</string>
+    <string name="plugin_appstore_display_button_sub_exit">ExitSubWidget</string>
+    <!--20151208 add tile use-->
+    <string name="plugin_appstore_del_default_prompt">Default tile,can\' delete!</string>
+    <!--20151210 add tile use-->
+    <string name="plugin_appstore_load_tile_prompt">Loading tile list...</string>
+    <string name="plugin_appstore_hint_no_tile_data"> Tile data is empty.</string>
+    <string name="plugin_appstore_download_fail">Download fail.</string>
+    <!--20151214 add tile use-->
+    <string name="plugin_appstore_not_install">Not Installed</string>
+    <string name="plugin_appstore_installed">Installed</string>
+    <!--20151216 add tile use-->
+    <string name="plugin_appstore_not_force">Network suck.</string>
+    <string name="plugin_appstore_installing">Installing App.</string>
+    <!--appstore use end-->
+
 
     <!-- common use通用字符串 -->
-    <string name="app_name">appcantemplate</string>
+    <string name="app_name">电建通</string>
     <string name="back">Back</string>
     <string name="confirm">Ok</string>
     <string name="cancel">Cancel</string>
@@ -38,6 +138,7 @@
     <string name="error_no_permisson_RW">no permission read</string>
     <string name="error_no_permisson_INTERNET">no permission write</string>
     <string name="cancel_select_all">Cancel select all</string>
+    <string name="mam_host"/>
     <string name="platform_myspace_loading">Loading...</string>
     <string name="platform_myspace_my_apps">My apps</string>
     <string name="platform_myspace_pull_to_refresh">Pull to refresh</string>

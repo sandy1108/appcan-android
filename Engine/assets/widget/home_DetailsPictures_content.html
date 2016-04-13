@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+    <head>
+        <title></title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="target-densitydpi=device-dpi, width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <link rel="stylesheet" href="css/fonts/font-awesome.min.css">
+        <link rel="stylesheet" href="css/ui-box.css">
+        <link rel="stylesheet" href="css/ui-base.css">
+        <link rel="stylesheet" href="css/ui-color.css">
+        <link rel="stylesheet" href="css/appcan.icon.css">
+        <link rel="stylesheet" href="css/appcan.control.css">
+        <link rel="stylesheet" href="css/new_file.css">
+        <link rel="stylesheet" href="css/common.css">
+        <link rel="stylesheet" href="css/loader.css">
+         <style>
+            .img{
+                max-width:100%;
+            }
+        </style>
+    </head>
+    <body class="um-vp f-f1" ontouchstart>
+        <div class="ub ub-f1 ub-ver tx-l" id="myContent" style="height: 100%;background-color: rgba(0,0,0,1);">
+            <div class='ub ub-ac ub-pc ub-ver ub-fv uof' id="pictures" style="height:95%;margin-top:0.5em;">
+                <div id='slider' class='ub ub-ac ub-pc ub-con ub-fh'>
+                    
+                </div>
+                <div id="describe" style="position:absolute;height:28%;width:100%;bottom:0em; background-color: rgba(0,0,0,0.5);">
+                    <div class="ub ub-ver">
+                        <div class="ub ub-pj" style="color:#fff;padding:0.15em 0.35em;">
+                             <h3 class="ub" id="title"></h3>
+                             <div class="ub ub-pe">
+                                 <span class="ub" id="picIndex"></span>
+                                 <span id="picCount" style="font-size: 0.725em;padding-bottom: 0em;"></span>
+                             </div>
+                        </div>
+                        <div class="ub ub-ae ulev-1 c-88" id="summary" style="color:#fff;padding:0.15em 0.35em;">
+                              <div class="ub ub-f1 Scrolling" id="summaryConntent" style="height:10em;padding-bottom: 3em;">
+                                  
+                              </div>
+                        </div>
+                    </div>
+               </div>
+            </div>
+        </div>
+        <script src="js/newAppcan.js"></script>
+        <script src="js/appcan.control.js"></script>
+        <script src="js/common.js"></script>
+        <script src="js/interface.js"></script>
+        <script src="js/common.dom.js"></script>
+        <script src="js/share.js"></script>
+        <script src="js/zy_slide.js"></script>
+    </body>
+    <script>
+        var icache;
+        var newsItemInfo = isDefine(getLocVal('newsItemInfo')) ? getLocVal('newsItemInfo'):"";
+        newsItemInfo=JSON.parse(newsItemInfo);   
+        var newDetailInfo = isDefine(getLocVal('newDetailInfo')) ? getLocVal('newDetailInfo') : {};
+        var newsId = newsItemInfo.newsId;
+        var shareTitle='';
+        var shareSummary='';
+        var newsContent=""; //文章内容
+        var userInfo=isDefine(getLocVal('userInfo')) ? getLocVal('userInfo'):"";
+        var userId="";
+        var picSummary=[];
+        appcan.ready(function(){
+            icache = appcan.icache({maxtask:5});
+            userId = isDefine(userInfo)?JSON.parse(userInfo).userId:"";
+            //监听评论更新
+            appcan.window.subscribe('changeCommentCount',function (msg){
+               if(msg==newsId){
+                     showComment(1,1);    //最新评论
+                     $("#wordsText").show();
+                }
+            })
+            
+            setCacheData();//获取显示详情
+            uexQQ.cbShareQQ=cbShareQQ_qq;
+        })
+        
+        //缓存加载数据
+        function setCacheData() {
+            if (isDefine(newDetailInfo)) {
+                newDetailInfo = JSON.parse(newDetailInfo);
+                if (isDefine(newDetailInfo[newsId])) {
+                    var writeTime = new Date(newDetailInfo[newsId].time);
+                    var dateTimeNow = new Date();
+                    var timeLag = dateBetween(writeTime, dateTimeNow);
+                    if (timeLag.minutes > 0) {//过期
+                        getData();
+                        //显示详情
+                    } else {
+                        showData(newDetailInfo[newsId].detail);
+                        //缓存显示
+                    }
+                } else {//首次加载此条新闻
+                    getData();
+                    //显示详情
+                }
+            } else {//直接获取详情并建立缓存
+                getData();
+                //显示详情
+            }
+        }
+        
+        var picIndex=$("#picIndex");
+        var picCount=$("#picCount");
+        var slider = new zySlide("slider", "H", function(){
+            
+            }, false, function(msg){
+                var index = slider.currentPoint;
+                picIndex.html(index+1);
+                $("#summaryConntent").html(picSummary[index]); 
+        })
+        
+        var sliderDom=$("#slider");
+        //获取展示新闻详情的方法
+        function getData(){
+            loader.open();
+            var conditions={
+                "userId":userId  
+            };
+            var list=getInterface('newsInfoGetOne',newsId,1,conditions);//接口封装配置函数
+            console.log(JSON.stringify(list));
+            appcan.request.ajax({
+                url : chongqingUrl,
+                headers : {
+                    token : appcan.locStorage.val("token") || '',
+                    deviceId : appcan.locStorage.val("deviceId") || ''
+                },
+                appVerify:true,
+                data : list,
+                type : "POST",
+                timeout : "15000",
+                contentType : "application/json",
+                dataType : "json",
+                success : function(res) {
+                    console.log("资讯详情返回====>");
+                    console.log(res);
+                    loader.close();
+                    if(res.status != '000'){
+                        $("#title").html(res.msg); 
+                        return false;
+                    }
+                    var info = res.data;
+                    console.log(JSON.parse(info.content));
+                     //存入缓存
+                    var writeTime = new Date();
+                    var newDetailInfoTemp = {
+                        "time" : writeTime,
+                        "detail" : info
+                    };
+                    newDetailInfo[newsId] = newDetailInfoTemp;
+                    //alert(JSON.stringify(newDetailInfo));
+                    if (isDefine(info)) {
+                        appcan.locStorage.setVal("newDetailInfo", JSON.stringify(newDetailInfo));
+                    }
+                    //显示详情数据
+                    showData(info);
+                },
+                error : function() {
+                     loader.close();
+                }
+            });
+        }
+        
+        //获取展示新闻详情的方法
+        function showData(info){
+             //图片展示
+             var picDom="";
+            if(isDefine(info.content)){
+                var picContent=JSON.parse(info.content);
+                //slider.maxPoint = picContent.length - 1;       //设置slider的最大个数
+                
+                slider.maxPoint = picContent.images.length - 1;       //设置slider的最大个数
+                for(index in picContent.images){
+                    picDom+='<div class="ub ub-ac ub-pc ub-fh">'
+                               +'<div class="ub">'
+                                +'<img class="myImg" src="'+picContent.images[index].img+'" alt=""/>'
+                               +'</div>'
+                            +'</div>';
+                    picSummary[index]=picContent.images[index].word;
+                }
+            }
+            //图片展示
+            sliderDom.html(picDom);
+            //标题展示
+            $("#title").html(info.newsTitle);
+            //摘要动态显示内容摘要及数量
+            $("#summaryConntent").html(picSummary[0]);  
+            picCount.html('/'+picContent.images.length);
+            picIndex.html(1);
+             //如果是android平台就修改其图片样式 && $("img").length>0
+            //if(isAndroid){
+                //$("img").addClass("img");
+                //$('img').css({'height':'15em','width':'15em'});
+            //}
+            
+            //判断是否收藏
+            appcan.window.publish('isCollect',info.isCollect);   
+            appcan.window.publish('detailIsAllowComment',info.isAllowComment);     
+            $("#showContent").show();
+        }
+        
+        
+        sliderDom.on("touchstart",function(evt){
+            uexWindow.setMultilPopoverFlippingEnbaled(1);
+        })
+        sliderDom.on("touchmove",function(evt){
+            uexWindow.setMultilPopoverFlippingEnbaled(1);
+        })
+        sliderDom.on("touchend",function(evt){
+            uexWindow.setMultilPopoverFlippingEnbaled(0);
+        })
+        sliderDom.on("touchcancel",function(evt){
+            uexWindow.setMultilPopoverFlippingEnbaled(0);
+        })
+        
+        //图片点击隐藏
+        num=0;
+        var $describe=$("#describe");
+        appcan.button("#slider","btn-act",function(){
+            (num==0)?num=1:num=0;
+            if(num==1){
+                $describe.addClass("uhide");
+                //$("#describe").fadeOut();
+            }else{
+                $describe.removeClass("uhide");
+                //$("#describe").fadeIn();
+            }
+            appcan.window.publish("hideRootPage",num);
+        })
+        //视频新闻响应事件
+        appcan.button("#video","btn-act",function(){
+            uexVideo.open(videoPath,1);
+        })
+        
+        function goTop(){
+            window.scrollTo(0,0);
+        }
+        
+    </script>
+</html>

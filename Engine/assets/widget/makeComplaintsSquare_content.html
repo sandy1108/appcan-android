@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+    <head>
+        <title></title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="target-densitydpi=device-dpi, width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <link rel="stylesheet" href="css/fonts/font-awesome.min.css">
+        <link rel="stylesheet" href="css/ui-box.css">
+        <link rel="stylesheet" href="css/ui-base.css">
+        <link rel="stylesheet" href="css/ui-color.css">
+        <link rel="stylesheet" href="css/appcan.icon.css">
+        <link rel="stylesheet" href="css/appcan.control.css">
+        <link rel="stylesheet" href="css/new_file.css">
+        <style>
+        .font-size01{
+            font-size:1.025em;
+        }
+        .font-size02{
+            font-size:1.25em;
+        }
+        </style>
+    </head>
+    <body class="um-vp f-f bg-dc" ontouchstart>
+        <div class="ub ub-ver ub-f1" id="content">
+            
+        </div>
+        <script src="js/appcan.js"></script>
+        <script src="js/appcan.control.js"></script>
+        <script src="js/common.js"></script>
+    </body>
+    <script>
+        var pageCoun = 1;       //总页数
+        var pageNum = 1;        //当前页数
+        var objSerInfo = {};    //分享数据
+        var objNewsId = {};     //分享数据
+        var objImage = {};      //点击图片
+        var currentInfo = '';   //要分享的这条数据数据的objID
+        var backNum = 0;
+        var status=0;//加载控制
+        var slideType=1;
+        appcan.ready(function() {
+             //监听评论数的改变
+            appcan.window.subscribe('changeCommentCount',function(id){
+                objImage["img_"+id].wordsCount+=1; //动态评论数变化
+                var numStr = $("#w_"+id).html();
+                $("#w_"+id).html(parseInt(numStr) + 1);
+            })
+            //监听点赞数的改变
+            appcan.window.subscribe('shoot_zan',function (sid){
+                var numStr = $("#z_"+sid).html();
+                $("#z_"+sid).html(parseInt(numStr) + 1);
+            });
+            if(isAndroid){
+                var param_slip = {
+                    isSupport:true   //(必选)true:支持；false:不支持。默认为false。
+                }
+                uexWindow.setIsSupportSlideCallback(JSON.stringify(param_slip));//设置网页是否支持滑动的相关监听方法
+            }  
+            
+             //滑动顶部刷新方式
+             appcan.frame.setBounce([0,1], null, null, function(type) {
+                 slideType=type;
+                 //判断是否有网
+                 GetInfoDevice(function(str){
+                     if(!str){
+                         appcan.frame.resetBounce(slideType);
+                         return false;
+                     }else{
+                         if (type == 0) {
+                            pageNum = 1; 
+                            MCSList(1);
+                         }else{
+                              //判断是否有网
+                             if(status==0){
+                                 //uexWindow.toast(0, 5, "正在请求数据...", 2000);
+                                 //return false;
+                             }else{
+                                 if (pageNum * 5 > pageCoun) {
+                                    appcan.frame.resetBounce(slideType);
+                                } else {  
+                                    pageNum++;
+                                    MCSList(pageNum);
+                                }
+                            }
+                         }
+                     }
+                 });
+             },bounceBgColor,imgSettingsVal)
+            appcan.window.openToast('');
+            MCSList(1);
+        });
+//**********ready结束************
+        
+        function MCSList(pageNumVal){
+            status=0;
+            //appcan.window.openToast('');
+            var dataObj = {
+                "ifno" : "CMS-INTER-0001",
+                "condition" : {
+                    "dmnId" : "cq",
+                    "rowCnt" : "5",
+                    "pageNo" : pageNumVal,
+                    "interType":"01"
+                },
+                "content" : {
+                }
+            };
+            appcan.request.ajax({
+                url : chongqingUrl,
+                headers : {
+                    token : appcan.locStorage.val("token") || '',
+                    deviceId : appcan.locStorage.val("deviceId") || ''
+                },
+                appVerify:true,
+                data : dataObj,
+                timeout : "15000",
+                type : "POST",
+                contentType : "application/json",
+                dataType : "json",
+                success : function(data) {
+                    console.log("吐槽广场======>");
+                    console.log(data);
+                    appcan.frame.resetBounce(slideType);
+                    if(data.dispose.status != '000'){
+                        appcan.window.openToast(data.dispose.msg,2000);
+                        return false;
+                    }
+                    var list = data.info.list;
+                    pageCoun = data.total.list;     
+                    var items = $('<div class="ub ub-f1 ub-ver"></div>');
+                    backNum=0;//需要重新赋值为0
+                    var recuFun = function(imgWidth,imgHeight,i){
+                        backNum++;
+                        //alert(backNum);
+                        var time = timePoor(list[i].rlsTime); //计算时间差
+                        var content = list[i].interCtt;
+                        if(content.length > 25){
+                            content = content.substring(0,25);
+                        }
+                        var objectId = list[i].objectId;
+                        var interId = list[i].interId;
+                        objSerInfo[objectId] = list[i].interCtt;     //分享的内容
+                        objNewsId[objectId] = interId;
+                        //objImage   保存图片和相应的ID
+                        objImage["img_"+interId] = {
+                            "interId" : interId,
+                            "objectId" : objectId,
+                            "content" : content,
+                            "praiseCount" : list[i].praiseCount,
+                            "wordsCount" : list[i].wordsCount,
+                            "attachment" : list[i].attachment
+                        };
+                        var bannPic = 'image/noPic.png';   //大图
+                        if(isDefine(list[i].attachment) && (list[i].attachment).length>0){
+                            //bannPic = getPictureUrl("1",list[i].attachment[0].attcId,1);
+                            bannPic = getImgUrl("1",list[i].attachment,4);
+                        }
+                        var userIcon = 'css/img/oheadpic.png';        //头像
+                        if(isDefine(list[i].userIcon)){
+                            userIcon = getImgUrl("1",list[i].userIcon,2);
+                        }
+                        var nickname=(list[i].loginName).substring(0,3)+"***";
+                        if(isDefine(list[i].nickname)&&list[i].nickname!=""){
+                            nickname = list[i].nickname;
+                        } 
+                        var cls = "ub-img";
+                        var heiLs = '15.18em';
+                        if(parseInt(imgWidth) > parseInt(imgHeight)){
+                            cls = "ub-img7";
+                            heiLs = imgHeight * (parseInt(document.body.clientWidth) / imgWidth)+'px';
+                        }
+                        var item = $('<div class="ub ub-ver bg-wh" style="margin-bottom: 0.5em;"></div>');
+                        var seeten = $('<div class="ub ub-ver"></div>');
+                        if((list[i].attachment).length==0){
+                            var banner="";
+                        }else{
+                            var banner = $('<div class="'+cls+' shareImgs" id="img_'+interId+'" style="height: '+heiLs+';width: 100%;background-image: url('+bannPic+')"></div>');
+                        }
+                        var content = $('<div class="ub" style="padding:.5em .5em">'
+                                        +'<div class="ub ub-ver ub-ac" style="width:15%;">'
+                                            +'<div class="ub-img1" style="width: 2.3em;height: 2.3em;border-radius:50%;background-image: url('+userIcon+')"></div>'
+                                            +'<div class="ub ub-ver ub-ac">'
+                                                +'<div class="c-99" style="font-size:0.825em;margin-top:0.25em;">'+nickname+'</div>'
+                                            +'</div>'
+                                        +'</div>'
+                                        +'<div class="ub font-size01" name="commentVal" style="width:80%;padding-left:0.35em;">'+content+'</div>'
+                                    +'</div>'
+                                    +'<div class="ub ub-pe c-99 fz-8" style="margin-top:-1.8em;">'+time+'&nbsp;</div>');
+                        var footer = $('<div class="ub uinn c-99 fz-8" style="border-top:1px solid #DDDDDD;margin-top:0.25em;">'
+                                    +'<div class="ub ub-f1 ub-pc ub-ac ubr b-ce onzambia" id="'+interId+'">'
+                                        +'<div class="ub-img1 res-praiseIcon" id="dg_'+interId+'" style="height:1.5em;width:1.5em;"></div>'
+                                        +'<div class="" style="padding-left: .2em"></div>'
+                                        +'<div class="uinn-l1" id="z_'+interId+'">'+list[i].praiseCount+'</div>'
+                                    +'</div>'
+                                    +'<div class="ub ub-f1 ub-pc ub-ac ubr b-ce listInfo" id="'+objectId+'_'+interId+'">'
+                                        +'<div class="ub-img1 res-commentIcon" style="height:1.5em;width:1.5em;"></div>'
+                                        +'<div class="" style="padding-left: .2em"></div>'
+                                        +'<div class="uinn-l1" id="w_'+interId+'">'+list[i].wordsCount+'</div>'
+                                    +'</div>'
+                                    +'<div class="ub ub-f1 ub-pc ub-ac shareInfo" id="'+objectId+'" style="padding:0 1em;">'
+                                        +'<div class="ub-img1 res-shareIcon" style="height:1.5em;width:1.5em;"></div>'
+                                    +'</div>'
+                                +'</div>');
+                        seeten.append(banner);
+                        seeten.append(content);
+                        item.append(seeten);
+                        item.append(footer);
+                        
+                        items.append(item);
+                        recursion(list,recuFun);
+                    
+                        if((i+1) == list.length){//获取完成并显示
+                            //alert("pageNum===>"+pageNum);
+                            if(pageNumVal == 1){
+                                $("#content").empty();
+                            }
+                            if(pageNumVal == 1 && list.length == 0){
+                                items = $('<div class="ub ub-f1 ub-ac ub-pc" style="margin-top:1em">暂无信息</div>');
+                            }
+                            $('#content').append(items);
+                            
+                            status=1;
+                            appcan.window.closeToast();
+                               
+                            appcan.button(".listInfo","btn-act",function(){
+                                setLocVal("shootObjId",this.id);
+                                appcan.window.open('shoot_details',"shoot_details.html",10);
+                            })
+                            appcan.button('.onzambia','btn-act',function(){
+                                dianzan(this.id);
+                            })
+                            appcan.button('.shareInfo','btn-act',function(){
+                                currentInfo = this.id;
+                                appcan.locStorage.setVal('shareId',currentInfo+"_"+objNewsId[currentInfo]);
+                                appcan.locStorage.setVal('shareTitle',objSerInfo[currentInfo]);
+                                appcan.locStorage.setVal('shareSummary','');
+                                appcan.locStorage.setVal('share_type','interactive');
+                                createActionSheet();  
+                            })
+                            appcan.button('.shareImgs','btn-act',function(){
+                                setLocVal('imageInfos',JSON.stringify(objImage[this.id]));
+                                appcan.window.open('makeComplaints_Pics_content','makeComplaints_Pics_content.html',10);
+                            })
+                            return false;
+                        }
+                    }
+                    recursion(list,recuFun);
+                },
+                error : function(xhr, errorType, error,msg) {
+                    status=1;
+                    appcan.frame.resetBounce(slideType);
+                    uexWindow.closeToast();
+                }
+            })
+        }
+        
+        function createActionSheet() {//调用actionsheet插件
+            appcan.window.evaluateScript('','shareTypeChoose()');
+        }
+
+        function recursion(list,back){
+            if(list.length == backNum){
+                return false;
+            }
+            var img = new Image();
+            if((list[backNum].attachment).length>0){
+                //img.src = getPictureUrl("1",list[backNum].attachment[0].attcId,1);
+                img.src = getImgUrl("1",list[backNum].attachment,4);
+            }
+            var check = function(){
+                // 只要任何一方大于0
+                // 表示已经服务器已经返回宽高
+                if(img.width>0 || img.height>0){//有图片的情况
+                    clearInterval(setImg);
+                    back(img.width,img.height,backNum);
+                }else{//无图片情况
+                     clearInterval(setImg);
+                     back(0,0,backNum);
+                }
+            };
+            var setImg = setInterval(check,40);
+        }
+        
+        function dunPicDX(url){
+            // 创建对象
+            var imgDom = new Image();
+            // 改变图片的src
+            imgDom.src = url;
+            var heiLs = '10.18em';
+            if(parseInt(imgDom.width) > parseInt(imgDom.height)){
+                cls = "ub-img7";
+                heiLs = imgDom.height * (parseInt(document.body.clientWidth) / imgDom.width)+'px';
+            }
+            return heiLs;
+        }
+        
+        //点赞
+        function dianzan(interId){
+            appcan.window.openToast('');
+            var dataObj = {
+                "ifno": "CMS-INTER-0004",
+                "condition": {
+                    "dmnId": "cq",
+                    "grpId": "",
+                    "roleId": "",
+                    "chnlId": ""
+                },
+                "content": {
+                    "entity": [
+                        {
+                        "oprTypeId": "17",
+                        "enttTypeId": "31",
+                        "enttId": interId
+                        }
+                    ]
+                }
+            };
+            appcan.request.ajax({
+                url:chongqingUrl,
+                headers : {
+                    token : appcan.locStorage.val("token") || '',
+                    deviceId:appcan.locStorage.val("deviceId") || ''
+                },
+                appVerify:true,
+                data : dataObj,
+                timeout : "15000",
+                type : "POST",
+                contentType : "application/json",
+                dataType : "json",
+                success : function(data) {
+                    appcan.window.closeToast();
+                    if(data.info.entity[0].status == '001'){
+                        appcan.window.openToast('您已经点过赞了!',2000);
+                        return false;
+                    }else{
+                        var com = $("#z_"+interId).html();
+                        $("#z_"+interId).html(parseInt(com) + 1);
+                        $("#dg_"+interId).removeClass("res-praiseIcon");
+                        $("#dg_"+interId).addClass('dogood');
+                        
+                        objImage["img_"+interId].praiseCount+=1; //动态点赞数变化
+                    }   
+                },
+                error : function() {
+                }
+            })
+        }
+        
+      //双击回到顶部  
+      function goTop(){
+            window.scrollTo(0,0);
+        }
+ </script>
+</html>

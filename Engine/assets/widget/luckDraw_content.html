@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+    <head>
+        <title></title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="target-densitydpi=device-dpi, width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <link rel="stylesheet" href="css/fonts/font-awesome.min.css">
+        <link rel="stylesheet" href="css/ui-box.css">
+        <link rel="stylesheet" href="css/ui-base.css">
+        <link rel="stylesheet" href="css/ui-color.css">
+        <link rel="stylesheet" href="css/appcan.icon.css">
+        <link rel="stylesheet" href="css/appcan.control.css">
+        <style>
+            .picStyle{
+                height:13.5em;
+                width:100%;
+            }
+        </style>
+    </head>
+    <body class="um-vp bc-bg" ontouchstart>
+        <div class="ub ub-ver ub-f1" style="background-color:#fff;">
+            <div id="ocontent" class="ub ub-f1 ub-ver">
+                <div class="ub ub-f1">
+                    <div id="pic" class="ub ub-img7"></div>
+                </div>
+                <div id="content01" class="" style="text-indent:2em;margin:0.5em 0.35em;line-height:1.5em; color:#988B7B;font-size:1.025em;">
+                   <!-- “重庆”客户端全新改版上线，携手51YOU旅游网，为新老客户准备了大礼，简单填写信息即可参与“
+                   <span onclick=" " ontouchstart="appcan.touch('btn-act')" class=" " style="color:#5EBCFD;font-size:1.125em;">
+                   铂金品质德法瑞意奥梵六国十四天免费游    
+                   </span>
+                   ”抽奖 活动。2015年X月X日，从所有下载“重庆”的用户中抽出一位终极大奖，免费游览德法瑞意梵奥六国，最完美的旅游是身体和灵魂都必须在路上！快来参加吧！
+               --> </div>
+                
+                <div class="ub ub-ac" style="margin-top:0.625em;">
+                    <div id="pic" class="ub ub-ver ub-img7" style="height:30em;width:100%;background-image: url('image/luckDraw/bg01.png');">
+                        <div class="ub ub-ac ub-pc" style="font-size:0.825em;color:#fff;width:100%;margin-top:6em;">
+                                                                 <!-- 铂金品质意德法瑞奥梵六国十四天免费游    -->
+                        </div>
+                        <div class="ub ub-ac ub-pc" style="width:100%;">
+                            <div class="uinput uinn ub bc-border" style="margin-top:1.5em;width:80%;border-color: #998b7b;border-radius:0.8em; background-color:#fff;font-size:1.025em;">
+                                <input id="name" placeholder="真实姓名" type="text" class="ub-f1">
+                            </div>
+                        </div>
+                        <div class="ub ub-ac ub-pc" style="width:100%;">
+                            <div class="uinput uinn ub bc-border" style="margin-top:1.5em;width:80%;border-color: #998b7b;border-radius:0.8em; background-color:#fff;font-size:1.025em;">
+                                <input id="phone" placeholder="手机号码" type="text" class="ub-f1">
+                            </div>
+                        </div>
+                        <div class="ub ub-ac ub-pc" style="width:100%;">
+                            <div class="uinput uinn ub bc-border" style="margin-top:1.5em;width:80%;border-color: #998b7b;border-radius:0.8em; background-color:#fff;font-size:1.025em;">
+                                <input id="idNnumber" placeholder="身份证号码" type="text" class="ub-f1">
+                            </div>
+                        </div>
+                        <div class="ub ub-ac ub-pc" style="width:100%;">
+                            <div id="submit" class="ub uinn ub-ac ub-pc uc-a1" onclick="doLuckDraw()" ontouchstart="appcan.touch('btn-act')" style="color:#8C7F5C;width:80%;background-color: #FEF433;border-radius:0.35em;margin-top:1.5em;height:2.3em;">
+                                参与抽奖
+                            </div>
+                        </div>
+                    </div>
+                 </div>
+                
+                 <div class="ub ub-ac ub-ver" style="margin-top:0.825em;">
+                     <div id="contentVal02"></div>
+                </div>
+            </div>
+        </div>  
+        <script src="js/appcan.js"></script>
+        <script src="js/appcan.control.js"></script>
+        <script src="js/common.js"></script>
+    </body>
+    <script>
+        var count=0;
+        var loginStatus=appcan.locStorage.val("loginState");
+        var userInfo = isDefine(getLocVal('userInfo')) ? getLocVal('userInfo') : "";
+        appcan.ready(function() {
+            appcan.initBounce();
+            //判断用户登陆情况
+             if(loginStatus=="yes"){
+                 var phoneVal=isDefine(userInfo)?JSON.parse(userInfo).loginName:"";
+                 $("#phone").val(phoneVal);
+             }
+            showdata();
+        })
+        
+        //获取抽奖活动详细信息
+         function showdata() {
+            uexWindow.toast(1,5,"","");
+            var lcon="";
+            var rcon="";
+            var o = appcan.locStorage.val("objectId");
+            var a = appcan.locStorage.val("actvId");
+            var data_str = {
+                "ifno" : "CMS-ACTV-0002",
+                "condition" : {
+                    "dmnId" : "cq",
+                    "grpId" : "",
+                    "roleId" : "",
+                    "chnlId" : "",
+                    "objectId" : o,
+                    "actvId" : a
+                },
+                "content" : {}
+            };
+
+            appcan.request.ajax({
+                url : chongqingUrl,
+                headers : {
+                    token : appcan.locStorage.val("token")||"",
+                    deviceId : appcan.locStorage.val("deviceId")||""
+                },
+                type : 'POST',
+                appVerify:true,
+                data : data_str,
+                contentType : "application/json",
+                dataType : 'json',
+                timeout : "15000",
+                success : function(data) {
+                    console.log("抽奖活动详情===>");
+                    console.log(data);
+                    var str_html01=data.info.actvRule;
+                    var str_html02=data.info.actvCtt;
+                    if(isDefine(data.info.arrDetailImg) && (data.info.arrDetailImg).length!=0){
+                         var picStr=getImgUrl("0",data.info.arrDetailImg[0].attcId,1);
+                         $("#pic").addClass("picStyle");
+                         $("#pic").css("background-image","url("+picStr+")");
+                    }
+                   $("#content01").html(str_html01);
+                   $("#contentVal02").html(str_html02);
+                   appcan.window.closeToast();
+                },
+                error : function(xhr, type) {
+                    uexWindow.toast(0,5,"查询出错",2000);
+                    appcan.window.closeToast();
+                }
+            })
+        }
+        
+        //参与抽奖
+        function doLuckDraw(){
+             var loginStatus02=appcan.locStorage.val("loginState");
+             if(loginStatus02!="yes"){
+                 appcan.window.open('luckLogin','login.html',10);
+                 return;
+             }
+            if(count>0){
+                uexWindow.toast(0,5,"不能重复提交！！！",2000);
+                return;
+            }
+            //获取网页数据并过滤
+            if($("#name").val()==""||$("#phone").val()==""||$("#idNnumber").val()==""){
+                uexWindow.toast(0,5,"请输入完整信息！！！",2000);
+                return;
+            }else{
+                var username=$("#name").val();
+                if(is_mobile($("#phone").val())){
+                    var phone=$("#phone").val();
+                }else{
+                    uexWindow.toast(0,5,"请输入正确的电话号码！！！",2000);
+                    return;
+                }
+                if($("#idNnumber").val()){
+                    var userId=$("#idNnumber").val();
+                }else{
+                    uexWindow.toast(0,5,"请输入正确的身份证号码！！！",2000);
+                    return;
+                }
+            }
+            uexWindow.toast(1,5,"","");
+            //参与请求开始
+             var objectidVal = appcan.locStorage.val("objectId");
+             var actvidVal = appcan.locStorage.val("actvId");
+             var data_str = {
+                "ifno" : "CMS-ACTV-0006",
+                "token":"",
+                "condition" : {
+                    "objectId":"",  //objectid
+                    "enttId" : actvidVal     //newsid
+                },
+                "content" : {
+                    "phoneNum" : phone,   // 电话
+                    "userName" : username,  // 姓名
+                    "userCard" : userId  //身份证
+                }
+              };
+            appcan.request.ajax({
+                url:'http://cqliving.cqnews.net/chongqing/cms',
+                headers : {
+                    token : appcan.locStorage.val("token")||"",
+                    deviceId : appcan.locStorage.val("deviceId")||""
+                },
+                appVerify:true,
+                type : 'POST',
+                data : data_str,
+                contentType : "application/json",
+                dataType : 'json',
+                timeout : "15000",
+                success : function(data) {
+                    console.log("提交参与抽奖数据返回===>");
+                    console.log(data);
+                    //alert(JSON.stringify(data));
+                    //console.log(JSON.stringify(data_str)+" "+objectidVal+" "+actvidVal+" "+username+" "+phone+" "+userId);
+                    appcan.window.closeToast();
+                    if(data.dispose.status=="000"){
+                        userLuckId=data.dispose.msg;
+                        uexWindow.alert("谢谢参与","您的兑奖码为： "+userLuckId+"，我们将于每月底开奖，祝您好运！若你中奖，我们将会以电话的形式通知您，敬请期待!","OK");
+                        count++;
+                    }else if(data.dispose.status=="002"){
+                         uexWindow.alert("提示","该用户已参与过此次抽奖，不能重复参与！","OK");
+                    }else{
+                        uexWindow.toast(0,5,"数据提交出错，参与失败！！！",3000);
+                    }
+
+                },
+                error : function(xhr, type) {
+                    uexWindow.toast(0,5,"数据提交出错，参与失败！！！",3000);
+                }
+            })
+        }
+        //订单提交页-验证手机号
+        function is_mobile(mobile) {
+             if( mobile == "") {
+              return false;
+             } else {
+               if( ! /^0{0,1}(13[0-9]|15[0-9]|18[0-9]|14[0-9])[0-9]{8}$/.test(mobile) ) {
+                return false;
+              }
+              return true;
+            }
+        }
+        
+        function goLink(link,title){//打开意大利模块链接页面
+           appcan.locStorage.setVal("italyLink",link);
+           appcan.locStorage.setVal("italyLinkNum",title);
+           appcan.window.open("italylinks","italyLinks.html",10);
+        }
+        
+        
+        function goTop(){
+            window.scrollTo(0,0);
+        }
+    </script>
+</html>

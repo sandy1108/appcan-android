@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="2dip" >
+
+    <RelativeLayout
+        android:id="@+id/frame_relative"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/plugin_uexpicker_layout_color"
+        android:padding="1dip" >
+
+        <RelativeLayout
+            android:id="@+id/pickerLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/plugin_uexpicker_layout_background" >
+
+            <RelativeLayout
+                android:id="@+id/btnLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <Button
+                    android:id="@+id/btn_datetime_cancel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dip"
+                    android:layout_marginTop="10dip"
+                    android:background="@drawable/plugin_uexpicker_btn_bg"
+                    android:text="@string/plugin_uexpicker_cancel"
+                    android:textColor="@android:color/white" >
+                </Button>
+
+                <TextView
+                    android:id="@+id/showdateTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_marginRight="10dip"
+                    android:layout_marginTop="10dip"
+                    android:textColor="@android:color/white" />
+
+                <Button
+                    android:id="@+id/btn_datetime_sure"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="10dip"
+                    android:layout_marginTop="10dip"
+                    android:background="@drawable/plugin_uexpicker_btn_bg"
+                    android:text="@string/plugin_uexpicker_confirm"
+                    android:textColor="@android:color/white" >
+                </Button>
+            </RelativeLayout>
+
+            <View
+                android:id="@+id/viewline"
+                android:layout_width="match_parent"
+                android:layout_height="1dip"
+                android:layout_below="@id/btnLayout"
+                android:background="@color/plugin_uexpicker_layout_color" />
+
+            <LinearLayout
+                android:id="@+id/timePicker"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/viewline"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="1dip"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal"
+                android:paddingBottom="5dp"
+                android:paddingLeft="-1dip"
+                android:paddingRight="-1dip"
+                android:paddingTop="5dp" >
+
+                <org.zywx.wbpalmstar.plugin.uexPicker.wheelview.WheelView
+                    android:id="@+id/str_wheel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+        </RelativeLayout>
+    </RelativeLayout>
+
+</LinearLayout>

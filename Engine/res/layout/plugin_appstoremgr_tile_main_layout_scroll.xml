@@ -1,0 +1,35 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    
+    <org.zywx.wbpalmstar.plugin.uexappstoremgr.view.ScrollLayout
+        android:id="@+id/app_tile_scroll_layout"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:scaleType="fitXY"
+        android:layout_gravity="center"
+        android:layout_above="@+id/plugin_appstoremgr_del_tile_ok_button" />
+
+    <Button
+        android:id="@+id/plugin_appstoremgr_del_tile_ok_button"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/plugin_appstoremgr_del_app_ok_button_height"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_above="@+id/tile_page_indictor" 
+        android:background="@drawable/plugin_appstoremgr_del_app_complete_selector"
+        android:visibility="gone" />
+    
+    <org.zywx.wbpalmstar.plugin.uexappstoremgr.view.PageIndicator
+        android:id="@+id/tile_page_indictor"
+        android:layout_width="fill_parent"
+        android:layout_height="30dip"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:gravity="center" />
+
+</RelativeLayout>

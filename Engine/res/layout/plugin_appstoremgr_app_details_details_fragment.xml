@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    android:orientation="vertical" >
+
+    <org.zywx.wbpalmstar.plugin.uexappstoremgr.view.CustomScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <RelativeLayout
+                android:id="@+id/re1"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:paddingBottom="12dip"
+                android:paddingTop="12dip" >
+
+                <ImageView
+                    android:id="@+id/imageView"
+                    android:layout_width="70dip"
+                    android:layout_height="70dip"
+                    android:layout_marginLeft="10dip"
+                    android:background="@drawable/plugin_appstoremgr_appdetail_bg" />
+
+                <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_alignBottom="@+id/imageView"
+                    android:layout_alignTop="@+id/imageView"
+                    android:layout_marginLeft="12dip"
+                    android:layout_marginRight="10dip"
+                    android:layout_toRightOf="@+id/imageView" >
+
+                    <TextView
+                        android:id="@+id/appName"
+                        android:layout_width="136dip"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:ellipsize="end"
+                        android:singleLine="true"
+                        android:text="中国移动掌上营业厅中国移动掌上营业厅"
+                        android:textColor="#000000"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+                    <RatingBar
+                        android:id="@+id/appScore"
+                        style="@style/appraise_ratingbar_style"
+                        android:layout_width="wrap_content"
+                        android:layout_height="15dip"
+                        android:layout_centerVertical="true"
+                        android:clickable="false"
+                        android:isIndicator="true"
+                        android:rating="3" />
+
+                    <TextView
+                        android:id="@+id/appSize"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:text="9.0MB"
+                        android:textColor="#808080" />
+
+                    <TextView
+                        android:id="@+id/downloadNum"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginLeft="15dip"
+                        android:layout_toRightOf="@+id/appSize"
+                        android:text="0次 下载"
+                        android:textColor="#808080" />
+                </RelativeLayout>
+            </RelativeLayout>
+
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="1dip"
+                android:layout_marginLeft="5dip"
+                android:layout_marginRight="5dip"
+                android:background="@drawable/plugin_appstoremgr_listview_divider" />
+
+            <RelativeLayout
+                android:id="@+id/gallery_layout"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/re1"
+                android:paddingBottom="12dip"
+                android:paddingTop="12dip" >
+                
+                <HorizontalScrollView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:scrollbars="none">
+                    <org.zywx.wbpalmstar.plugin.uexappstoremgr.view.MyGallery
+                        android:id="@+id/myGallery"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </HorizontalScrollView>
+
+            </RelativeLayout>
+
+            <ImageView
+                android:id="@+id/my_gallery_divider"
+                android:layout_width="fill_parent"
+                android:layout_height="1dip"
+                android:layout_marginLeft="5dip"
+                android:layout_marginRight="5dip"
+                android:background="@drawable/plugin_appstoremgr_listview_divider" />
+
+            <RelativeLayout
+                android:id="@+id/re3"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/gallery_layout"
+                android:paddingBottom="12dip"
+                android:paddingTop="12dip" >
+
+                <RelativeLayout
+                    android:id="@+id/re31"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dip"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginLeft="10dip" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignRight="@+id/date"
+                        android:text="版本：" />
+
+                    <TextView
+                        android:id="@+id/date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentBottom="true"
+                        android:text="更新日期：" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignRight="@+id/date"
+                        android:text="开发商：" 
+                        android:visibility="gone"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/re32"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dip"
+                    android:layout_marginLeft="3dip"
+                    android:layout_toRightOf="@+id/re31" >
+
+                    <TextView
+                        android:id="@+id/appVersion"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentTop="true"
+                        android:text="1.0.1V"
+                        android:textColor="#000000" />
+
+                    <TextView
+                        android:id="@+id/updateTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentBottom="true"
+                        android:text="2013年10月1日"
+                        android:textColor="#000000" />
+
+                    <TextView
+                        android:id="@+id/developerName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentLeft="true"
+                        android:text="正益无线（北京）科技有限公司"
+                        android:textColor="#000000" 
+                        android:visibility="gone"/>
+                </RelativeLayout>
+            </RelativeLayout>
+
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="1dip"
+                android:layout_marginLeft="5dip"
+                android:layout_marginRight="5dip"
+                android:background="@drawable/plugin_appstoremgr_listview_divider" />
+
+            <RelativeLayout
+                android:id="@+id/re4"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/re3"
+                android:paddingBottom="12dip"
+                android:paddingTop="12dip" >
+
+                <RelativeLayout
+                    android:id="@+id/re41"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginLeft="10dip" >
+	                <TextView
+	                    android:id="@+id/dates"
+	                    android:layout_width="wrap_content"
+	                    android:layout_height="wrap_content"
+	                    android:layout_alignParentLeft="true"
+	                    android:text="应用简介：" />
+                </RelativeLayout>
+                <RelativeLayout
+                    android:id="@+id/re42"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="3dip"
+                    android:layout_toRightOf="@+id/re41" >
+
+	                <TextView
+	                    android:id="@+id/appDiscription"
+	                    android:layout_width="wrap_content"
+	                    android:layout_height="wrap_content"
+	                    android:layout_alignParentBottom="true"
+	                    android:layout_alignParentLeft="true"
+	                    android:text="这是一款方便实用的APP。"
+	                    android:textColor="#000000" />
+                </RelativeLayout>
+                
+            </RelativeLayout>
+        </LinearLayout>
+    </org.zywx.wbpalmstar.plugin.uexappstoremgr.view.CustomScrollView>
+
+</LinearLayout>

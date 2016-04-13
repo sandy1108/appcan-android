@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+    <head>
+        <title></title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="target-densitydpi=device-dpi, width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <link rel="stylesheet" href="css/fonts/font-awesome.min.css">
+        <link rel="stylesheet" href="css/ui-box.css">
+        <link rel="stylesheet" href="css/ui-base.css">
+        <link rel="stylesheet" href="css/ui-color.css">
+        <link rel="stylesheet" href="css/appcan.icon.css">
+        <link rel="stylesheet" href="css/appcan.control.css">
+        <link rel="stylesheet" href="css/new_file.css">
+        <link rel="stylesheet" href="css/loader.css">
+        <style>
+            .addImg{
+                background-image: url('twoImg/addimg.png');
+            }
+            .add_wh{
+                width: 4.93em;
+                height: 4.93em;
+                margin-right: 1em;
+                margin-top: 1em;
+                float: left;
+            }
+           .shanchu{background-image: url('twoImg/iconfont-shanchu1.png')}                /*删除**/
+           .wh-arrow{width: 1em;height: 1em;}
+           .gsSC{position: absolute;right: 0;}
+        </style>
+    </head>
+    <body class="um-vp f-f bg-wh" ontouchstart>
+        <div class="uinput ub ub-f1" style="padding: 1em;">
+            <textarea placeholder="这一刻的想法..." id="textcon" class="ub-f1"  style="min-height: 3em;min-height:8em;border:1px solid #E2E2E2;background-color:#F6F5F5;"></textarea>
+        </div>
+        <div class="" id="cameras" style="padding-left: 1em">
+            <div class="ub-img1 addImg add_wh" id="subImg">
+                
+            </div>
+        </div>
+    </body>
+    <script src="js/appcan.js"></script>
+    <script src="js/appcan.control.js"></script>
+    <script src="js/common.js"></script>
+    <script>
+        var dirPath = '';       //上传图片路径
+        var num = 0;        //计数器
+        var arrUpload = [];     //相册选取照片路径
+        var imgLength = 0;      //图片的个数
+        var maxImage = 9;       //图片最大个数
+        var userInfo=isDefine(getLocVal('userInfo')) ? getLocVal('userInfo'):"";
+        var userId="";
+        appcan.ready(function() {
+            appcan.initBounce();
+            userId=isDefine(userInfo)?JSON.parse(userInfo).userId:"";
+            
+            //拍照回调
+            uexCamera.cbOpenInternal = function(opCode, dataType, data) {
+                uexWindow.toast(1,5,"","");
+                imgLength++;
+                if(imgLength > maxImage){
+                    imgLength--;
+                    appcan.window.openToast('上传图片超过'+maxImage+'张',2000);
+                    return false;
+                }
+                if(imgLength == maxImage){
+                    $('#subImg').hide();
+                }
+                dirPath = data;
+                arrUpload = [];
+                uexUploaderMgr.createUploader(num, uploadHttp);
+            }
+            
+            //照片
+            uexImageBrowser.cbPick = function(opCode, dataType, data) {
+                uexWindow.toast(1,5,"","");
+                tNum = 0;
+                //uexLog.sendLog("PickData===>"+opCode+'--------'+dataType+'--------'+data)
+                arrUpload = data.split(",");
+                imgLength += arrUpload.length;
+               //uexLog.sendLog("imgLength===>"+imgLength+"<==maxImage==>"+maxImage);
+                if(imgLength > maxImage){
+                    imgLength -= arrUpload.length;
+                    appcan.window.openToast('上传图片超过'+maxImage+'张',2000);
+                    return false;
+                }
+                if(imgLength == maxImage){
+                    $('#subImg').hide();
+                }
+                createPic();
+            }
+            
+            //上传
+            uexUploaderMgr.onStatus = function(opCode, fileSize, percent, serverPath, status) {
+                switch (status) {
+                    case 0:
+                        //上传中
+                        appcan.window.openToast('图像上传中'+percent+'%', 0, 5);
+                        break;
+                    case 1:
+                        appcan.window.openToast('图像上传成功', 2000, 5);
+                        //alert(serverPath);
+                        var imgId = JSON.parse(serverPath).key;
+                        //alert(serverPath+"\n"+imgId);
+                        uexUploaderMgr.closeUploader(num);
+                        num++;
+                        createPic();
+                        $("#cameras").prepend('<div class="ub-img1 add_wh" name="picName" id="'+imgId+'" style="background-image: url('+getImgUrl("1",imgId,3)+')"><div class="shanchu wh-arrow ub-img gsSC" onclick="delPic(this)"></div></div>');
+                        uexWindow.closeToast();
+                        break;
+                    case 2:
+                        appcan.window.openToast('文件上传失败', 3000, 5);
+                        uexUploaderMgr.closeUploader(num);
+                        break;
+                }
+            }
+            
+            //创建上传的回调
+            uexUploaderMgr.cbCreateUploader = function(opCode, dataType, data) {
+                if (data == 0) {
+                    uexUploaderMgr.uploadFile(num, dirPath, "uploadFile", 3);
+                } else {
+                    uexWindow.toast(0, 5, "创建失败", 3000);
+                }
+            }
+            
+            var arrload = getLocVal('arrUpload');
+            if(isDefine(arrload)){
+                arrUpload = JSON.parse(arrload);
+                createPic();
+                imgLength = arrUpload.length;
+                if(arrUpload.length >= maxImage){
+                    $('#subImg').hide();
+                }
+            }
+    })
+        
+    //递归上传多张图片
+    var tNum = 0;
+    function createPic(){
+        var lengths = arrUpload.length;
+        if(arrUpload.length > maxImage){
+            lengths = maxImage;
+            $('#subImg').hide();
+        }
+        if(tNum < lengths){
+            dirPath = arrUpload[tNum];
+            uexUploaderMgr.createUploader(num, uploadHttp);
+            tNum++;
+        }
+    }
+       
+    //添加图片
+    appcan.button("#subImg","btn-act",function(){
+        setLocVal('shootPD','2');
+        appcan.window.evaluateScript('','openShoot()');
+    })
+    
+    //删除图片
+    function delPic(dom){
+        $('#subImg').show();
+        imgLength--;
+        $(dom).parent().remove();
+    }
+    
+    function openShee(str){
+        if(str == 1){
+            uexImageBrowser.pickMulti(9);
+        }else{
+            uexCamera.openBandIconInternal('res://camera.png','0','50');
+        }
+    }
+    
+    var statusUP=1;//控制上传，防止误操作重复提交
+    function subString(){
+        if(statusUP!=1){
+            appcan.window.openToast('正在上传',2000);
+            return false;
+        }
+        statusUP=0;
+        var attachment = [];
+        var picUrls="";
+        var imgList = $("div[name='picName']");
+        if (imgList.length>0){
+            for(var i=0;i<imgList.length;i++){
+                var imgObj = {}
+                imgObj.attcId=$(imgList[i]).attr("id");
+                imgObj.attcTypeId='01';
+                imgObj.attcIcon='';
+                attachment.push(imgObj);
+                
+                picUrls+=imgObj.attcId;
+                (i<imgList.length-1)?(picUrls+=","):"";
+            }
+        }
+        if(attachment.length < 1){
+            appcan.window.openToast('至少上传一张图片',2000);
+            return false;
+        }
+        if(attachment.length > maxImage){
+            appcan.window.openToast('图片最多只能'+maxImage+'张!',2000);
+            return false;
+        }
+        //uexLog.sendLog("imgList--->"+JSON.stringify(attachment));
+        var hd_content = $("#textcon").val();
+        if(!isDefine(hd_content)){
+            uexWindow.toast("0", "5", "发送内容不能为空!", 2000);
+            return false;
+        }
+        
+        var if_list = {
+            "transcode": "photoInfo_add",
+            "content": {
+                "userId": userId,
+                "content": hd_content,
+                "picUrls":picUrls
+            },
+        };
+        console.log(JSON.stringify(if_list));
+        appcan.request.ajax({
+            headers : {
+                token : appcan.locStorage.val("token") || '',
+                deviceId : appcan.locStorage.val("deviceId") || ''
+            },
+            appVerify:true,
+            url : encodeURI(chongqingUrl),
+            data : JSON.stringify(if_list),
+            type : "POST",
+            dataType : "json",
+            contentType : "application/json",
+            timeout : "15000",
+            success : function(res) {
+                statusUP=1;//解锁
+                if(res.status == '000'){
+                    uexWindow.toast("0", "5", "发送成功!", 1500);
+                    //appcan.window.evaluatePopoverScript('shoot','content','shootList(1);');
+                    appcan.window.publish("refrehShootList","");
+                    appcan.window.evaluateScript('','appcan.window.close();');
+                }else{
+                    uexWindow.toast("0", "5", "发送失败!", 1500);
+                }
+                setLocVal('arrUpload','');
+            },
+            error : function(err) {
+                statusUP=1;//解锁
+                setLocVal('arrUpload','');
+                uexWindow.toast("0", "5", "发送失败!", 1500);
+            }
+        });
+    }
+    
+ </script>
+</html>

@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+    <head>
+        <title></title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="target-densitydpi=device-dpi, width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <link rel="stylesheet" href="css/fonts/font-awesome.min.css">
+        <link rel="stylesheet" href="css/ui-box.css">
+        <link rel="stylesheet" href="css/ui-base.css">
+        <link rel="stylesheet" href="css/ui-color.css">
+        <link rel="stylesheet" href="css/appcan.icon.css">
+        <link rel="stylesheet" href="css/appcan.control.css">
+        <link rel="stylesheet" href="css/new_file.css">
+        <link rel="stylesheet" href="css/detailStyle.css">
+        <style>
+        .font-size02{
+            font-size:1.25em;
+        }
+        </style>
+    </head>
+    <body class="um-vp bc-bg f-f" ontouchstart>
+        <div id="begin" class="ub ub-f1 ub-ver">
+            <!-- <div class="ub umar-t uinn" style="font-size:1.1em;line-height: 1.3em;max-height: 2.1em;overflow: hidden;color:#464646">稳增长政策20天稳增长政策20天</div>
+            <div class="ub uinn1 ulev-1" style="color:#8d8d8d">活动时间：2015.04.30-2015.04.30</div> -->
+            <!-- <div class="ub ub-f1">
+                <div id="pic" class="ub ub-img7 ub-pe" style="height:10em;width:100%;">
+                    <div class="ub ub-img res-actEnd iconSpace40 umar-a"></div>
+                </div>
+            </div>
+            <div class="ub ub-f1 ubb" style="padding:0.5em 0.825em 0.5625em 0.825em;border-color:#e0e0e0">
+                <div id="showIntro" class="ub ub-f1 ub-pc ub-ac uinn" style="margin-right:0.375em;width:30%;background-color: #eeeeee;color:#9f9283">
+                    <div class="ub" style="font-size:0.90625em">
+                        活动简介
+                    </div>
+                </div>
+                <div class="ub ub-f1 ub-pc ub-ac uinn" style="margin-right:0.375em;width:30%;background-color: #eeeeee;color:#fe8c04">
+                    <div class="ub ub-img iconSpace15 res-praiseIcon"></div>
+                    <div id="prsnum" class="ub" style="font-size:0.90625em;margin-left:0.15625em">
+                        12
+                    </div>
+                </div>
+                <div class="ub ub-f1 ub-pc uinn ub-ac" style="width:30%;background-color: #eeeeee">
+                    <div class="ub ub-img iconSpace15 res-shareIcon"></div>
+                </div>
+            </div> -->
+        </div>
+        <div id="actTitle" class="ub-f1" style="font-size:1.2em;color:#464646;display:none;margin:1.28125em 0.825em 1.28125em 0.825em"></div>
+        <div id="content"class="ub-f1" style="display:none;margin:1.28125em 0.825em 1.28125em 0.825em">
+
+        </div>
+
+        <!-- 投票类型展示 -->
+        <div class="ub ub-f1 " style="margin:1.28125em 0.825em 1.28125em 0.825em;">
+             <div id="left" class="ub ub-f1 ub-ver umar-r" style="width:50%">
+            </div>
+
+            <div id="right" class="ub ub-ver umar-l ub-f1" style="width:50%">
+            </div>
+        </div>
+    <script src="js/appcan.js"></script>
+    <script src="js/appcan.control.js"></script>
+    <script src="js/common.js"></script>
+    </body>
+    <script>
+        var showTag = 0;
+        var newEnttId = '';
+        var objId='';
+        var actId='';
+        var title='';
+        appcan.ready(function() {
+            appcan.initBounce();
+            showdata();
+        });
+       
+        function showdata() {
+            uexWindow.toast(1,5,"","");
+            var lcon="";
+            var rcon="";
+            objId = appcan.locStorage.val("objectId");
+            actId = appcan.locStorage.val("actvId");
+            var data_str = {
+                "ifno" : "CMS-ACTV-0002",
+                "condition" : {
+                    "dmnId" : "cq",
+                    "grpId" : "",
+                    "roleId" : "",
+                    "chnlId" : "",
+                    "objectId" : objId,
+                    "actvId" : actId
+                },
+                "content" : {}
+            };
+
+            appcan.request.ajax({
+                
+                url : chongqingUrl,
+                headers : {
+                    token : appcan.locStorage.val("token")||'',
+                    deviceId : appcan.locStorage.val("deviceId")||''
+                },
+                type : 'POST',
+                appVerify:true,
+                data : data_str,
+                contentType : "application/json",
+                dataType : 'json',
+                timeout : "15000",
+                success : function(data) {
+                    //console.log(JSON.stringify(data));
+                    title=data.info.actvTtl;
+                    var cont=data.info.actvCtt;
+                    $("#content").html(cont);
+                    $("#actTitle").html(title)
+                    var prasenum=data.info.prseCnt;
+                    var picId=data.info.attachment[0].attcId; 
+                   // var picUrl=getPictureUrl("0",picId,1);
+                    var picUrl=getPictureUrl("0",data.info.attachment,1);
+                    var toTime=data.info.toTime;
+                    var currentTime=new Date().getTime();
+                    var isEnd=currentTime-toTime>0?true:false;
+                    appcan.locStorage.setVal("actvCommentId", data.info.actvId);
+                    var endIcon="";
+                        if(isDefine(isEnd)){
+                            endIcon='<div class="ub ub-img res-actEnd iconSpace40 umar-a"></div>';
+                        }
+                    
+                var beginstr='<div class="ub ub-f1">'
+                        +'<div id="pic" class="ub ub-img7 ub-pe" style="height:10em;width:100%;background-image:url('+picUrl+')">'
+                            +endIcon
+                        +'</div>'
+                        +'</div>'
+                        +'<div class="ub ub-f1 ubb" style="padding:0.5em 0.825em 0.5625em 0.825em;border-color:#e0e0e0">'
+                        +'<div id="showIntro" class="ub ub-f1 ub-pc ub-ac uinn" style="margin-right:0.375em;width:30%;background-color: #eeeeee;color:#9f9283">'
+                            +'<div class="ub" style="font-size:0.90625em">活动简介'
+                            +'</div>'
+                        +'</div>'
+                        +'<div id="prsnum1" class="ub ub-f1 ub-pc ub-ac uinn" style="margin-right:0.375em;width:30%;background-color: #eeeeee;color:#fe8c04">'
+                            +'<div class="ub ub-img iconSpace15 res-praiseIcon" id="praiseIcon" style="height:1.35em;width:1.35em;"></div>'
+                            +'<div id="prsnum" class="ub" style="margin-left:.4em;color:#999CA5;">'
+                            +prasenum
+                            +'</div>'
+                        +'</div>'
+                        +'<div class="ub ub-f1 ub-pc uinn ub-ac" id="Share" style="width:30%;background-color: #eeeeee">'
+                            +'<div class="ub ub-img iconSpace15 res-shareIcon" style="height:1.35em;width:1.35em;"></div>'
+                        +'</div>'
+                    +'</div>';
+
+                    var choice=data.info.items;
+                    for(var i=0;i<choice.length;i++){
+                        var title=choice[i].itemTitle;
+                        var choiceId=choice[i].itemImg;
+                        var choicePicUrl=getPictureUrl("0",choiceId,1);
+                        var votenum=choice[i].itemVoteCount;
+                        if(i%2==0){
+                            lcon+='<div class="ub ub-ver ub-pc umar-b" style="width:100%;background-color: #eeeeee">'
+                                +'<div class="ub ub-img7 ub-f1" style="margin:0.1825em;height:6em;background-image:url(\''+choicePicUrl+'\')"></div>'
+                                +'<div class="ub ub-f1 ub-pc uinn">'
+                                +title
+                                +'</div>'
+                                +'<div class="ub ub-f1 ub-pc ub-ac ubb" style="padding:0em 1.1875em 0.6875em 1.1875em;border-color: #dddddd;">'
+                                    +'<div class="ub uc-a tx-c ub-pc ub-ac ub-f1 voteList" id="'+choice[i].itemNo+'" style="color:white;height:1.875em;background-color:#ff8a00;">点击投票'
+                                    +'</div>'
+                                +'</div>'
+                                +'<div class="ub ub-f1 umar-a ub-pj ub-ac">'
+                                    +'<div class="ub ub-ac">'
+                                        +'<div class="ub ub-img iconSpace15 res-choiceIcon umar-r"></div>'
+                                        +'<div class="ub" style="color:#b3b3b3">'
+                                            +'<span style="color:#998b7b;margin-right:0.4em">'+(i+1)+'</span>号'
+                                        +'</div>'
+                                    +'</div>'
+                                    +'<div class="ub ub-ac">'
+                                        +'<div class="ub">'
+                                            +'<span style="color:#ff8a00" id="s_'+choice[i].itemNo+'">'+votenum+'</span>票'
+                                        +'</div>'
+                                    +'</div>'
+                                +'</div>'
+                            +'</div>';
+                        }
+                        else{
+                           rcon+='<div class="ub ub-ver ub-pc umar-b" style="width:100%;background-color: #eeeeee">'
+                                +'<div class="ub ub-img7 ub-f1" style="margin:0.1825em;height:6em;background-image:url(\''+choicePicUrl+'\')"></div>'
+                                +'<div class="ub ub-f1 ub-pc uinn">'
+                                +title
+                                +'</div>'
+                                +'<div class="ub ub-f1 ub-pc ub-ac ubb" style="padding:0em 1.1875em 0.6875em 1.1875em;border-color: #dddddd;">'
+                                    +'<div class="ub uc-a tx-c ub-pc ub-ac ub-f1 voteList" id="'+choice[i].itemNo+'" style="color:white;height:1.875em;background-color:#ff8a00;">点击投票'
+                                    +'</div>'
+                                +'</div>'
+                                +'<div class="ub ub-f1 umar-a ub-pj ub-ac">'
+                                    +'<div class="ub ub-ac">'
+                                        +'<div class="ub ub-img iconSpace15 res-choiceIcon umar-r"></div>'
+                                        +'<div class="ub" style="color:#b3b3b3">'
+                                            +'<span style="color:#998b7b;margin-right:0.4em">'+(i+1)+'</span>号'
+                                        +'</div>'
+                                    +'</div>'
+                                    +'<div class="ub ub-ac">'
+                                        +'<div class="ub">'
+                                            +'<span style="color:#ff8a00" id="s_'+choice[i].itemNo+'">'+votenum+'</span>票'
+                                        +'</div>'
+                                    +'</div>'
+                                +'</div>'
+                            +'</div>'; 
+                        }
+                    } 
+                    uexWindow.closeToast();
+                    $("#begin").html(beginstr); 
+                    $("#left").html(lcon);
+                    $("#right").html(rcon);
+                     appcan.button("#showIntro", "btn-act", function() {
+                        if (showTag == 0) {
+                            showTag = 1;
+                            $("#actTitle").show();
+                            $("#content").show();
+                        } else {
+                            showTag = 0;
+                            $("#actTitle").hide();
+                            $("#content").hide();
+                        }
+                    })
+                    appcan.button("#prsnum1","btn-act",function(){
+                        //var actvId=appcan.locStorage.val("actvId");
+                        dianzan(actId);
+                    })
+                    appcan.button(".voteList","btn-act",function(){
+                        myVote(this.id);
+                    })
+                    appcan.button("#Share","btn-act",function(){
+                        appcan.locStorage.setVal('shareId',objId+"_"+actId);
+                        appcan.locStorage.setVal('shareTitle',title);
+                        appcan.locStorage.setVal('shareSummary','');
+                        appcan.locStorage.setVal('share_type','active');
+                        createActionSheet();
+                    })
+                },
+                error : function(xhr, type) {
+                    uexWindow.toast(0,5,"查询出错!!!",2000);
+                }
+            })
+        }
+        
+        function createActionSheet() {//调用actionsheet分享
+            appcan.window.evaluateScript('','shareTypeChoose()');
+        }
+
+function dianzan(id){
+    var list={
+            "ifno": "CMS-NEWS-0003",
+            "condition": {
+                "dmnId": "cq",
+                "grpId": "",
+                "roleId": "",
+                "chnlId": ""
+            },
+            "content": {
+                "entity": [
+                    {
+                        "oprTypeId": "17",
+                        "enttTypeId": "14",
+                        "enttId": id
+                    }
+                ]
+            }
+        };
+     appcan.request.ajax({
+            url:chongqingUrl,
+            headers : {
+                token : appcan.locStorage.val("token")||'',
+                deviceId:appcan.locStorage.val("deviceId")||''
+            },
+            appVerify:true,
+            data : list,
+            type : "POST",
+            timeout : "15000",
+            dataType:"json",
+            contentType : "application/json",
+            success : function(data) {
+                //alert(JSON.stringify(data));
+                if(data.info.entity[0].status=="000")
+                {
+                    var num=parseInt($("#prsnum").html());
+                    $("#prsnum").html(num+1);
+                    $("#praiseIcon").removeClass("res-praiseIcon");
+                    $("#praiseIcon").addClass('dogood');
+                    
+                    appcan.window.evaluatePopoverScript('home_activity','content','actvDianzan()');
+                    return;
+                }
+                if(data.info.entity[0].status=="001"){
+                    uexWindow.toast(0,5,"你已点过赞",2000);
+                    return;
+                }
+                uexWindow.toast(0,5,"网络出错，请稍后重试",2000);
+            },
+            error : function() {
+            }
+        });       
+}
+
+function getTops(data1, idx, no, callback) {
+    if (idx >= data1.length) {
+        callback(false);
+        return;
+    } else if (data1[idx].attcTypeId == no) {
+        var attcId = data1[idx].attcId;
+        callback(attcId);
+        return;
+    }
+    getTops(data1, ++idx, no, callback);
+}
+
+
+//投票
+function myVote(itemNo){
+    var logStra = getLocVal('loginState');
+    if(logStra != 'yes'){
+        appcan.window.open('login','login.html',10);
+        return false;
+    }
+    var dataObj = {
+        "ifno": "CMS-ACTV-0004",
+        "condition": {
+            "dmnId": "cq",
+            "grpId": "",
+            "roleId": "",
+            "chnlId": "",
+            "oprTypeId": "21",
+            "enttTypeId": "14",
+            "cqtpId" : 1,
+            "enttId": appcan.locStorage.val("actvId"),
+            "itemNo": itemNo
+        },
+        "content": {}
+    }
+    console.log("dataObj===>"+JSON.stringify(dataObj))
+    appcan.request.ajax({
+        url : chongqingUrl,
+        headers : {
+            token : appcan.locStorage.val("token") || '',
+            deviceId : appcan.locStorage.val("deviceId") || ''
+        },
+        type : 'POST',
+        appVerify:true,
+        data : dataObj,
+        contentType : "application/json",
+        dataType : 'json',
+        timeout : "15000",
+        success : function(data) {
+            if(data.dispose.status == '003'){
+                appcan.window.openToast('您已经投过一票了!',2000);
+                return false;
+            }
+            if(data.dispose.status == '004'){
+                appcan.window.openToast('您的投票数已达上限!',2000);
+                return false;
+            }
+            if(data.dispose.status == '000'){
+                appcan.window.openToast('投票成功!',2000);
+                var num = $("#s_"+itemNo).html();
+                $("#s_"+itemNo).html(parseInt(num) + 1);
+                return false;
+            }else{
+                appcan.window.openToast(data.dispose.msg,2000);
+            }
+        },
+        error:function(e){
+            
+        }
+    })
+}
+
+ function goTop(){
+            window.scrollTo(0,0);
+        }
+    </script>
+</html>

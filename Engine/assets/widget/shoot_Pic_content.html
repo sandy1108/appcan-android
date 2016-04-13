@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+    <head>
+        <title></title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="target-densitydpi=device-dpi, width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <link rel="stylesheet" href="css/fonts/font-awesome.min.css">
+        <link rel="stylesheet" href="css/ui-box.css">
+        <link rel="stylesheet" href="css/ui-base.css">
+        <link rel="stylesheet" href="css/ui-color.css">
+        <link rel="stylesheet" href="css/appcan.icon.css">
+        <link rel="stylesheet" href="css/appcan.control.css">
+        <link rel="stylesheet" href="css/new_file.css">
+    </head>
+    <body class="um-vp f-f" ontouchstart>
+        <div id="ocontent" class="ub ub-ver ub-f1" style="background-color: rgba(0,0,0,0.5);height:100%">
+            <div onclick="oclose()" class="ub-f1" style="height: 100%"></div>
+            <div class="ub ub-ver oc_white uinn">
+                <div onclick="openPic(2)" class="ub ub-ac ubb b-dd ub-pc" style="padding:0.5em 0">
+                    <div class="ulev1">手机拍照</div>
+                </div>
+                <div onclick="openPic(1)" class="ub ub-ac ub-pc" style="padding:0.5em 0">
+                    <div class="ulev1">从相册中选择</div>
+                </div>
+                <div onclick="oclose()" class="ub ub-f1 ub-ac ub-pc uinn" style="border-top:1px solid #dddddd">取消</div>
+            </div>
+        </div>
+    </body>
+    <script src="js/appcan.js"></script>
+    <script src="js/appcan.control.js"></script>
+    <script src="js/common.js"></script>
+    <script>
+        appcan.ready(function(){
+            
+        });
+        function oclose () {
+            appcan.frame.close("shoot_Pic_content");
+        }
+        function openPic(str){
+            var shootPD = appcan.locStorage.val('shootPD');
+            if(shootPD == '2'){
+                appcan.window.evaluatePopoverScript('shoot_add','content','openShee('+str+')');
+            }else if(shootPD == '1'){
+                appcan.window.evaluateScript('','openShee('+str+')');
+            }else if(shootPD == '3'){
+                appcan.window.evaluateScript('shoot_Pics_content','openShee('+str+')');
+            }
+            appcan.frame.close("shoot_Pic_content");
+        }
+    </script>
+</html>

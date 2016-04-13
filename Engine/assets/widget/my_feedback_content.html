@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+    <head>
+        <title></title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="target-densitydpi=device-dpi, width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <link rel="stylesheet" href="css/fonts/font-awesome.min.css">
+        <link rel="stylesheet" href="css/ui-box.css">
+        <link rel="stylesheet" href="css/ui-base.css">
+        <link rel="stylesheet" href="css/ui-color.css">
+        <link rel="stylesheet" href="css/appcan.icon.css">
+        <link rel="stylesheet" href="css/appcan.control.css">
+        <link rel="stylesheet" href="css/common.css">
+        <link rel="stylesheet" href="css/new_file.css">
+        <link rel="stylesheet" href="css/loader.css">
+        <style>
+            .bc-bg {
+                background-color: #eeeeee;
+                margin-bottom: 0.5em
+            }
+            .uba {
+                border-color: #e3e3e3
+            }
+            .office {
+                color: #FF8A00
+            }
+            .resContent {
+                margin-top: 0.5em
+            }
+            .time {
+                text-align: right;
+                font-size: 70%;
+                color: #999999
+            }
+            .content {
+                background-color: #fff;
+                width: 93%;
+                margin: 0.5em auto;
+                padding: 0.3em
+            }
+            .addImg{
+                background-image: url('twoImg/addimg.png');
+            }
+            .add_wh{
+                width: 4.93em;
+                height: 4.93em;
+                margin-right: 1em;
+                margin-top: 1em;
+                float: left;
+            }
+            .choosePicType{
+                height:3em;
+                width:3em;
+                border:1px solid #ccc;
+                border-radius: 0.5em;
+                margin-right:0.5em;
+            }
+           .shanchu{background-image: url('twoImg/iconfont-shanchu1.png')}                /*删除**/
+           .wh-arrow{width: 1em;height: 1em;}
+           .gsSC{position: absolute;right: 0;}
+        </style>
+    </head>
+    <body class="um-vp ub ub-ver" ontouchstart style="background-color: #FFFFFF">
+        <div class="ub ub-ac uinn50 bc-bg">
+            <div class="ub-f1 ub ub-ac ub-pc ofont pinglun" id="wyly">
+                我要留言
+            </div>
+            <div class="ub-f1 ub ub-ac ub-pc pinglun" id="fkjg">
+                反馈结果
+                <div id="feedNum"></div>
+            </div>
+        </div>
+        <div id="feedback">
+            <div class="ub ub-ver umar-a05 uc-a1 uba b-dd">
+                <textarea placeholder="请输入标题" id="messageTitle" class="ub-f1 ub ulev0" maxlength="20" style="min-height: 2em;padding:.35em;border-color:#ccc;"></textarea>
+                <div class="ulev-1" style="position:absolute;z-index: 1;right:0;bottom:0"></div>
+            </div>
+            <div class="ub ub-ver umar-a05 uc-a1 uba b-dd">
+                <textarea placeholder="请输入反馈内容" id="complaint" class="ub-f1 ub ulev0" maxlength="40" style="min-height: 6em;padding:.35em;border-color:#ccc;"></textarea>
+                <div class="ulev-1" style="position:absolute;z-index: 1;right:0;bottom:0"></div>
+            </div>
+            <div class="ub" id="chooseType" style="margin-left:0.5em;">
+                <div class="ub ub-ac ub-pc choosePicType" id="subImg01">
+                    <div class="ub ub-img1" style="height:2em;width:2em;background-image: url('twoImg/pat.png');">
+                        
+                    </div>
+                </div>
+                <div class="ub ub-ac ub-pc choosePicType" id="subImg02">
+                    <div class="ub ub-img1" style="height:2em;width:2em;background-image: url('twoImg/picType02.png');">
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="ub" id="cameras" style="padding-left: 1em">
+                <div class="ub-img1 add_wh" id="subImg">
+                    
+                </div>
+            </div>
+            <div class="ub ub-ac ub-pc" style="margin-top: 3em;">
+                <div class="oradiu bg-ff bc-text-head ub-ac ub ub-pc ub-f1" id="submit" style="height:2em;margin:0 3em;">
+                    提交
+                </div>
+            </div>
+        </div>
+        <div id="myFeedbackList" class="uhide" style="padding:0.5em">
+
+        </div>
+    </body>
+    <script src="js/appcan.js"></script>
+    <script src="js/appcan.control.js"></script>
+    <script src="js/common.js"></script>
+    <script>
+        var userInfo = isDefine(getLocVal("userInfo")) ? getLocVal("userInfo") : "";
+        var userId = isDefine(userInfo) ? JSON.parse(userInfo).userId : '';
+        var pageNum = 1;
+        var pageCount = 0;
+        var Liststr = "";
+        var slideType=1;
+        
+        var dirPath = '';       //上传图片路径
+        var num = 0;        //计数器
+        var arrUpload = [];     //相册选取照片路径
+        var imgLength = 0;      //图片的个数
+        var maxImage = 3;       //图片最大个数
+        
+        appcan.ready(function() {
+            appcan.initBounce();
+            //气泡(获取)
+            getFeedbackNum();
+            
+            appcan.frame.setBounce([0, 1], null, null, function(type) {
+                slideType=type;
+                //判断是否有网
+                GetInfoDevice(function(str) {
+                    if (!str) {
+                        appcan.frame.resetBounce(slideType);
+                        return false;
+                    } else {
+                        if (type == 1) {
+                            if ((pageNum - 1) * 10 > pageCount) {
+                                appcan.frame.resetBounce(slideType);
+                            } else {
+                                pageNum++;
+                                getFeedbackList();
+                            }
+                        } else {
+                            pageNum = 1;
+                            Liststr = "";
+                            getFeedbackList();
+                        }
+                    }
+                    appcan.frame.resetBounce(type);
+                });
+            }, bounceBgColor, imgSettingsVal)
+            
+            //拍照回调
+            uexCamera.cbOpenInternal = function(opCode, dataType, data) {
+                uexWindow.toast(1,5,"","");
+                imgLength++;
+                if(imgLength > maxImage){
+                    imgLength--;
+                    appcan.window.openToast('上传图片超过'+maxImage+'张',2000);
+                    return false;
+                }
+                if(imgLength == maxImage){
+                    $('#subImg').hide();
+                }
+                dirPath = data;
+                arrUpload = [];
+                uexUploaderMgr.createUploader(num, uploadHttp);
+            }
+            
+            //照片
+            uexImageBrowser.cbPick = function(opCode, dataType, data) {
+                uexWindow.toast(1,5,"","");
+                tNum = 0;
+                //uexLog.sendLog("PickData===>"+opCode+'--------'+dataType+'--------'+data)
+                arrUpload = data.split(",");
+                imgLength += arrUpload.length;
+               //uexLog.sendLog("imgLength===>"+imgLength+"<==maxImage==>"+maxImage);
+                if(imgLength > maxImage){
+                    imgLength -= arrUpload.length;
+                    appcan.window.openToast('上传图片超过'+maxImage+'张',2000);
+                    return false;
+                }
+                if(imgLength == maxImage){
+                    $('#subImg').hide();
+                }
+                createPic();
+            }
+            
+            //上传
+            uexUploaderMgr.onStatus = function(opCode, fileSize, percent, serverPath, status) {
+                switch (status) {
+                    case 0:
+                        //上传中
+                        appcan.window.openToast('图像上传中'+percent+'%', 0, 5);
+                        break;
+                    case 1:
+                        appcan.window.openToast('图像上传成功', 2000, 5);
+                        //alert(serverPath);
+                        var imgId = JSON.parse(serverPath).key;
+                        //alert(serverPath+"\n"+imgId);
+                        uexUploaderMgr.closeUploader(num);
+                        num++;
+                        createPic();
+                        $("#cameras").prepend('<div class="ub-img1 add_wh" name="picName" id="'+imgId+'" style="background-image: url('+getImgUrl("1",imgId,3)+')"><div class="shanchu wh-arrow ub-img gsSC" onclick="delPic(this)"></div></div>');
+                        uexWindow.closeToast();
+                        break;
+                    case 2:
+                        appcan.window.openToast('文件上传失败', 3000, 5);
+                        uexUploaderMgr.closeUploader(num);
+                        break;
+                }
+            }
+            
+            //创建上传的回调
+            uexUploaderMgr.cbCreateUploader = function(opCode, dataType, data) {
+                if (data == 0) {
+                    uexUploaderMgr.uploadFile(num, dirPath, "uploadFile", 3);
+                } else {
+                    uexWindow.toast(0, 5, "创建失败", 3000);
+                }
+            }
+            
+            var arrload = getLocVal('arrUpload');
+            if(isDefine(arrload)){
+                arrUpload = JSON.parse(arrload);
+                createPic();
+                imgLength = arrUpload.length;
+                if(arrUpload.length >= maxImage){
+                    $('#subImg').hide();
+                }
+            }
+        })
+        
+        //提交反馈
+        appcan.button("#submit", "btn-act", function() {
+            postMessage();
+        })
+        
+        //切换反馈页面
+        appcan.button('.pinglun', 'btn-act', function() {
+            if (this.id == 'wyly') {
+                $("#wyly").addClass('ofont');
+                $("#fkjg").removeClass('ofont');
+                $("#feedback").removeClass("uhide");
+                $("#myFeedbackList").addClass("uhide");
+            } else {
+                $("#fkjg").addClass('ofont');
+                $("#wyly").removeClass('ofont');
+                $("#feedback").addClass("uhide");
+                $("#myFeedbackList").removeClass("uhide");
+                pageNum = 1;
+                Liststr="";
+                getFeedbackList();
+            }
+        })
+        
+        //提交意见反馈
+        var postStatus=1;
+        function postMessage() {
+            if(postStatus==0){
+                uexWindow.toast(0, 5, "正在提交...", 2000);
+                 return false;
+            }else{
+                postStatus=0;
+            }
+            var content = $("#complaint").val();
+            var title = $("#messageTitle").val();
+            if(!isDefine(title)){
+                 uexWindow.toast(0, 5, "标题不能为空！", 2000);
+                 return false;
+            }
+            
+            if(!isDefine(content)){
+                 uexWindow.toast(0, 5, "内容不能为空！", 2000);
+                 return false;
+            }
+            
+            var attachment = [];
+            var picUrls="";
+            var imgList = $("div[name='picName']");
+            if (imgList.length>0){
+                for(var i=0;i<imgList.length;i++){
+                    var imgObj = {}
+                    imgObj.attcId=$(imgList[i]).attr("id");
+                    imgObj.attcTypeId='01';
+                    imgObj.attcIcon='';
+                    attachment.push(imgObj);
+                    
+                    picUrls+=imgObj.attcId;
+                    (i<imgList.length-1)?(picUrls+=","):"";
+                }
+            }
+            
+            if(attachment.length > maxImage){
+                appcan.window.openToast('图片最多只能'+maxImage+'张!',2000);
+                return false;
+            }
+            
+            var if_list = {
+                "transcode" : "feedbackinfo_add",
+                "content" : {
+                    "feedbackUserId" : userId,
+                    "content" : content,
+                    "feedbackTitle":title,   // 标题
+                    "picUrls":picUrls // 图片地址
+                }
+            };
+            console.log(JSON.stringify(if_list));
+            appcan.request.ajax({
+                url : chongqingUrl,
+                headers : {
+                    token : appcan.locStorage.val("token") || '',
+                    deviceId : appcan.locStorage.val("deviceId") || ''
+                },
+                appVerify : true,
+                data : JSON.stringify(if_list),
+                type : "POST",
+                timeout : "15000",
+                contentType : "application/json",
+                dataType : "json",
+                success : function(res) {
+                    console.log("意见反馈提交返回===>")
+                    console.log(res);
+                    postStatus=1;
+                    if (res.status == "000") {
+                        uexWindow.toast(0, 5, "您的留言已收到，我们会尽快给您答复，感谢您对“重庆”的支持", 3000);
+                    } else {
+                        uexWindow.toast(0, 5, "提交失败", 2000);
+                    }
+                    setTimeout("closeWindow()", 2000);
+                },
+                error : function() {
+                    postStatus=1;
+                }
+            })
+        }
+        
+        //反馈结果列表
+        function getFeedbackList() {
+            loader.open();
+            var if_list = {
+                "transcode" : "feedbackinfo_getList",
+                "content" : {
+                    "userId" : userId,
+                    "page" : {
+                        "pageNo" : pageNum,
+                        "pageSize" : 10
+                    }
+                }
+            };
+            console.log(JSON.stringify(if_list));
+            appcan.request.ajax({
+                url : chongqingUrl,
+                headers : {
+                    token : appcan.locStorage.val("token") || '',
+                    deviceId : appcan.locStorage.val("deviceId") || ''
+                },
+                appVerify : true,
+                data : JSON.stringify(if_list),
+                type : "POST",
+                timeout : "15000",
+                contentType : "application/json",
+                dataType : "json",
+                success : function(res) {
+                    loader.close();
+                    console.log("意见反馈结果列表返回===>")
+                    console.log(res);
+                    if (res.status == "000") {
+                        $("#feedNum").html("");
+                        appcan.window.publish("feedNum", "");
+                        appcan.locStorage.setVal("lastTime", Date.now()/1000);
+                        
+                        pageCount = res.data.totalNum;
+                        for (var i = 0; i < res.data.list.length; i++) {
+                            var cTime = UnixToDate(Date(res.data.list[i].cTime));
+                            repConent = res.data.list[i].replyContent
+                            if (res.data.list[i].isReply == 0){
+                                repConent = '您的留言已收到，我们会尽快给您答复，感谢您对“重庆”的支持！';
+                            }
+                            Liststr += '<div class="bc-bg uba uinn">' 
+                                            + '<div class="office">' 
+                                            + '"重庆"客户端官方回复:' 
+                                            + '</div>' 
+                                            + '<div class="resContent">' 
+                                            + repConent 
+                                            + '</div>' 
+                                            + '<div class="content">' 
+                                            + '留言内容：' 
+                                            + res.data.list[i].content 
+                                            + '</div>' 
+                                            + '<div class="time" >' 
+                                            + cTime 
+                                            + '</div>' 
+                                        + '</div>';
+                        }
+                        $("#myFeedbackList").html(Liststr);
+                    } else {
+                        uexWindow.toast(0, 5, "提交失败", 2000);
+                    }
+                },
+                error : function() {
+                }
+            })
+        }
+        
+        //反馈结果气泡
+        function getFeedbackNum() {
+            var userStar = getLocVal('loginState');
+            if (userStar != "yes"){
+                 return false; 
+            }
+            
+            var if_list = {
+                "transcode" : "feedbackinfo_getList",
+                "content" : {
+                    "userId" : userId,
+                    "lastTime" : appcan.locStorage.val("lastTime") || ""
+                }
+            };
+            console.log(JSON.stringify(if_list));
+            appcan.request.ajax({
+                url : chongqingUrl,
+                headers : {
+                    token : appcan.locStorage.val("token") || '',
+                    deviceId : appcan.locStorage.val("deviceId") || ''
+                },
+                appVerify : true,
+                data : JSON.stringify(if_list),
+                type : "POST",
+                timeout : "15000",
+                contentType : "application/json",
+                dataType : "json",
+                success : function(res) {
+                    loader.close();
+                    console.log("意见反馈结果气泡===>")
+                    console.log(res);
+                    if (res.status == "000") {
+                        var num = res.data.totalNum;
+                        if (num > 0) {
+                            if (num >= 99){
+                                num = 99 + "+";
+                            }
+                            var str = '<div class="ub ub-pc ub-ac feednum"><div>' + num + '</div></div>';
+                            $("#feedNum").html(str);
+                        }
+                    } else {
+                        // uexWindow.toast(0, 5, "提交失败", 2000);
+                    }
+                },
+                error : function() {
+
+                }
+            })
+        }
+        
+        
+    //以下为图片数据处理相关函数
+        //图片选择路径
+    appcan.button('#subImg01', 'btn-act', function() {
+        openShee(1);
+    })
+    appcan.button('#subImg02', 'btn-act', function() {
+        openShee(2);
+    })
+        
+    function openShee(str){
+        if(str == 1){
+            uexCamera.openBandIconInternal('res://camera.png','0','50');
+        }else{
+            uexImageBrowser.pickMulti(9);
+        }
+    }
+    
+    //递归上传多张图片
+    var tNum = 0;
+    function createPic(){
+        var lengths = arrUpload.length;
+        if(arrUpload.length > maxImage){
+            lengths = maxImage;
+            $('#subImg').hide();
+        }
+        if(tNum < lengths){
+            dirPath = arrUpload[tNum];
+            uexUploaderMgr.createUploader(num, uploadHttp);
+            tNum++;
+        }
+    }
+       
+    //删除图片
+    function delPic(dom){
+        $('#subImg').show();
+        imgLength--;
+        $(dom).parent().remove();
+    }
+    
+        
+    function closeWindow() {
+        appcan.window.publish("closeFeedback", "");
+    }
+
+
+    </script>
+</html>

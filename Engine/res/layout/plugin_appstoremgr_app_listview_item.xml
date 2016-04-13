@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#FFFFFF"
+    android:orientation="vertical" >
+    
+    <RelativeLayout
+        android:id="@+id/re1"
+        android:layout_width="fill_parent"
+        android:layout_height="94dip"
+        android:layout_marginLeft="15dip"
+        android:visibility="visible" >
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="70dip"
+            android:layout_height="70dip"
+            android:layout_centerVertical="true"
+            android:background="@drawable/plugin_appstoremgr_icon_bg" />
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_alignBottom="@+id/imageView"
+            android:layout_alignTop="@+id/imageView"
+            android:layout_marginLeft="12dip"
+            android:layout_marginRight="10dip"
+            android:layout_toRightOf="@+id/imageView" >
+            
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true">
+                <TextView
+                    android:id="@+id/appName"
+                    android:layout_width="136dip"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:singleLine="true"
+                    android:text="AppCan应用"
+                    android:textColor="#000000"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+	
+                <RatingBar
+                    android:id="@+id/appScore"
+                    style="@style/appraise_ratingbar_style"
+                    android:layout_below="@id/appName"
+                    android:layout_marginTop="@dimen/plugin_appstoremgr_app_details_padding"
+                    android:layout_width="wrap_content"
+                    android:layout_height="15dip"
+                    android:clickable="false"
+                    android:layout_centerVertical="true"
+                    android:isIndicator="true"
+                    android:rating="3" />
+	
+                <TextView
+                    android:id="@+id/appDownloadCnt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/appScore"
+                    android:layout_marginTop="@dimen/plugin_appstoremgr_app_details_padding"
+                    android:text="0次下载"
+                    android:textColor="#808080" />
+            </RelativeLayout>
+            
+            <Button
+                android:id="@+id/downloadState"
+                android:layout_width="wrap_content"
+                android:layout_height="30dip"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="5dip"
+                android:background="@drawable/plugin_appstoremgr_button_selector"
+                android:text="@string/plugin_appstore_not_install"
+                android:textColor="@color/plugin_appstoremgr_main_color" />
+        </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/listViewDivider"
+            android:layout_width="fill_parent"
+            android:layout_height="1dip"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/plugin_appstoremgr_listview_divider" />
+    </RelativeLayout>
+
+</LinearLayout>

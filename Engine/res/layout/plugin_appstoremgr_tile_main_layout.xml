@@ -1,0 +1,32 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+    
+    <org.zywx.wbpalmstar.plugin.uexappstoremgr.view.HeaderGridView
+        android:id="@+id/app_tile_headergridview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:cacheColorHint="@android:color/transparent"
+        android:columnWidth="200dp"
+        android:fadingEdge="none"
+        android:horizontalSpacing="0dp"
+        android:listSelector="@android:color/transparent"
+        android:numColumns="3"
+        android:fadeScrollbars="true"   
+        android:verticalSpacing="0dp" >
+    </org.zywx.wbpalmstar.plugin.uexappstoremgr.view.HeaderGridView>
+
+    <Button
+        android:id="@+id/plugin_appstoremgr_del_tile_ok_button"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/plugin_appstoremgr_del_app_ok_button_height"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@drawable/plugin_appstoremgr_del_app_complete_selector"
+        android:visibility="gone" />
+
+</RelativeLayout>

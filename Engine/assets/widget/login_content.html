@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+    <head>
+        <title></title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="target-densitydpi=device-dpi, width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <link rel="stylesheet" href="css/fonts/font-awesome.min.css">
+        <link rel="stylesheet" href="css/ui-box.css">
+        <link rel="stylesheet" href="css/ui-base.css">
+        <link rel="stylesheet" href="css/ui-color.css">
+        <link rel="stylesheet" href="css/appcan.icon.css">
+        <link rel="stylesheet" href="css/appcan.control.css">
+        <link rel="stylesheet" href="css/new_file.css">
+        <link rel="stylesheet" href="css/loader.css">
+    </head>
+    <body class="um-vp f-f bg-wh bc-bg ub-img1" style="background-image: url('image/loginBG.png')" ontouchstart>
+        <div class="ub ub-ver ub-f1 ub-fh ub-pc ub-ac">
+            <div class="ub ub-f1 ub-pc ub-ac" style="margin: 3em 0 1em 0">
+                <div class="ub ub-img res-chongqing" style="height:5em;width:8em"></div>
+            </div>
+            <div class="ub uinn ub-ac ubb" style="width:80%;border-color: #998b7b">
+                <div class="ub ub-img res-phoneIcon iconSpace15"></div>
+                <div class="uinput ub ub-f1  bc-border" style="margin-left:.2em">
+                    <input id="phone" placeholder="手机号/用户名" type="tel" class="ub-f1" style="padding-left:.2em;">
+                </div>
+            </div>
+            <div class="ub uinn ub-ac ubb" style="width:80%;border-color: #998b7b;margin-top:1em">
+                <div class="ub ub-img res-password iconSpace15"></div>
+                <div class="uinput ub ub-f1  bc-border" style="margin-left:.2em">
+                    <input id="pwd" placeholder="密码" type="password" class="ub-f1" style="padding-left:.2em">
+                </div>
+            </div>
+
+            <div class="ub uinn fz-8" style="width:80%;margin-top:.5em">
+                <div id="register" class="ub ub-ac ub-f1" style="color:#998b7b">
+                    注册账号
+                </div>
+                <div id="forget" class="ub ub-ac ub-pe ub-f1" style="color:#998b7b">
+                    忘记密码
+                </div>
+            </div>
+
+            <div id="submit" class="ub uinn ub-ac ubb ub-pc uc-a1" style="color:white;width:80%;background-color: #FF8A00;margin-top:.5em">
+                登　　录
+            </div>
+            <!-- <div class="ub ub-ac ub-f1" style="margin-top: 2em;width: 100%;">
+            <div class="ub ub-f1 ubb b-99" style=""></div>
+            <div class="ub c-96 uinn05 fz-8 f-f">其他方式登陆</div>
+            <div class="ub ub-f1 ubb b-99" style=""></div>
+            </div> -->
+            <!-- <div class="ub ub-f1 ub-pc ub-ac" style="margin-top: 1em;width: 100%;">
+            <div class="login-wx-1 wh-25em ub-img7"></div>
+            <div class="login-qq-1 wh-25em ub-img7 m-l2"></div>
+            <div class="login-wb-1 wh-25em ub-img7 m-l2"></div>
+            </div> -->
+        </div>
+
+    </body>
+    <script src="js/appcan.js"></script>
+    <script src="js/appcan.control.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/interface.js"></script>
+    <script>
+        var from = appcan.locStorage.val("from");
+        //记录从那个页面来
+        appcan.ready(function() {
+            var phonenum = appcan.locStorage.val("phone");
+            $("#phone").val(phonenum);
+        });
+        //跳转注册
+        appcan.button("#register", "btn-act", function() {
+            appcan.window.open("registered", "registered.html", 10);
+        })
+        //跳转忘记密码
+        appcan.button("#forget", "btn-act", function() {
+            appcan.window.open("findCode", "findCode.html", 10);
+        })
+        //登录
+        appcan.button("#submit", "btn-bgc-act", function() {
+            var name = $("#phone").val();
+            var pwd = $("#pwd").val();
+            var str = "";
+            if (name == str || pwd == str) {
+                uexWindow.toast("0", "5", "请输入完整信息", 1500);
+            } else {
+                appcan.locStorage.setVal("RememberName", name);
+                login(name, pwd);
+            }
+        })
+        
+        function login(name, password) {
+            loader.open();
+            var conditions = {
+                "name" : name,
+                "password" : password
+            };
+            var list = getInterface('userInfoUserLogin', "", "", conditions);
+            //接口封装配置函数
+            console.log("登录接口======>" + JSON.stringify(list));
+            appcan.request.ajax({
+                url : chongqingUrl,
+                headers : {
+                    token : appcan.locStorage.val("token")||"",
+                    deviceId : appcan.locStorage.val("deviceId") || ""
+                },
+                appVerify : true,
+                data : list,
+                type : "POST",
+                contentType : "application/json",
+                dataType : "json",
+                timeout : "15000",
+                success : function(res) {
+                    console.log("登录成功返回的结果=====>");
+                    console.log(res);
+                    loader.close();
+                    if (res.status == "000") {
+                        uexWindow.toast("0", "5", "登录成功", 2000);
+                        //是否登陆的唯一标识loginState
+                        appcan.locStorage.setVal("loginState", "yes");
+                        //保存用户相关信息
+                        appcan.locStorage.setVal("userInfo", JSON.stringify(res.data));
+                        //token标识
+                        var token = res.data.token;
+                        appcan.locStorage.setVal("token", token);
+                        //保存用户昵称，无昵称保存电话
+                        var nickname = res.data.nickName;
+                        nickname=isDefine(nickname)?nickname:(res.data.loginName).substring(0,3)+"***"+(res.data.loginName).substring(7,11);
+                        appcan.locStorage.setVal("nickname", nickname);
+                        //广播登录信息
+                        appcan.window.publish("isLogined", 'yes');
+                        appcan.window.publish("changename", nickname);
+                        
+                        //从哪来====>去哪
+                        if (from == "activityChoice_pre_content") {
+                            appcan.window.open('makeComplaints', 'makeComplaints_add.html', 10);
+                        }
+                    } else {
+                        uexWindow.toast("0", "5", "此用户未注册或密码错误", 1500);
+                    }
+                },
+                error : function(e) {
+                    loader.close();
+                    console.log("登录失败====>" + e);
+                }
+            })
+        }
+    </script>
+</html>
