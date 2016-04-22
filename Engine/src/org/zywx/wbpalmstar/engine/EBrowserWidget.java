@@ -33,10 +33,10 @@ import android.view.ViewParent;
 import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.TranslateAnimation;
-import android.webkit.WebView;
 import android.widget.FrameLayout;
 
 import com.slidingmenu.lib.SlidingMenu;
+import com.tencent.smtt.sdk.WebView;
 
 import org.json.JSONObject;
 import org.zywx.wbpalmstar.base.BConstant;

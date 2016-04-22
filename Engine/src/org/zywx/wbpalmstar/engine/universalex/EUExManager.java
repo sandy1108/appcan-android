@@ -20,12 +20,13 @@ package org.zywx.wbpalmstar.engine.universalex;
 
 import android.content.Context;
 import android.os.Build;
-import android.webkit.WebView;
 
 import org.zywx.wbpalmstar.base.BDebug;
 import org.zywx.wbpalmstar.engine.EBrowserView;
 import org.zywx.wbpalmstar.engine.ELinkedList;
 import org.zywx.wbpalmstar.widgetone.WidgetOneApplication;
+
+import com.tencent.smtt.sdk.WebView;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;

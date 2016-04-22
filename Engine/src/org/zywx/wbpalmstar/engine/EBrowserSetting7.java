@@ -19,10 +19,11 @@
 package org.zywx.wbpalmstar.engine;
 
 import android.os.Build;
-import android.webkit.WebSettings;
-import android.webkit.WebSettings.PluginState;
 
 import java.lang.reflect.Method;
+
+import com.tencent.smtt.sdk.WebSettings;
+import com.tencent.smtt.sdk.WebSettings.PluginState;
 
 
 public class EBrowserSetting7 extends EBrowserSetting {

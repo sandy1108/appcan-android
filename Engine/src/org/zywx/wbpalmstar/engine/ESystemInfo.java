@@ -22,9 +22,12 @@ import android.content.Context;
 import android.os.Build;
 import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
-import android.webkit.WebSettings.ZoomDensity;
 
 import org.zywx.wbpalmstar.base.BDebug;
+
+
+
+import com.tencent.smtt.sdk.WebSettings.ZoomDensity;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
