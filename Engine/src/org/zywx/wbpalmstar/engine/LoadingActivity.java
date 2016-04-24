@@ -78,9 +78,6 @@ public class LoadingActivity extends Activity {
 					// TODO Auto-generated method stub
 					float deltaTime = (System.currentTimeMillis() - timerCounter) / 1000;
 					BDebug.i("AppCanTBS", "x5初始化使用了" + deltaTime + "秒， 但是可能还没加载完~");
-					Toast.makeText(LoadingActivity.this,
-							"x5初始化使用了" + deltaTime + "秒， 但是可能还没加载完~", Toast.LENGTH_SHORT)
-							.show();
 					resumeAppLoading();
 				}
 				
@@ -88,8 +85,6 @@ public class LoadingActivity extends Activity {
 				public void onCoreInitFinished() {
 					// TODO Auto-generated method stub
 					BDebug.i("AppCanTBS", "onX5CoreInitFinished!!!!");
-					Toast.makeText(LoadingActivity.this,
-							"onCoreInitFinished!!!!", Toast.LENGTH_SHORT).show();
 				}
 			});//设置X5初始化完成的回调接口  第三个参数为true：如果首次加载失败则继续尝试加载；
 		}else{
@@ -129,9 +124,7 @@ public class LoadingActivity extends Activity {
             @Override
             public void run() {
         		if(QbSdk.isTbsCoreInited()){
-        			System.out.println("现在真的加载完了 Started!!!!!!!!!!!");
-        			Toast.makeText(LoadingActivity.this,
-							"现在真的加载完了 Started!!!!!!!!!!!", Toast.LENGTH_LONG).show();
+        			BDebug.i("AppCanTBS", "QbSdk.isTbsCoreInited !!!!!!!!!!!");
         			if (!isTemp) {
         				try {
         					Intent intent = new Intent(LoadingActivity.this, EBrowserActivity.class);

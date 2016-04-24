@@ -35,6 +35,8 @@ import org.zywx.wbpalmstar.engine.universalex.EUExUtil;
 import org.zywx.wbpalmstar.platform.push.report.PushReportConstants;
 import org.zywx.wbpalmstar.platform.push.report.PushReportUtility;
 
+import com.tencent.smtt.sdk.CookieManager;
+
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -49,7 +51,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.NotificationCompat.Builder;
 import android.text.TextUtils;
-import android.webkit.CookieManager;
 import android.widget.RemoteViews;
 
 public class PushRecieveMsgReceiver extends BroadcastReceiver {

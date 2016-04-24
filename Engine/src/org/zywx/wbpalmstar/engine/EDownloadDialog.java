@@ -32,6 +32,8 @@ import org.apache.http.cookie.SM;
 import org.apache.http.protocol.HTTP;
 import org.zywx.wbpalmstar.engine.universalex.EUExUtil;
 
+import com.tencent.smtt.sdk.CookieManager;
+
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -41,7 +43,6 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
-import android.webkit.CookieManager;
 import android.webkit.MimeTypeMap;
 import android.webkit.URLUtil;
 import android.widget.Toast;
