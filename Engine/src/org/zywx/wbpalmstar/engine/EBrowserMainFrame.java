@@ -18,9 +18,10 @@
 
 package org.zywx.wbpalmstar.engine;
 
+import com.tencent.smtt.export.external.interfaces.IX5WebChromeClient.CustomViewCallback;
+
 import android.content.Context;
 import android.view.View;
-import android.webkit.WebChromeClient.CustomViewCallback;
 import android.widget.FrameLayout;
 
 

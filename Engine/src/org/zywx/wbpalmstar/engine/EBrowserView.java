@@ -31,8 +31,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.inputmethod.InputMethodManager;
-import android.webkit.DownloadListener;
-import android.webkit.WebView;
 import android.widget.FrameLayout;
 
 import org.json.JSONObject;
@@ -45,6 +43,9 @@ import org.zywx.wbpalmstar.engine.universalex.EUExManager;
 import org.zywx.wbpalmstar.engine.universalex.EUExUtil;
 import org.zywx.wbpalmstar.engine.universalex.EUExWindow;
 import org.zywx.wbpalmstar.widgetone.dataservice.WWidgetData;
+
+import com.tencent.smtt.sdk.DownloadListener;
+import com.tencent.smtt.sdk.WebView;
 
 import java.lang.reflect.Method;
 import java.util.Map;
