@@ -119,6 +119,12 @@ public class EBrowserView extends WebView implements View.OnLongClickListener,
         this.callback = callback;
     }
 
+    @Override
+    public int getWebScrollY(){
+    	//X5使用super.getWebScrollY()，系统内核应使用getScrollY
+		return super.getWebScrollY();
+    }
+    
     public void init() {
         setInitialScale(100);
         setVerticalScrollbarOverlay(true);
