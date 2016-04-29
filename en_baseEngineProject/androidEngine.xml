@@ -2,5 +2,12 @@
 <info>
     <version>sdksuit_3.2_160202_01</version>
 	<package>android_Engine_3.2_160202_01</package>
+	<!--  kernel字段代表此引擎包使用的内核类型。没有此字段默认为system类型 -->
+	<!-- system表示使用的系统webview内核，即AppCan默认引擎内核 -->
+	<kernel>system</kernel>
+	<!-- tbs表示使用的腾讯TBS服务的X5内核 -->
+	<!--	<kernel>tbs</kernel> -->
+	<!-- crosswalk表示使用的CrossWalk内核 -->
+	<!--	<kernel>crosswalk</kernel>  -->
 	<description>1、修复uexWidget.reloadWidgetByAppId()无效问题；2、添加和删除插件view时不使用Handler发送消息的方式；3、uexWindow增加setAutorotateEnable接口。</description>
 </info>
