@@ -22,6 +22,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Build;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
@@ -45,6 +46,7 @@ import org.zywx.wbpalmstar.engine.universalex.EUExWindow;
 import org.zywx.wbpalmstar.widgetone.dataservice.WWidgetData;
 
 import com.tencent.smtt.sdk.DownloadListener;
+import com.tencent.smtt.sdk.QbSdk;
 import com.tencent.smtt.sdk.WebView;
 
 import java.lang.reflect.Method;
@@ -119,11 +121,46 @@ public class EBrowserView extends WebView implements View.OnLongClickListener,
         this.callback = callback;
     }
 
-    @Override
-    public int getWebScrollY(){
+    public int getCustomWebScrollY(){
     	//X5使用super.getWebScrollY()，系统内核应使用getScrollY
-		return super.getWebScrollY();
+    	int scrollY = getView().getScrollY();
+		return scrollY;
     }
+    
+    public int getCustomHeight(){
+    	//X5使用getView().getHeight()，系统内核应使用getHeight()
+    	int height = getView().getHeight();
+    	return height;
+    }
+    
+	@Override
+	protected boolean drawChild(Canvas canvas, View child, long drawingTime) {
+		//Debug使用，用于在debug时在页面呈现内核类型和版本
+		boolean ret = super.drawChild(canvas, child, drawingTime);
+		int debug = mBroWind.getWidget().m_appdebug;
+		if (debug == 1) {
+			canvas.save();
+			Paint paint = new Paint();
+			paint.setColor(0x7fff0000);
+			paint.setTextSize(24.f);
+			paint.setAntiAlias(true);
+			if (getX5WebViewExtension() != null) {
+				canvas.drawText(this.getContext().getPackageName() + "-pid:"
+						+ android.os.Process.myPid(), 10, 50, paint);
+				canvas.drawText(
+						"X5  Core:" + QbSdk.getTbsVersion(this.getContext()),
+						10, 100, paint);
+			} else {
+				canvas.drawText(this.getContext().getPackageName() + "-pid:"
+						+ android.os.Process.myPid(), 10, 50, paint);
+				canvas.drawText("Sys Core", 10, 100, paint);
+			}
+			canvas.drawText(Build.MANUFACTURER, 10, 150, paint);
+			canvas.drawText(Build.MODEL, 10, 200, paint);
+			canvas.restore();
+		}
+		return ret;
+	}
     
     public void init() {
         setInitialScale(100);
@@ -132,8 +169,8 @@ public class EBrowserView extends WebView implements View.OnLongClickListener,
         setLayoutAnimation(null);
         setAnimation(null);
         setNetworkAvailable(true);
+        int debug = mBroWind.getWidget().m_appdebug;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            int debug = mBroWind.getWidget().m_appdebug;
             setWebContentsDebuggingEnabled(debug == 1 ? true : false);
         }
         if (Build.VERSION.SDK_INT <= 7) {
