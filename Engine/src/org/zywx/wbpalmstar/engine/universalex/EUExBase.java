@@ -30,8 +30,6 @@ import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewTreeObserver;
-import android.webkit.CookieManager;
-import android.webkit.CookieSyncManager;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
@@ -45,6 +43,9 @@ import org.zywx.wbpalmstar.engine.EWgtResultInfo;
 import org.zywx.wbpalmstar.engine.universalex.EUExWindow.ContainerAdapter;
 import org.zywx.wbpalmstar.engine.universalex.EUExWindow.ContainerViewPager;
 import org.zywx.wbpalmstar.widgetone.dataservice.WWidgetData;
+
+import com.tencent.smtt.sdk.CookieManager;
+import com.tencent.smtt.sdk.CookieSyncManager;
 
 import java.io.File;
 import java.util.Vector;

@@ -39,12 +39,11 @@ import android.view.Surface;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.webkit.ValueCallback;
-import android.webkit.WebChromeClient.CustomViewCallback;
 import android.widget.FrameLayout;
-import android.widget.TextView;
 
 import com.slidingmenu.lib.SlidingMenu;
+import com.tencent.smtt.export.external.interfaces.IX5WebChromeClient.CustomViewCallback;
+import com.tencent.smtt.sdk.ValueCallback;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -62,6 +61,9 @@ import org.zywx.wbpalmstar.platform.push.PushRecieveMsgReceiver;
 import org.zywx.wbpalmstar.platform.push.report.PushReportConstants;
 import org.zywx.wbpalmstar.widgetone.WidgetOneApplication;
 import org.zywx.wbpalmstar.widgetone.dataservice.WWidgetData;
+
+
+
 
 
 import java.io.BufferedReader;

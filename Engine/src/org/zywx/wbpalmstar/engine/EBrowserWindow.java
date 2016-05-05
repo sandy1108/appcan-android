@@ -273,7 +273,7 @@ public class EBrowserWindow extends SwipeView implements AnimationListener {
 
     }
 
-    public void createSibling(WebView view, EBrwViewEntry slbEntry) {
+    public void createSibling(EBrowserView view, EBrwViewEntry slbEntry) {
         Message msg = mWindLoop.obtainMessage();
         msg.obj = slbEntry;
         msg.what = F_WHANDLER_SLIBING_CREATE;
@@ -335,7 +335,7 @@ public class EBrowserWindow extends SwipeView implements AnimationListener {
         mWindLoop.sendMessage(msg);
     }
 
-    public void evaluatePopoverScript(WebView inWhich, String inWndName,
+    public void evaluatePopoverScript(EBrowserView inWhich, String inWndName,
                                       String inPopName, String inScript) {
         if (null == inWndName || 0 == inWndName.length()) {
             EBrowserView old = mPopTable.get(inPopName);
@@ -376,7 +376,7 @@ public class EBrowserWindow extends SwipeView implements AnimationListener {
         vParent.setLayoutParams(lParam);
     }
 
-    public void evaluateMultiPopoverScript(WebView inWhich, String inWndName,
+    public void evaluateMultiPopoverScript(EBrowserView inWhich, String inWndName,
                                            String inMultiPopName, String inPopName, String inScript) {
         if (null == inWndName || 0 == inWndName.length()) {
             ArrayList<EBrowserView> list = mMultiPopTable.get(inMultiPopName);
@@ -826,7 +826,7 @@ public class EBrowserWindow extends SwipeView implements AnimationListener {
         }
     }
 
-    public void evaluateScript(WebView inWhich, String inWindowName,
+    public void evaluateScript(EBrowserView inWhich, String inWindowName,
                                int inType, String inScript) {
         if (null == inWindowName || 0 == inWindowName.length()
                 || inWindowName.equals(mName)) {
@@ -1358,7 +1358,7 @@ public class EBrowserWindow extends SwipeView implements AnimationListener {
         mMainView.loadUrl(EUExScript.F_UEX_SCRIPT_BOTTOM_FINISH);
     }
 
-    protected void selfFinish(WebView target) {
+    protected void selfFinish(EBrowserView target) {
         if (null != target) {
             target.loadUrl(EUExScript.F_UEX_SCRIPT_SELF_FINISH);
         } else {

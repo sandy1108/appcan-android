@@ -461,7 +461,7 @@ public class EBounceView extends LinearLayout {
     }
 
     private boolean topCanBounce() {
-        boolean b1 = mBrwView.getScrollY() == 0;
+        boolean b1 = mBrwView.getCustomWebScrollY() == 0;
         if (b1) {
             return true;
         } else {
@@ -476,7 +476,7 @@ public class EBounceView extends LinearLayout {
             nowScale = mBrwView.getScale();
         }
         int h1 = (int) (mBrwView.getContentHeight() * nowScale);
-        int h2 = mBrwView.getScrollY() + mBrwView.getHeight();
+        int h2 = mBrwView.getCustomWebScrollY() + mBrwView.getCustomHeight();
         if (h1 <= h2 + 5) {
             return true;
         } else {

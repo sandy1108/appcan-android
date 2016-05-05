@@ -23,9 +23,6 @@ import android.app.Application;
 import android.content.Context;
 import android.content.res.XmlResourceParser;
 import android.os.Message;
-import android.webkit.CookieManager;
-import android.webkit.CookieSyncManager;
-
 import dalvik.system.DexClassLoader;
 
 import org.apache.http.NameValuePair;
@@ -42,6 +39,9 @@ import org.zywx.wbpalmstar.engine.universalex.ThirdPluginObject;
 import org.zywx.wbpalmstar.platform.push.PushEngineEventListener;
 import org.zywx.wbpalmstar.widgetone.dataservice.WDataManager;
 import org.zywx.wbpalmstar.widgetone.dataservice.WWidgetData;
+
+import com.tencent.smtt.sdk.CookieManager;
+import com.tencent.smtt.sdk.CookieSyncManager;
 
 import java.io.*;
 import java.lang.reflect.Method;
@@ -72,10 +72,6 @@ public class WidgetOneApplication extends Application {
     public void onCreate() {
         super.onCreate();
         EUExUtil.init(this);
-        CookieSyncManager.createInstance(this);
-        CookieManager.getInstance().setAcceptCookie(true);
-        CookieManager.getInstance().removeSessionCookie();
-        CookieManager.getInstance().removeExpiredCookie();
         mCrashReport = ECrashHandler.getInstance(this);
         cachePath = getCacheDir().getAbsolutePath();
         copyLib();
@@ -242,6 +238,11 @@ public class WidgetOneApplication extends Application {
     }
 
     public final void initApp(final Context ctx, final Message resultMsg) {
+    	
+        CookieSyncManager.createInstance(this);
+        CookieManager.getInstance().setAcceptCookie(true);
+        CookieManager.getInstance().removeSessionCookie();
+        CookieManager.getInstance().removeExpiredCookie();
 
         new Thread("Appcan-WidgetOneInit") {
             public void run() {

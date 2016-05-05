@@ -26,10 +26,12 @@ import android.graphics.BitmapFactory;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
-import android.webkit.WebStorage.QuotaUpdater;
 import android.widget.FrameLayout;
 
 import org.zywx.wbpalmstar.engine.universalex.EUExUtil;
+
+import com.tencent.smtt.export.external.interfaces.IX5WebChromeClient.CustomViewCallback;
+import com.tencent.smtt.sdk.WebStorage.QuotaUpdater;
 
 public class CBrowserMainFrame7 extends CBrowserMainFrame {
 
@@ -67,7 +69,8 @@ public class CBrowserMainFrame7 extends CBrowserMainFrame {
         progress.showProgress();
         return progress;
     }
-
+    
+    @Override
     public void onShowCustomView(View view, int requestedOrientation, CustomViewCallback callback) {
         FrameLayout container = new FrameLayout(mContext);
         container.setBackgroundColor(0xff000000);
