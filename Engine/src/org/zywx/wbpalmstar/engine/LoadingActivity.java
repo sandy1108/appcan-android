@@ -67,8 +67,8 @@ public class LoadingActivity extends Activity {
             rootLayout.addView(imageView);
         }
         setContentView(rootLayout);
-        //³õÊ¼»¯X5ÒıÇæSDK
-        if(!QbSdk.isTbsCoreInited()){//preinitÖ»ĞèÒªµ÷ÓÃÒ»´Î£¬Èç¹ûÒÑ¾­Íê³ÉÁË³õÊ¼»¯£¬ÄÇÃ´¾ÍÖ±½Ó¹¹Ôìview
+        //åˆå§‹åŒ–X5å¼•æ“SDK
+        if(!QbSdk.isTbsCoreInited()){//preinitåªéœ€è¦è°ƒç”¨ä¸€æ¬¡ï¼Œå¦‚æœå·²ç»å®Œæˆäº†åˆå§‹åŒ–ï¼Œé‚£ä¹ˆå°±ç›´æ¥æ„é€ view
         	final long timerCounter = System.currentTimeMillis();
 			QbSdk.preInit(this, new PreInitCallback() {
 				
@@ -76,7 +76,7 @@ public class LoadingActivity extends Activity {
 				public void onViewInitFinished() {
 					// TODO Auto-generated method stub
 					float deltaTime = (System.currentTimeMillis() - timerCounter) / 1000;
-					BDebug.i("AppCanTBS", "x5³õÊ¼»¯Ê¹ÓÃÁË" + deltaTime + "Ãë£¬ µ«ÊÇ¿ÉÄÜ»¹Ã»¼ÓÔØÍê~");
+					BDebug.i("AppCanTBS", "x5åˆå§‹åŒ–ä½¿ç”¨äº†" + deltaTime + "ç§’ï¼Œ ä½†æ˜¯å¯èƒ½è¿˜æ²¡åŠ è½½å®Œ~");
 					resumeAppLoading();
 				}
 				
@@ -85,7 +85,7 @@ public class LoadingActivity extends Activity {
 					// TODO Auto-generated method stub
 					BDebug.i("AppCanTBS", "onX5CoreInitFinished!!!!");
 				}
-			});//ÉèÖÃX5³õÊ¼»¯Íê³ÉµÄ»Øµ÷½Ó¿Ú  µÚÈı¸ö²ÎÊıÎªtrue£ºÈç¹ûÊ×´Î¼ÓÔØÊ§°ÜÔò¼ÌĞø³¢ÊÔ¼ÓÔØ£»
+			});//è®¾ç½®X5åˆå§‹åŒ–å®Œæˆçš„å›è°ƒæ¥å£  ç¬¬ä¸‰ä¸ªå‚æ•°ä¸ºtrueï¼šå¦‚æœé¦–æ¬¡åŠ è½½å¤±è´¥åˆ™ç»§ç»­å°è¯•åŠ è½½ï¼›
 		}else{
 			resumeAppLoading();
 		}
