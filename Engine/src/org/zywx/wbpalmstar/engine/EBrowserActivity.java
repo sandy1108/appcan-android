@@ -63,9 +63,6 @@ import org.zywx.wbpalmstar.widgetone.WidgetOneApplication;
 import org.zywx.wbpalmstar.widgetone.dataservice.WWidgetData;
 
 
-
-
-
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
