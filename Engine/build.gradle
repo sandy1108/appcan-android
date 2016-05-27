@@ -1,15 +1,14 @@
-import proguard.gradle.ProGuardTask
 
 apply plugin: 'com.android.application'
 
 dependencies {
     compile fileTree(dir: 'libs', include: '*.jar',exclude:'android-support-v4.jar')
-    compile 'com.android.support:support-v4:23.1.0'
+    compile 'com.android.support:support-v4:23.1.1'
 }
 
 android {
     compileSdkVersion 22
-    buildToolsVersion '23.0.2'
+    buildToolsVersion '23.0.3'
     packagingOptions {
         exclude 'META-INF/MANIFEST.MF'
         exclude 'META-INF/LICENSE.txt'
@@ -45,12 +44,12 @@ android {
     defaultConfig {
         applicationId 'org.zywx.wbpalmstar.widgetone.uex'
         minSdkVersion 14
-        targetSdkVersion 14 //
+        targetSdkVersion 22
     }
     productFlavors {
     }
     buildTypes {
-        debug {
+         debug {
             minifyEnabled false
         }
         release {
@@ -68,6 +67,8 @@ task clearJar(type: Delete) {
     delete 'build/libs/AppCanEngine.jar'
     delete 'build/libs/AppCanEngine_un_pro.jar'
 }
+
+import proguard.gradle.ProGuardTask
 
 task makeJar(type:Jar,dependsOn:['compileReleaseJavaWithJavac']) {
     //指定生成的jar名
