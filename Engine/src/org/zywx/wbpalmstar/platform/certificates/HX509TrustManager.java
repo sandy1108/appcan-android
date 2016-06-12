@@ -22,6 +22,7 @@ package org.zywx.wbpalmstar.platform.certificates;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
+
 import java.security.KeyStore;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
@@ -29,43 +30,65 @@ import java.security.cert.X509Certificate;
 
 public class HX509TrustManager implements X509TrustManager {
 
-	private X509TrustManager mTrustManager; 
-	
-	public HX509TrustManager(KeyStore ksP12) throws Exception{
+    private static X509TrustManager mDefaultTrustManager;
+    private X509TrustManager mTrustManager;
 
-		TrustManagerFactory tfactory = TrustManagerFactory.getInstance(Http.algorithm);  
-		tfactory.init(ksP12);  
-        TrustManager[] trustMgr = tfactory.getTrustManagers();  
-        if (trustMgr.length == 0) {  
-            throw new NoSuchAlgorithmException("no trust manager found");  
-        }  
-        mTrustManager = (X509TrustManager)trustMgr[0]; 
-        
-	}
+    public HX509TrustManager(KeyStore ksP12) throws Exception {
 
-	@Override
-	public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
-		
-		mTrustManager.checkClientTrusted(chain, authType);
-	}
+        TrustManagerFactory tfactory = TrustManagerFactory.getInstance(Http.algorithm);
+        tfactory.init(ksP12);
+        TrustManager[] trustMgr = tfactory.getTrustManagers();
+        if (trustMgr.length == 0) {
+            throw new NoSuchAlgorithmException("no trust manager found");
+        }
+        mTrustManager = (X509TrustManager) trustMgr[0];
+        if (mDefaultTrustManager == null) {
+            // 初始化系统默认证书库的trustManager
+            TrustManagerFactory defaultTfactory = TrustManagerFactory
+                    .getInstance(Http.algorithm);
+            defaultTfactory.init((KeyStore) null);
+            TrustManager[] defaultTrustMgr = defaultTfactory.getTrustManagers();
+            if (defaultTrustMgr.length == 0) {
+                throw new NoSuchAlgorithmException(
+                        "no default trust manager found");
+            }
+            mDefaultTrustManager = (X509TrustManager) defaultTrustMgr[0];
+        }
+    }
 
-	@Override
-	public void checkServerTrusted(X509Certificate[] chain, String authType){
-		try{
-			if ((chain != null) && (chain.length == 1)) {  
-				chain[0].checkValidity();  
-	        } else {  
-	        	mTrustManager.checkServerTrusted(chain, authType);  
-	        } 
-		}catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+    @Override
+    public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+        if (Http.isCheckTrustCert()) {
+            try {
+                mTrustManager.checkClientTrusted(chain, authType);
+            } catch (Exception e) {
+                e.printStackTrace();
+                mDefaultTrustManager.checkClientTrusted(chain, authType);
+            }
+        }
+    }
 
-	@Override
-	public X509Certificate[] getAcceptedIssuers() {
-		
-		return null;
-	}
-	
+    @Override
+    public void checkServerTrusted(X509Certificate[] chain, String authType)
+            throws CertificateException {
+        if (Http.isCheckTrustCert()) {
+            try {
+                if ((chain != null) && (chain.length == 1)) {
+                    chain[0].checkValidity();
+                } else {
+                    mTrustManager.checkServerTrusted(chain, authType);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                mDefaultTrustManager.checkServerTrusted(chain, authType);
+            }
+        }
+    }
+
+    @Override
+    public X509Certificate[] getAcceptedIssuers() {
+        X509Certificate[] certs = mTrustManager.getAcceptedIssuers();
+        return certs;
+    }
+
 }
