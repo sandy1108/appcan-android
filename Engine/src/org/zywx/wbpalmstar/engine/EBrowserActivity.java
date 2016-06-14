@@ -40,6 +40,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import com.slidingmenu.lib.SlidingMenu;
 import com.tencent.smtt.export.external.interfaces.IX5WebChromeClient.CustomViewCallback;
@@ -49,6 +50,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.zywx.wbpalmstar.acedes.ACEDes;
 import org.zywx.wbpalmstar.base.BDebug;
+import org.zywx.wbpalmstar.base.util.ConfigXmlUtil;
 import org.zywx.wbpalmstar.engine.external.Compat;
 import org.zywx.wbpalmstar.engine.universalex.EUExBase;
 import org.zywx.wbpalmstar.engine.universalex.EUExCallback;
@@ -109,6 +111,9 @@ public final class EBrowserActivity extends FragmentActivity {
             loadResError();
             return;
         }
+
+        ConfigXmlUtil.setFullScreen(this);
+
         Intent intent = new Intent(EBrowserActivity.this, TempActivity.class);
         intent.putExtra("isTemp", true);
         startActivity(intent);
@@ -208,7 +213,7 @@ public final class EBrowserActivity extends FragmentActivity {
             loadResError();
             return;
         }
-
+        ConfigXmlUtil.setFullScreen(this);
         ACEDes.getObfuscationList();
 
         WWidgetData rootWidget = (WWidgetData) resultMsg.obj;
