@@ -67,6 +67,8 @@ public abstract class EUExBase {
      */
     public EBrowserView mBrwView;
 
+    private int mType;
+
     protected boolean mDestroyed;
     protected boolean mStopped;
     protected c mHandler;
