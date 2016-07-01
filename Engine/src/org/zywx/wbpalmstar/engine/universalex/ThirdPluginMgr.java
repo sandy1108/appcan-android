@@ -68,6 +68,10 @@ public class ThirdPluginMgr {
 	private static final String F_SP_NAME_PLUGIN_LOADING = "plugins_loading";
 	private static final String F_SP_KEY_NAME_PLUGIN_COPY_FINISHED = "isPluginCopyFinished";
 	private static final String F_SP_KEY_NAME_PLUGIN_COPY_LAST_PKG_VERSION = "lastCopyPkgVersion";
+	private static final String dexApk = "apkfile";
+	private static final String dexJar = "dexfile/jar";
+	private static final String dexLib = "dexfile/armeabi";
+	private static final String optFile = "dexfile/out";
 
 	private Context mContext;
 
@@ -80,10 +84,6 @@ public class ThirdPluginMgr {
 	private LinkedList<String> javaNames;
     private int PluginCount = 0;
 	private String libsParentDir = null;
-	private String dexApk = "apkfile";
-	private String dexJar = "dexfile/jar";
-	private String dexLib = "dexfile/armeabi";
-	private String optFile = "dexfile/out";
 
 	private String[] pluginJars = null;
 
