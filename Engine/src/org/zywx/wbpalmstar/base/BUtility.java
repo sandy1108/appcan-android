@@ -42,6 +42,7 @@ import org.zywx.wbpalmstar.engine.EBrowserView;
 import org.zywx.wbpalmstar.engine.universalex.EUExUtil;
 import org.zywx.wbpalmstar.platform.encryption.PEncryption;
 import org.zywx.wbpalmstar.widgetone.dataservice.WDataManager;
+import org.zywx.wbpalmstar.widgetone.dataservice.WidgetPatchUpgradeMgr;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -1069,5 +1070,19 @@ public class BUtility {
             e.printStackTrace();
             return inputStream;
         }
+    }
+
+    /**
+     * 安装补丁包
+     * 
+     * @param context
+     * @param sboxPath
+     * @param appId
+     * @return 安装成功，返回版本号；失败，返回空。
+     */
+    public static String installWidgetPatch(Context context, String sboxPath,
+            String appId) {
+        return WidgetPatchUpgradeMgr.installWidgetPatch(context, sboxPath,
+                appId);
     }
 }
