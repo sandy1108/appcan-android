@@ -120,7 +120,8 @@ public class CBrowserWindow7 extends ACEDESBrowserWindow7 {
             }
             return true;
         }
-        boolean isUrl = url.startsWith("file") || url.startsWith("http");
+        boolean isUrl = url.startsWith("file") || url.startsWith("http")
+                || url.startsWith("content://");
         if (!isUrl) {
             return true;
         }
@@ -137,11 +138,13 @@ public class CBrowserWindow7 extends ACEDESBrowserWindow7 {
         }
         int sdkVersion = Build.VERSION.SDK_INT;
         if (sdkVersion >= 11) {
-            if (url.startsWith("file")) {
+            if (url != null) {
                 int index = url.indexOf("?");
                 if (index > 0) {
                     mParms = url.substring(index + 1);
-                    url = url.substring(0, index);
+                    if (!url.startsWith("http")) {
+                        url = url.substring(0, index);
+                    }
                 }
             }
         }
@@ -207,29 +210,31 @@ public class CBrowserWindow7 extends ACEDESBrowserWindow7 {
         int versionA = Build.VERSION.SDK_INT;
 
         if (!target.isWebApp()) { //4.3及4.3以下手机
-            if (!info.mScaled) {
-                float nowScale = 1.0f;
 
-                if (versionA <= 18) {
-                    nowScale = target.getScale();
-                }
+            int defaultFontSize;
+            float nowScale = 1.0f;
 
-                info.mDefaultFontSize = (int) (info.mDefaultFontSize / nowScale);
-                info.mScaled = true;
-
+            if (versionA <= 18) {
+                nowScale = target.getScale();
             }
 
-            target.setDefaultFontSize(info.mDefaultFontSize);
+            defaultFontSize = (int) (info.mDefaultFontSize / nowScale);
+            info.mScaled = true;
+
+            target.setDefaultFontSize(defaultFontSize);
         }
 
 
         if (!info.mFinished) {
             if (WWidgetData.m_remove_loading == 1) {
-                ((EBrowserActivity) target.getContext()).setContentViewVisible(200);
+                if (target.getContext()instanceof EBrowserActivity) {
+                    ((EBrowserActivity) target.getContext()).setContentViewVisible(200);
+                }
             }
         }
 
         info.mFinished = true;
+        target.loadUrl(EUExScript.F_UEX_DISPATCHER_SCRIPT);
         target.loadUrl(EUExScript.F_UEX_SCRIPT);
         target.onPageFinished(target, url);
 
@@ -332,8 +337,7 @@ public class CBrowserWindow7 extends ACEDESBrowserWindow7 {
     @Override
     public void onReceivedSslError(WebView view, SslErrorHandler handler,
                                    SslError error) {
-
-        handler.proceed();
+        super.onReceivedSslError(view,handler,error);
     }
 
     @Override
