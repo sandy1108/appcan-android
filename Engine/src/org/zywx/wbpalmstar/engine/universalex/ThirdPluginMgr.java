@@ -68,6 +68,10 @@ public class ThirdPluginMgr {
 	private static final String F_SP_NAME_PLUGIN_LOADING = "plugins_loading";
 	private static final String F_SP_KEY_NAME_PLUGIN_COPY_FINISHED = "isPluginCopyFinished";
 	private static final String F_SP_KEY_NAME_PLUGIN_COPY_LAST_PKG_VERSION = "lastCopyPkgVersion";
+	private static final String dexApk = "apkfile";
+	private static final String dexJar = "dexfile/jar";
+	private static final String dexLib = "dexfile/armeabi";
+	private static final String optFile = "dexfile/out";
 
 	private Context mContext;
 
@@ -79,18 +83,14 @@ public class ThirdPluginMgr {
     private Map<String, ThirdPluginObject> mThirdClass;
 	private LinkedList<String> javaNames;
     private int PluginCount = 0;
-	private String cachePath = null;
-	private String dexApk = "apkfile";
-	private String dexJar = "dexfile/jar";
-	private String dexLib = "dexfile/armeabi";
-	private String optFile = "dexfile/out";
+	private String libsParentDir = null;
 
 	private String[] pluginJars = null;
 
 	public ThirdPluginMgr(Context context) {
         mThirdClass = new Hashtable<String, ThirdPluginObject>();
 		javaNames = new LinkedList<String>();
-        cachePath = context.getCacheDir().getAbsolutePath();
+        libsParentDir = context.getFilesDir().getAbsolutePath();
 		mContext = context;
     }
 
@@ -116,7 +116,7 @@ public class ThirdPluginMgr {
 		InputStream in = null;
 		BufferedInputStream bis = null;
 		FileOutputStream fos = null;
-		String libPath = cachePath + File.separator + dexLib;
+		String libPath = libsParentDir + File.separator + dexLib;
 		File dirFile = new File(libPath);
 		if (dirFile != null)
 			dirFile.delete();
@@ -175,7 +175,7 @@ public class ThirdPluginMgr {
 		InputStream in = null;
 		BufferedInputStream bis = null;
 		FileOutputStream fos = null;
-		String jarPath = cachePath + File.separator + dexJar;
+		String jarPath = libsParentDir + File.separator + dexJar;
 		File dirFile = new File(jarPath);
 		pluginJars = null;
 		if (dirFile != null)
@@ -290,7 +290,7 @@ public class ThirdPluginMgr {
 		this.copyDynamicApk();
 		XmlPullParser plugins = null;
 		// 动态加载apk插件
-		File apkPluginParentDir = new File(cachePath + File.separator + dexApk);
+		File apkPluginParentDir = new File(libsParentDir + File.separator + dexApk);
 		File[] pluginApks = apkPluginParentDir.listFiles();
 		if (pluginApks != null) {
 			for (int i = 0; i < pluginApks.length; i++) {
@@ -582,7 +582,7 @@ public class ThirdPluginMgr {
 			e.printStackTrace();
 		}
 		if (!isFinished) {
-			isFinished = CopyAssets(mContext, dexApk, cachePath
+			isFinished = CopyAssets(mContext, dexApk, libsParentDir
 					+ File.separator
 					+ dexApk);
 			// copy完成，记录状态以及当前apk版本
@@ -609,7 +609,7 @@ public class ThirdPluginMgr {
 				// create the dexPath
 
 				int PluginCount = pluginJars.length;
-				String dexPath = cachePath + File.separator + dexJar;
+				String dexPath = libsParentDir + File.separator + dexJar;
 				StringBuilder sb = new StringBuilder();
 				for (int i = 0; i < PluginCount; i++) {
 					sb.append(dexPath).append(File.separator)
@@ -619,12 +619,12 @@ public class ThirdPluginMgr {
 
 				// create the optPath
 
-				String optPath = cachePath + File.separator + optFile;
+				String optPath = libsParentDir + File.separator + optFile;
 				File dirFile = new File(optPath);
 				if (!dirFile.exists()) {
 					dirFile.mkdirs();
 				}
-				String libPath = cachePath + File.separator + dexLib;
+				String libPath = libsParentDir + File.separator + dexLib;
 
 				// create the dexclassloader
 				DexClassLoader dexCl = new DexClassLoader(dexPath, optPath,
