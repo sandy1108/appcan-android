@@ -69,6 +69,7 @@ public class WidgetOneApplication extends Application {
     public void onCreate() {
         super.onCreate();
         EUExUtil.init(this);
+        BDebug.init();
         CookieSyncManager.createInstance(this);
         CookieManager.getInstance().setAcceptCookie(true);
         CookieManager.getInstance().removeSessionCookie();
@@ -77,7 +78,6 @@ public class WidgetOneApplication extends Application {
         initPlugin();
         reflectionPluginMethod("onApplicationCreate");
         BConstant.app = this;
-        BDebug.init();
     }
 
     private void reflectionPluginMethod(String method) {
