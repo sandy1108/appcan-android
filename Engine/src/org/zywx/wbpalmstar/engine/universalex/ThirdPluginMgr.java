@@ -252,13 +252,14 @@ public class ThirdPluginMgr {
 	/**
 	 * 判断是否已经加载了重复的插件
 	 * 
-	 * @param jsName
-	 * @param javaName
+	 * @param jsName 插件名称
+	 * @param javaName 插件入口类名称
 	 * @return
 	 */
-	private boolean isDuplicatedPlugin(String jsName, String javaName) {
-		return mThirdClass.containsKey(jsName) || javaNames.contains(javaName);
-	}
+    private boolean isDuplicatedPlugin(String jsName, String javaName) {
+        return (jsName == null || javaName == null) ? false : (mThirdClass
+                .containsKey(jsName) || javaNames.contains(javaName));
+    }
 
 	/**
 	 * 加载apk形式的动态库插件，获取classLoader
@@ -314,6 +315,7 @@ public class ThirdPluginMgr {
 								classLoader);
 					}
 				} catch (Exception e) {
+				    e.printStackTrace();
 					BDebug.e(e.toString());
 				}
 			}
