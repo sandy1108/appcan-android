@@ -47,16 +47,17 @@ public class WidgetPatchUpgradeMgr {
      * 安装补丁包
      * 
      * @param context
-     * @param sboxPath
      * @param appId
+     * @param installType：安装补丁包类型1：网页包；2：插件包；3：网页和插件
      * @return 安装成功，返回版本号；失败，返回空。
      */
-    public static String installWidgetPatch(Context context, String sboxPath,
-            String appId) {
+    public static String installWidgetPatch(Context context, String appId,
+            int installType) {
         WidgetPatchConfig wConfig = getWidgetPatchConfig(context, appId,
-                sboxPath + "widget/");
+                WDataManager.m_sboxPath + "widget/");
         if (wConfig.hasZip) {
-            unZip(context, wConfig.isDynamicLoad, sboxPath, appId);
+            unZip(context, wConfig.isDynamicLoad, WDataManager.m_sboxPath,
+                    appId, installType);
         }
         return wConfig.version;
     }
@@ -65,15 +66,16 @@ public class WidgetPatchUpgradeMgr {
      * 解压补丁包
      * 
      * @param context
-     * @param sboxPath
      * @param appId
+     * @param installType：安装补丁包类型1：网页包；2：插件包；3：网页和插件
      * @return
      */
-    public static boolean unZip(Context context, String sboxPath,
-            String appId) {
+    public static boolean unZip(Context context, String appId,
+            int installType) {
         WidgetPatchConfig wConfig = getWidgetPatchConfig(context, appId,
-                sboxPath + "widget/");
-        return unZip(context, wConfig.isDynamicLoad, sboxPath, appId);
+                WDataManager.m_sboxPath + "widget/");
+        return unZip(context, wConfig.isDynamicLoad, WDataManager.m_sboxPath,
+                appId, installType);
     }
 
     static class WidgetPatchConfig {
@@ -238,10 +240,11 @@ public class WidgetPatchUpgradeMgr {
      * @param isDynamic
      * @param sboxPath
      * @param appId
+     * @param installType：安装补丁包类型1：网页包；2：插件包；3：网页和插件
      * @return
      */
     private static boolean unZip(Context context, boolean isDynamic,
-            String sboxPath, String appId) {
+            String sboxPath, String appId, int installType) {
         SharedPreferences preferences = context
                 .getSharedPreferences("updateInfo", Context.MODE_PRIVATE);
         int totalSize = preferences.getInt("totalSize", 0);
@@ -267,7 +270,7 @@ public class WidgetPatchUpgradeMgr {
                 String pluginPath = sboxPath + DYNAMIC_PLUGIN_SANDBOX_PATH_NAME
                         + File.separator;
                 unZip = unZipDynamic(context, appId, inputStream, widgetPath,
-                        pluginPath, null);
+                        pluginPath, null, installType);
             }
 
             if (unZip) {
@@ -332,11 +335,12 @@ public class WidgetPatchUpgradeMgr {
      * @param widgetPath
      * @param pluginPath
      * @param encoding
+     * @param installType：安装补丁包类型1：网页包；2：插件包；3：网页和插件
      * @return
      */
     private static boolean unZipDynamic(Context context, String appId,
             InputStream inputStream, String widgetPath, String pluginPath,
-            String encoding) {
+            String encoding, int installType) {
         if (encoding == null || encoding.equals(""))
             encoding = "UTF-8";
         String widgetAbsolutePath = new File(widgetPath).getAbsolutePath();
@@ -353,10 +357,12 @@ public class WidgetPatchUpgradeMgr {
                 String decompression = "";
                 String startStr = "";
                 String zename = file.getName();
-                if (zename.startsWith(widgetPathStart)) {
+                if (zename.startsWith(widgetPathStart)
+                        && ((installType & BUtility.PATCH_WIDGET_FLAG) != 0)) {
                     decompression = widgetAbsolutePath;
                     startStr = widgetPathStart;
-                } else if (zename.startsWith(pluginPathStart)) {
+                } else if (zename.startsWith(pluginPathStart)
+                        && ((installType & BUtility.PATCH_PLUGIN_FLAG) != 0)) {
                     decompression = pluginAbsolutePath;
                     startStr = pluginPathStart;
                 }

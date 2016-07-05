@@ -18,6 +18,30 @@
 
 package org.zywx.wbpalmstar.base;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileDescriptor;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.xmlpull.v1.XmlPullParser;
+import org.zywx.wbpalmstar.acedes.ACEDes;
+import org.zywx.wbpalmstar.engine.EBrowserView;
+import org.zywx.wbpalmstar.engine.universalex.EUExUtil;
+import org.zywx.wbpalmstar.platform.encryption.PEncryption;
+import org.zywx.wbpalmstar.widgetone.dataservice.WDataManager;
+import org.zywx.wbpalmstar.widgetone.dataservice.WidgetPatchUpgradeMgr;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -35,30 +59,6 @@ import android.os.Environment;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Xml;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.zywx.wbpalmstar.acedes.ACEDes;
-import org.zywx.wbpalmstar.engine.EBrowserView;
-import org.zywx.wbpalmstar.engine.universalex.EUExUtil;
-import org.zywx.wbpalmstar.platform.encryption.PEncryption;
-import org.zywx.wbpalmstar.widgetone.dataservice.WDataManager;
-import org.zywx.wbpalmstar.widgetone.dataservice.WidgetPatchUpgradeMgr;
-
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileDescriptor;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class BUtility {
     public final static String F_SDCARD_PATH = "file:///sdcard/";
@@ -89,6 +89,13 @@ public class BUtility {
 
     public static boolean isDes = false;
     public static String g_desPath = "";
+
+    /** 安装补丁包类型 0：网页包；1：插件包；2：网页和插件 */
+    public final static int INSTALL_PATCH_WIDGET = 1;
+    public final static int INSTALL_PATCH_PLUGIN = 2;
+    public final static int INSTALL_PATCH_ALL = 3;
+    public final static int PATCH_WIDGET_FLAG = 1;
+    public final static int PATCH_PLUGIN_FLAG = 2;
 
     // 缩放图片
     public static Bitmap imageScale(Bitmap bitmap, int dst_w, int dst_h) {
@@ -1076,13 +1083,13 @@ public class BUtility {
      * 安装补丁包
      * 
      * @param context
-     * @param sboxPath
      * @param appId
+     * @param installType：安装补丁包类型 1：网页包；2：插件包；3：网页和插件
      * @return 安装成功，返回版本号；失败，返回空。
      */
-    public static String installWidgetPatch(Context context, String sboxPath,
-            String appId) {
-        return WidgetPatchUpgradeMgr.installWidgetPatch(context, sboxPath,
-                appId);
+    public static String installWidgetPatch(Context context,
+            String appId, int installType) {
+        return WidgetPatchUpgradeMgr.installWidgetPatch(context,
+                appId, installType);
     }
 }
