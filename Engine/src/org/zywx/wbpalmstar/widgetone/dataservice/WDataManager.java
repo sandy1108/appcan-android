@@ -814,7 +814,7 @@ public class WDataManager {
         long widgetDBId = m_preferences.getLong(m_rootWidgetDBId, -1);
         if (widgetDBId != -1) {
             if (!isCopyAssetsFinish || !WidgetPatchUpgradeMgr.unZip(m_context,
-                    m_sboxPath, assetsData.m_appId)) {
+                    assetsData.m_appId, BUtility.INSTALL_PATCH_WIDGET)) {
                 int webapp = 0;
                 if (null != assetsData) {
                     webapp = assetsData.m_webapp;
