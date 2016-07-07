@@ -23,8 +23,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.zip.ZipException;
 
 import org.zywx.wbpalmstar.base.BUtility;
 import org.zywx.wbpalmstar.base.zip.CnZipInputStream;
@@ -35,7 +33,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.text.TextUtils;
 
-public class WidgetPatchUpgradeMgr {
+public class WidgetPackageMgr {
 
     public static final String WIDGET_CONFIG_FILE_NAME = "config.xml";
     public static final String WIDGET_CONFIG_PARENT_FILE_NAME = "widget";
@@ -44,7 +42,7 @@ public class WidgetPatchUpgradeMgr {
     public final static String SP_WIDGET_ONE_CONFIG = "widgetOneConfig";
 
     /**
-     * 安装补丁包
+     * 安装主应用补丁包
      * 
      * @param context
      * @param appId
@@ -56,10 +54,34 @@ public class WidgetPatchUpgradeMgr {
         WidgetPatchConfig wConfig = getWidgetPatchConfig(context, appId,
                 WDataManager.m_sboxPath + "widget/");
         if (wConfig.hasZip) {
-            unZip(context, wConfig.isDynamicLoad, WDataManager.m_sboxPath,
-                    appId, installType);
+            unZip(context, wConfig.isDynamicLoad, appId, installType);
         }
         return wConfig.version;
+    }
+
+    /**
+     * 安装子应用（包括全量包、补丁包）
+     * 
+     * @param appId
+     * @param filePath
+     * @param desPath
+     * @param encoding
+     * @return 安装路径
+     */
+    public static String installSubWidget(String appId, String filePath,
+            String desPath, String encoding) {
+        String installPath = "";
+        boolean isDynamic = isDynamicSubWidget(appId, filePath);
+        if (!isDynamic) {
+            installPath = unZip(filePath, desPath, null);
+        } else {
+            String pluginPath = WDataManager.m_sboxPath
+                    + DYNAMIC_PLUGIN_SANDBOX_PATH_NAME + File.separator;
+            installPath = unZipDynamic(appId, filePath,
+                    desPath + File.separator + appId, pluginPath, encoding,
+                    BUtility.INSTALL_PATCH_ALL);
+        }
+        return installPath;
     }
 
     /**
@@ -74,8 +96,7 @@ public class WidgetPatchUpgradeMgr {
             int installType) {
         WidgetPatchConfig wConfig = getWidgetPatchConfig(context, appId,
                 WDataManager.m_sboxPath + "widget/");
-        return unZip(context, wConfig.isDynamicLoad, WDataManager.m_sboxPath,
-                appId, installType);
+        return unZip(context, wConfig.isDynamicLoad, appId, installType);
     }
 
     static class WidgetPatchConfig {
@@ -94,6 +115,41 @@ public class WidgetPatchUpgradeMgr {
             String appId) {
         return getWidgetPatchConfig(context, appId,
                 sboxPath + "widget/").hasZip;
+    }
+
+    private static boolean isDynamicSubWidget(String appId, String widgetPath) {
+        boolean isDynamic = true;
+        FileInputStream inputStream = null;
+        CnZipInputStream in = null;
+        try {
+            inputStream = new FileInputStream(widgetPath);
+            in = new CnZipInputStream(inputStream, "UTF-8");
+            ZipEntry entry = in.getNextEntry();
+            String configName = appId + File.separator
+                    + WIDGET_CONFIG_FILE_NAME;
+            while (entry != null) {
+                String zename = entry.getName();
+                if (configName.equals(zename)) {
+                    isDynamic = false;
+                    break;
+                }
+                entry = in.getNextEntry();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (in != null) {
+                    in.close();
+                }
+                if (inputStream != null) {
+                    inputStream.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return isDynamic;
     }
 
     /**
@@ -244,7 +300,8 @@ public class WidgetPatchUpgradeMgr {
      * @return
      */
     private static boolean unZip(Context context, boolean isDynamic,
-            String sboxPath, String appId, int installType) {
+            String appId, int installType) {
+        boolean unZip = false;
         SharedPreferences preferences = context
                 .getSharedPreferences("updateInfo", Context.MODE_PRIVATE);
         int totalSize = preferences.getInt("totalSize", 0);
@@ -260,32 +317,23 @@ public class WidgetPatchUpgradeMgr {
         Editor editor = preferences.edit();
         editor.clear();
         editor.commit();
-        String widgetPath = sboxPath + "widget/";
-        try {
-            FileInputStream inputStream = new FileInputStream(filePath);
-            boolean unZip = false;
-            if (!isDynamic) {
-                unZip = unZip(inputStream, widgetPath, null);
-            } else {
-                String pluginPath = sboxPath + DYNAMIC_PLUGIN_SANDBOX_PATH_NAME
-                        + File.separator;
-                unZip = unZipDynamic(context, appId, inputStream, widgetPath,
-                        pluginPath, null, installType);
-            }
-
-            if (unZip) {
-                File file = new File(filePath);
-                if (file.exists()) {
-                    file.delete();
-                }
-                return true;
-            } else {
-                return false;
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+        String widgetPath = WDataManager.m_sboxPath + "widget/";
+        if (!isDynamic) {
+            unZip = (!TextUtils.isEmpty(unZip(filePath, widgetPath, null)));
+        } else {
+            String pluginPath = WDataManager.m_sboxPath
+                    + DYNAMIC_PLUGIN_SANDBOX_PATH_NAME + File.separator;
+            unZip = (!TextUtils.isEmpty(unZipDynamic(appId, filePath,
+                    widgetPath, pluginPath, null, installType)));
         }
-        return false;
+
+        if (unZip) {
+            File file = new File(filePath);
+            if (file.exists()) {
+                file.delete();
+            }
+        }
+        return unZip;
     }
 
     /**
@@ -296,34 +344,42 @@ public class WidgetPatchUpgradeMgr {
      * @param encoding
      * @return
      */
-    private static boolean unZip(InputStream inputStream, String decompression,
+    private static String unZip(String srcPath, String decompression,
             String encoding) {
-        if (encoding == null || encoding.equals(""))
+        if (encoding == null || encoding.equals("")) {
             encoding = "UTF-8";
-        File dir = new File(decompression);
+        }
+        String filePath = "";
+        CnZipInputStream in = null;
+        FileInputStream inputStream = null;
         try {
+            inputStream = new FileInputStream(srcPath);
             // 建立与目标文件的输入连接
-            CnZipInputStream in = new CnZipInputStream(inputStream, encoding);
+            in = new CnZipInputStream(inputStream, encoding);
             ZipEntry file = in.getNextEntry();
             byte[] c = new byte[1024];
-            String dpPath = dir.getAbsolutePath();
+            String dpPath = new File(decompression).getAbsolutePath();
+            filePath = dpPath + "/" + file.getName();
             while (file != null) {
                 String zename = file.getName();
                 getFileFromZip(in, file, c, dpPath, zename);
                 file = in.getNextEntry();
             }
-            in.close();
-        } catch (ZipException zipe) {
-            zipe.printStackTrace();
-            return false;
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-            return false;
         } catch (Exception i) {
             i.printStackTrace();
-            return false;
+        } finally {
+            try {
+                if (in != null) {
+                    in.close();
+                }
+                if (inputStream != null) {
+                    inputStream.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-        return true;
+        return filePath;
     }
 
     /**
@@ -338,15 +394,19 @@ public class WidgetPatchUpgradeMgr {
      * @param installType：安装补丁包类型1：网页包；2：插件包；3：网页和插件
      * @return
      */
-    private static boolean unZipDynamic(Context context, String appId,
-            InputStream inputStream, String widgetPath, String pluginPath,
-            String encoding, int installType) {
-        if (encoding == null || encoding.equals(""))
+    private static String unZipDynamic(String appId, String srcPath,
+            String widgetPath, String pluginPath, String encoding,
+            int installType) {
+        if (encoding == null || encoding.equals("")) {
             encoding = "UTF-8";
+        }
         String widgetAbsolutePath = new File(widgetPath).getAbsolutePath();
         String pluginAbsolutePath = new File(pluginPath).getAbsolutePath();
+        CnZipInputStream in = null;
+        FileInputStream inputStream = null;
         try {
-            CnZipInputStream in = new CnZipInputStream(inputStream, encoding);
+            inputStream = new FileInputStream(srcPath);
+            in = new CnZipInputStream(inputStream, encoding);
             ZipEntry file = in.getNextEntry();
             byte[] c = new byte[1024];
             String widgetPathStart = WIDGET_CONFIG_PARENT_FILE_NAME
@@ -372,18 +432,22 @@ public class WidgetPatchUpgradeMgr {
                 }
                 file = in.getNextEntry();
             }
-            in.close();
-        } catch (ZipException zipe) {
-            zipe.printStackTrace();
-            return false;
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-            return false;
         } catch (Exception i) {
             i.printStackTrace();
-            return false;
+            widgetAbsolutePath = "";
+        } finally {
+            try {
+                if (in != null) {
+                    in.close();
+                }
+                if (inputStream != null) {
+                    inputStream.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-        return true;
+        return widgetAbsolutePath;
     }
 
     /**
@@ -401,20 +465,25 @@ public class WidgetPatchUpgradeMgr {
             byte[] c, String decompression, String zename)
             throws FileNotFoundException, IOException {
         int slen;
-        if (file.isDirectory()) {
-            File files = new File(decompression + "/" + zename); // 在指定解压路径下建子文件夹
-            files.mkdirs();// 新建文件夹
-        } else {
-            File files = new File(decompression + "/" + zename).getParentFile();// 当前文件所在目录
-            if (!files.exists()) {// 如果目录文件夹不存在，则创建
-                files.mkdirs();
+        try {
+            if (file.isDirectory()) {
+                File files = new File(decompression + "/" + zename); // 在指定解压路径下建子文件夹
+                files.mkdirs();// 新建文件夹
+            } else {
+                File files = new File(decompression + "/" + zename)
+                        .getParentFile();// 当前文件所在目录
+                if (!files.exists()) {// 如果目录文件夹不存在，则创建
+                    files.mkdirs();
+                }
+                FileOutputStream out = new FileOutputStream(
+                        decompression + "/" + zename);
+                while ((slen = in.read(c, 0, c.length)) != -1) {
+                    out.write(c, 0, slen);
+                }
+                out.close();
             }
-            FileOutputStream out = new FileOutputStream(
-                    decompression + "/" + zename);
-            while ((slen = in.read(c, 0, c.length)) != -1) {
-                out.write(c, 0, slen);
-            }
-            out.close();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

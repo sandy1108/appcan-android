@@ -795,7 +795,7 @@ public class WDataManager {
 //						deleteFile(flie);
                     }
                     //如果有增量更新包，且其版本号大于当前APK的版本号，则进行同步拷贝操作，防止再次弹出增量更新提示框，否则，才进行异步拷贝操作
-                    if (WidgetPatchUpgradeMgr.isHasUpdateZip(m_context,
+                    if (WidgetPackageMgr.isHasUpdateZip(m_context,
                             m_sboxPath, assetsData.m_appId)) {
                         BDebug.i("getWidgetData", "isHasUpdateZip CopyAssets");
                         CopyAssets("widget", m_sboxPath + "widget/");
@@ -813,7 +813,7 @@ public class WDataManager {
         }
         long widgetDBId = m_preferences.getLong(m_rootWidgetDBId, -1);
         if (widgetDBId != -1) {
-            if (!isCopyAssetsFinish || !WidgetPatchUpgradeMgr.unZip(m_context,
+            if (!isCopyAssetsFinish || !WidgetPackageMgr.unZip(m_context,
                     assetsData.m_appId, BUtility.INSTALL_PATCH_WIDGET)) {
                 int webapp = 0;
                 if (null != assetsData) {
