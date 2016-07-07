@@ -40,7 +40,7 @@ import org.zywx.wbpalmstar.engine.EBrowserView;
 import org.zywx.wbpalmstar.engine.universalex.EUExUtil;
 import org.zywx.wbpalmstar.platform.encryption.PEncryption;
 import org.zywx.wbpalmstar.widgetone.dataservice.WDataManager;
-import org.zywx.wbpalmstar.widgetone.dataservice.WidgetPatchUpgradeMgr;
+import org.zywx.wbpalmstar.widgetone.dataservice.WidgetPackageMgr;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -90,7 +90,7 @@ public class BUtility {
     public static boolean isDes = false;
     public static String g_desPath = "";
 
-    /** 安装补丁包类型 0：网页包；1：插件包；2：网页和插件 */
+    /** 安装补丁包类型 1：网页包；2：插件包；3：网页和插件 */
     public final static int INSTALL_PATCH_WIDGET = 1;
     public final static int INSTALL_PATCH_PLUGIN = 2;
     public final static int INSTALL_PATCH_ALL = 3;
@@ -1080,16 +1080,30 @@ public class BUtility {
     }
 
     /**
-     * 安装补丁包
+     * 安装主应用补丁包
      * 
      * @param context
      * @param appId
-     * @param installType：安装补丁包类型 1：网页包；2：插件包；3：网页和插件
+     * @param installType：安装补丁包类型1：网页包；2：插件包；3：网页和插件
      * @return 安装成功，返回版本号；失败，返回空。
      */
-    public static String installWidgetPatch(Context context,
-            String appId, int installType) {
-        return WidgetPatchUpgradeMgr.installWidgetPatch(context,
-                appId, installType);
+    public static String installWidgetPatch(Context context, String appId,
+            int installType) {
+        return WidgetPackageMgr.installWidgetPatch(context, appId, installType);
+    }
+
+    /**
+     * 安装子应用（包括全量包、补丁包）,子应用的安装、升级，不区分全量包、补丁包。
+     * 
+     * @param appId
+     * @param filePath：压缩包位置
+     * @param desPath：安装位置
+     * @param encoding
+     * @return 安装路径
+     */
+    public static String installSubWidget(String appId, String filePath,
+            String desPath, String encoding) {
+        return WidgetPackageMgr.installSubWidget(appId, filePath, desPath,
+                encoding);
     }
 }
