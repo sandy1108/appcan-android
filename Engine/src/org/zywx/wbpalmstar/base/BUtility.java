@@ -90,7 +90,7 @@ public class BUtility {
     public static boolean isDes = false;
     public static String g_desPath = "";
 
-    /** 安装补丁包类型 0：网页包；1：插件包；2：网页和插件 */
+    /** 安装补丁包类型 1：网页包；2：插件包；3：网页和插件 */
     public final static int INSTALL_PATCH_WIDGET = 1;
     public final static int INSTALL_PATCH_PLUGIN = 2;
     public final static int INSTALL_PATCH_ALL = 3;
