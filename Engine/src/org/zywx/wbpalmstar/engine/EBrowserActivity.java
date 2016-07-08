@@ -632,6 +632,10 @@ public final class EBrowserActivity extends FragmentActivity {
             or = ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT;
         } else if (flag == 8) {// reverse landscape
             or = ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE;
+        } else if (flag == 5) {// portrait and reverse portrait, Some devices only portrait effective
+            or = ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT;
+        } else if (flag == 10) {// landscape and reverse landscape
+            or = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE;
         } else if (flag == 15) {// sensor
             or = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR;
         } else {

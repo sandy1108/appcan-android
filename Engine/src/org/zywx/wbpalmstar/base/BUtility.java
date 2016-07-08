@@ -18,30 +18,6 @@
 
 package org.zywx.wbpalmstar.base;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileDescriptor;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.zywx.wbpalmstar.acedes.ACEDes;
-import org.zywx.wbpalmstar.engine.EBrowserView;
-import org.zywx.wbpalmstar.engine.universalex.EUExUtil;
-import org.zywx.wbpalmstar.platform.encryption.PEncryption;
-import org.zywx.wbpalmstar.widgetone.dataservice.WDataManager;
-import org.zywx.wbpalmstar.widgetone.dataservice.WidgetPackageMgr;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -59,6 +35,30 @@ import android.os.Environment;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Xml;
+
+import org.xmlpull.v1.XmlPullParser;
+import org.zywx.wbpalmstar.acedes.ACEDes;
+import org.zywx.wbpalmstar.engine.EBrowserView;
+import org.zywx.wbpalmstar.engine.universalex.EUExUtil;
+import org.zywx.wbpalmstar.platform.encryption.PEncryption;
+import org.zywx.wbpalmstar.widgetone.dataservice.WDataManager;
+import org.zywx.wbpalmstar.widgetone.dataservice.WidgetPackageMgr;
+
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileDescriptor;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class BUtility {
     public final static String F_SDCARD_PATH = "file:///sdcard/";
@@ -547,7 +547,8 @@ public class BUtility {
                     + path.substring(F_WIDGET_SCHEMA.length());
         } else if (path.startsWith(F_Widget_RES_SCHEMA)) {
             if (wgtType == 0) {
-                if (WDataManager.isUpdateWidget) {
+                if (WDataManager.isUpdateWidget
+                        && WDataManager.isCopyAssetsFinish) {
                     return WDataManager.m_sboxPath + F_Widget_RES_path
                             + path.substring(F_Widget_RES_SCHEMA.length());
                 } else {

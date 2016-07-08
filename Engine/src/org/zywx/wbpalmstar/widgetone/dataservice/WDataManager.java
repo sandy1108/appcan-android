@@ -18,19 +18,16 @@
 
 package org.zywx.wbpalmstar.widgetone.dataservice;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.security.MessageDigest;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.zip.ZipException;
+import android.content.ContentValues;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.telephony.TelephonyManager;
+import android.text.TextUtils;
+import android.util.Xml;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.zywx.wbpalmstar.acedes.ACEDes;
@@ -46,16 +43,19 @@ import org.zywx.wbpalmstar.platform.certificates.Http;
 import org.zywx.wbpalmstar.platform.encryption.PEncryption;
 import org.zywx.wbpalmstar.platform.myspace.CommonUtility;
 
-import android.content.ContentValues;
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.telephony.TelephonyManager;
-import android.text.TextUtils;
-import android.util.Xml;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.security.MessageDigest;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.zip.ZipException;
 
 public class WDataManager {
     private static Context m_context;
@@ -825,8 +825,8 @@ public class WDataManager {
                     widgetData.m_webapp = webapp;
                 }
             } else {
-                widgetData = getWidgetDataByXML(
-                        m_sboxPath + m_rootWidgetConfigPath, 0);
+                widgetData = getWidgetDataByXML(m_sboxPath
+                        + m_rootWidgetConfigPath, 0);
             }
 
         }
@@ -1017,6 +1017,7 @@ public class WDataManager {
                 try {
                     CopyAssets(assetDir, dir);
                     Editor editor = m_preferences.edit();
+                    isCopyAssetsFinish = true;
                     editor.putBoolean(m_copyAssetsFinish, true);
                     editor.commit();
                 } catch (Exception e) {
@@ -1044,8 +1045,8 @@ public class WDataManager {
         for (int i = 0; i < files.length; i++) {
             try {
                 String fileName = files[i];
-                // we make sure file name not contains '.' to be a folder.
-                if (!fileName.contains(".")) {
+                /** folder name can be contains '.' */
+                if (m_context.getResources().getAssets().list(assetDir + "/" + fileName).length != 0) {
                     if (0 == assetDir.length()) {
                         CopyAssets(fileName, dir + fileName + "/");
                     } else {
