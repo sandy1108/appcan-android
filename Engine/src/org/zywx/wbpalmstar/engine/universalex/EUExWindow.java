@@ -101,6 +101,7 @@ public class EUExWindow extends EUExBase {
     public static final String function_cbClosePluginViewContainer = "uexWindow.cbClosePluginViewContainer";
     public static final String function_cbShowPluginViewContainer = "uexWindow.cbShowPluginViewContainer";
     public static final String function_cbHidePluginViewContainer = "uexWindow.cbHidePluginViewContainer";
+    public static final String function_cbClearPluginViewContainer = "uexWindow.cbClearPluginViewContainer";
     public static final String function_onPluginContainerPageChange = "uexWindow.onPluginContainerPageChange";
 
     public static final String function_onSlipedUpward = "uexWindow.onSlipedUpward";
@@ -174,6 +175,7 @@ public class EUExWindow extends EUExBase {
     private static final int MSG_DISTURB_LONG_PRESS_GESTURE = 59;
     private static final int MSG_FUNCTION_SETAUTOROTATEENABLE= 60;
     private static final int MSG_FUNCTION_SETLOADINGIMAGEPATH= 61;
+    private static final int MSG_PLUGINVIEW_CONTAINER_CLEAR = 62;
     private AlertDialog mAlert;
     private AlertDialog.Builder mConfirm;
     private PromptDialog mPrompt;
@@ -3505,6 +3507,57 @@ public class EUExWindow extends EUExBase {
         }
     }
 
+    public void clearPluginViewContainer(String[] parm) {
+        Message msg = mHandler.obtainMessage();
+        msg.what = MSG_PLUGINVIEW_CONTAINER_CLEAR;
+        msg.obj = this;
+        Bundle bd = new Bundle();
+        bd.putStringArray(TAG_BUNDLE_PARAM, parm);
+        msg.setData(bd);
+        mHandler.sendMessage(msg);
+    }
+
+    /**
+     * 移除并清除一个容器
+     *
+     * @param params
+     */
+    private void clearPluginViewContainerMsg(String[] params) {
+        if (params == null || params.length < 1) {
+            errorCallback(0, 0, "error params!");
+            return;
+        }
+        try {
+            JSONObject json = new JSONObject(params[0].toString());
+            String opid = json.getString("id");
+
+            EBrowserWindow mWindow = mBrwView.getBrowserWindow();
+            int count = mWindow.getChildCount();
+            for (int i = 0; i < count; i++) {
+                View view = mWindow.getChildAt(i);
+                if (view instanceof ContainerViewPager) {
+                    ContainerViewPager pager = (ContainerViewPager) view;
+                    if (opid.equals((String) pager.getContainerVO().getId())) {
+                        ContainerAdapter adapter = (ContainerAdapter) pager.getAdapter();
+                        Vector<FrameLayout> views = adapter.getViewList();
+                        int size = views.size();
+                        for (int j = 0; j < size; j++) {
+                            views.get(j).removeAllViews();
+                        }
+                        views.clear();
+                        String js = SCRIPT_HEADER + "if(" + function_cbClearPluginViewContainer + "){"
+                                + function_cbClearPluginViewContainer + "(" + opid + "," + EUExCallback.F_C_TEXT + ",'"
+                                + "success" + "'" + SCRIPT_TAIL;
+                        onCallback(js);
+                        return;
+                    }
+                }//end instance
+            }//end for
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public void setPageInContainer(String[] parm) {
         Message msg = mHandler.obtainMessage();
         msg.what = MSG_PLUGINVIEW_CONTAINER_SET;
@@ -3604,8 +3657,7 @@ public class EUExWindow extends EUExBase {
 
         @Override
         public void destroyItem(ViewGroup container, int position, Object object) {
-            View item = viewList.get(position);
-            container.removeView(item);
+            container.removeView((View) object);
         }
     }
 
@@ -3824,6 +3876,9 @@ public class EUExWindow extends EUExBase {
                 break;
             case MSG_PLUGINVIEW_CONTAINER_HIDE:
                 hidePluginViewContainerMsg(param);
+                break;
+            case MSG_PLUGINVIEW_CONTAINER_CLEAR:
+                clearPluginViewContainerMsg(param);
                 break;
             default:
                 break;

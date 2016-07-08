@@ -118,7 +118,7 @@ public class WWidgetData implements Parcelable {
     public String m_opaque = "";
 
     public String m_bgColor = "#00000000";
-
+    public int m_widgetOneLocation = 0;  //0:SD卡; 1:沙箱; 默认SD卡
     public static int m_remove_loading = 1;//1,引擎关闭loading页；0，web调接口关闭loading页
 
     public static boolean sFullScreen = false;//是否全屏
@@ -156,6 +156,7 @@ public class WWidgetData implements Parcelable {
             widget.m_bgColor = source.readString();
             widget.m_appkey = source.readString();
             widget.mErrorPath = source.readString();
+            widget.m_widgetOneLocation = source.readInt();
             if (widget.disablePluginsList != null) {
                 source.readStringList(widget.disablePluginsList);
             }
@@ -231,6 +232,7 @@ public class WWidgetData implements Parcelable {
         parcel.writeString(m_bgColor);
         parcel.writeString(m_appkey);
         parcel.writeString(mErrorPath);
+        parcel.writeInt(m_widgetOneLocation);
         parcel.writeStringList(disablePluginsList);
         parcel.writeStringList(disableRootWindowsList);
         parcel.writeStringList(disableSonWindowsList);
@@ -302,6 +304,8 @@ public class WWidgetData implements Parcelable {
         sb.append("m_remove_loading:" + m_remove_loading);
         sb.append("\n");
         sb.append("mErrorPath:" + mErrorPath);
+        sb.append("\n");
+        sb.append("m_widgetOneLocation: " + m_widgetOneLocation);
         sb.append("\n");
         return sb.toString();
     }

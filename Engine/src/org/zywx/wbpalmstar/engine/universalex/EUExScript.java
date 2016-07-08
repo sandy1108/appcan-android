@@ -236,6 +236,7 @@ public class EUExScript {
                 + "disturbLongPressGesture:function(){uexDispatcher.dispatch('uexWindow','disturbLongPressGesture',jo(arguments));},"
                 + "setPageInContainer:function(){uexDispatcher.dispatch('uexWindow','setPageInContainer',jo(arguments));},"
                 + "closePluginViewContainer:function(){uexDispatcher.dispatch('uexWindow','closePluginViewContainer',jo(arguments));},"
+                + "clearPluginViewContainer:function(){uexDispatcher.dispatch('uexWindow','clearPluginViewContainer',jo(arguments));},"
                 + "createPluginViewContainer:function(){uexDispatcher.dispatch('uexWindow','createPluginViewContainer',jo(arguments));},"
                 + "showPluginViewContainer:function(){uexDispatcher.dispatch('uexWindow','showPluginViewContainer',jo(arguments));},"
                 + "hidePluginViewContainer:function(){uexDispatcher.dispatch('uexWindow','hidePluginViewContainer',jo(arguments));},"
