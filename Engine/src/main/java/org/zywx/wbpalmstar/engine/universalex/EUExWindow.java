@@ -34,14 +34,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Message;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
@@ -54,6 +51,7 @@ import org.json.JSONObject;
 import org.zywx.wbpalmstar.base.BDebug;
 import org.zywx.wbpalmstar.base.BUtility;
 import org.zywx.wbpalmstar.base.ResoureFinder;
+import org.zywx.wbpalmstar.base.util.AppCanAPI;
 import org.zywx.wbpalmstar.base.util.SpManager;
 import org.zywx.wbpalmstar.base.vo.CreateContainerVO;
 import org.zywx.wbpalmstar.base.vo.SetSwipeCloseEnableVO;
@@ -63,14 +61,20 @@ import org.zywx.wbpalmstar.base.vo.WindowAlertVO;
 import org.zywx.wbpalmstar.base.vo.WindowAnimVO;
 import org.zywx.wbpalmstar.base.vo.WindowConfirmVO;
 import org.zywx.wbpalmstar.base.vo.WindowCreateProgressDialogVO;
+import org.zywx.wbpalmstar.base.vo.WindowEvaluateMultiPopoverScriptVO;
+import org.zywx.wbpalmstar.base.vo.WindowEvaluatePopoverScriptVO;
+import org.zywx.wbpalmstar.base.vo.WindowEvaluateScriptVO;
+import org.zywx.wbpalmstar.base.vo.WindowOpenMultiPopoverVO;
 import org.zywx.wbpalmstar.base.vo.WindowOpenSlibingVO;
 import org.zywx.wbpalmstar.base.vo.WindowOpenVO;
 import org.zywx.wbpalmstar.base.vo.WindowPromptResultVO;
 import org.zywx.wbpalmstar.base.vo.WindowPromptVO;
 import org.zywx.wbpalmstar.base.vo.WindowSetFrameVO;
+import org.zywx.wbpalmstar.base.vo.WindowSetMultiPopoverFrameVO;
+import org.zywx.wbpalmstar.base.vo.WindowSetMultiPopoverSelectedVO;
+import org.zywx.wbpalmstar.base.vo.WindowSetPopoverFrameVO;
 import org.zywx.wbpalmstar.base.vo.WindowSetSlidingWindowVO;
 import org.zywx.wbpalmstar.base.vo.WindowShowBounceViewVO;
-import org.zywx.wbpalmstar.base.vo.WindowSlidingItemVO;
 import org.zywx.wbpalmstar.base.vo.WindowToastVO;
 import org.zywx.wbpalmstar.engine.DataHelper;
 import org.zywx.wbpalmstar.engine.EBounceView;
@@ -85,6 +89,8 @@ import org.zywx.wbpalmstar.engine.EDialogTask;
 import org.zywx.wbpalmstar.engine.ESystemInfo;
 import org.zywx.wbpalmstar.engine.EUtil;
 import org.zywx.wbpalmstar.engine.EViewEntry;
+import org.zywx.wbpalmstar.engine.container.ContainerAdapter;
+import org.zywx.wbpalmstar.engine.container.ContainerViewPager;
 import org.zywx.wbpalmstar.engine.universalex.wrapper.WindowJsonWrapper;
 import org.zywx.wbpalmstar.platform.window.ActionSheetDialog;
 import org.zywx.wbpalmstar.platform.window.ActionSheetDialog.ActionSheetDialogItemClickListener;
@@ -341,10 +347,12 @@ public class EUExWindow extends EUExBase {
         open(params);
     }
 
+    @AppCanAPI
     public int getHeight(String[] params){
         return mBrwView.getBrowserWindow().getHeight();
     }
 
+    @AppCanAPI
     public int getWidth(String[] params){
         return mBrwView.getBrowserWindow().getWidth();
     }
@@ -397,6 +405,7 @@ public class EUExWindow extends EUExBase {
         activity.runOnUiThread(ui);
     }
 
+    @AppCanAPI
     public void setOrientation(String[] parm) {
         if (parm.length < 1) {
             return;
@@ -423,6 +432,7 @@ public class EUExWindow extends EUExBase {
         }
     }
 
+    @AppCanAPI
     public void setAutorotateEnable(String[] parm) {
         if (parm.length < 1) {
             return;
@@ -724,7 +734,12 @@ public class EUExWindow extends EUExBase {
     }
 
     public void evaluateScript(String[] parm) {
-        evaluateScriptMsg(parm);
+        if (isFirstParamExistAndIsJson(parm)){
+            WindowJsonWrapper.evaluateScript(this,
+                    DataHelper.gson.fromJson(parm[0], WindowEvaluateScriptVO.class));
+        }else{
+            evaluateScriptMsg(parm);
+        }
     }
 
     public void evaluateScriptMsg(String[] parm) {
@@ -815,6 +830,7 @@ public class EUExWindow extends EUExBase {
         }
     }
 
+    @AppCanAPI
     public int getSlidingWindowState(String[] param) {
         EBrowserActivity activity = (EBrowserActivity) mContext;
         SlidingMenu slidingMenu = activity.globalSlidingMenu;
@@ -1230,16 +1246,12 @@ public class EUExWindow extends EUExBase {
     }
 
     public void setPopoverFrame(String[] parm) {
-        if (parm.length < 5) {
-            return;
+        if (isFirstParamExistAndIsJson(parm)){
+            WindowJsonWrapper.setPopoverFrame(this,
+                    DataHelper.gson.fromJson(parm[0],WindowSetPopoverFrameVO.class));
+        }else{
+            setPopoverFrameMsg(parm);
         }
-        Message msg = new Message();
-        msg.obj = this;
-        msg.what = MSG_FUNCTION_SETPOPOVERFRAME;
-        Bundle bd = new Bundle();
-        bd.putStringArray(TAG_BUNDLE_PARAM, parm);
-        msg.setData(bd);
-        mHandler.sendMessage(msg);
     }
 
     public void setHardwareEnable(final String[] params) {
@@ -1309,7 +1321,13 @@ public class EUExWindow extends EUExBase {
     }
 
     public void openMultiPopover(String[] parm) {
-        Log.d("multi", "open multi pop");
+        if (isFirstParamExistAndIsJson(parm)&&parm.length<3){
+            //老的接口第一个参数也是json
+            WindowJsonWrapper.openMultiPopover(this,DataHelper.gson.fromJson(parm[0],
+                    WindowOpenMultiPopoverVO.class));
+            return;
+        }
+
         if (parm.length < 10) {
             return;
         }
@@ -1537,6 +1555,11 @@ public class EUExWindow extends EUExBase {
     }
 
     public void setSelectedPopOverInMultiWindow(String[] parm) {
+        if (isFirstParamExistAndIsJson(parm)){
+            WindowJsonWrapper.setSelectedPopOverInMultiWindow(this,
+                    DataHelper.gson.fromJson(parm[0], WindowSetMultiPopoverSelectedVO.class));
+        }
+
         if (parm == null || parm.length < 2) {
             errorCallback(0, EUExCallback.F_E_UEXWINDOW_EVAL, "Illegal parameter");
             return;
@@ -1584,6 +1607,11 @@ public class EUExWindow extends EUExBase {
     }
 
     public void setMultiPopoverFrame(String[] parm) {
+        if (isFirstParamExistAndIsJson(parm)){
+            WindowJsonWrapper.setMultiPopoverFrame(this,DataHelper.gson.fromJson(parm[0],
+                    WindowSetMultiPopoverFrameVO.class));
+            return;
+        }
         if (parm.length < 5) {
             return;
         }
@@ -1629,6 +1657,13 @@ public class EUExWindow extends EUExBase {
     }
 
     public void evaluateMultiPopoverScript(String[] parm) {
+
+        if (isFirstParamExistAndIsJson(parm)){
+            WindowJsonWrapper.evaluateMultiPopoverScript(this,
+                    DataHelper.gson.fromJson(parm[0], WindowEvaluateMultiPopoverScriptVO.class));
+            return;
+        }
+
         if (parm.length < 4) {
             return;
         }
@@ -1644,6 +1679,11 @@ public class EUExWindow extends EUExBase {
     }
 
     public void evaluatePopoverScript(String[] parm) {
+        if (isFirstParamExistAndIsJson(parm)){
+            WindowJsonWrapper.evaluatePopoverScript(this,
+                    DataHelper.gson.fromJson(parm[0], WindowEvaluatePopoverScriptVO.class));
+            return;
+        }
         if (parm.length < 3) {
             return;
         }
@@ -2245,6 +2285,7 @@ public class EUExWindow extends EUExBase {
         mHandler.sendMessage(msg);
     }
 
+    @AppCanAPI
     public boolean pageBack(String[] parm) {
         int state = 1;
         boolean can = mBrwView.canGoBack();
@@ -2267,6 +2308,7 @@ public class EUExWindow extends EUExBase {
         return can;
     }
 
+    @AppCanAPI
     public boolean pageForward(String[] parm) {
         int state = 1;
         boolean can = mBrwView.canGoForward();
@@ -2382,11 +2424,20 @@ public class EUExWindow extends EUExBase {
     }
 
     public void putLocalData(String[] params) {
-        SpManager.getInstance().putString(params[0],params[1]);
+        boolean isSession=false;
+        if (params.length>2){
+            isSession=Boolean.valueOf(params[2]);
+        }
+        SpManager.getInstance().putString(params[0],params[1],isSession);
     }
 
+    @AppCanAPI
     public String getLocalData(String[] params) {
-        return SpManager.getInstance().getString(params[0], "");
+        boolean isSession=false;
+        if (params.length>2){
+            isSession=Boolean.valueOf(params[2]);
+        }
+        return SpManager.getInstance().getString(params[0], "",isSession);
     }
 
     public void windowForward(String[] params) {
@@ -2430,6 +2481,7 @@ public class EUExWindow extends EUExBase {
         mBrwView.getBrowserWindow().windowGoForward(animId, duration);
     }
 
+    @AppCanAPI
     public int  getBounce(String[] parm) {
         return mBrwView.getBounce();
     }
@@ -2464,6 +2516,7 @@ public class EUExWindow extends EUExBase {
         mBrwView.notifyBounceEvent(type, status);
     }
 
+    @AppCanAPI
     public String getWindowName(String[] params){
         return mBrwView.getWindowName();
     }
@@ -2663,12 +2716,14 @@ public class EUExWindow extends EUExBase {
         mHandler.sendMessage(msg);
     }
 
+    @AppCanAPI
     public int getState(String[] parm) {
         int state = mBrwView.getBrowserWindow().isShown() ? 0 : 1;
         jsCallback(function_getState, 0, EUExCallback.F_C_INT, state);
         return state;
     }
 
+    @AppCanAPI
     public String getUrlQuery(String[] parm) {
         String query = mBrwView.getQuery();
         jsCallback(function_getQuery, 0, EUExCallback.F_C_TEXT, query);
@@ -3264,6 +3319,7 @@ public class EUExWindow extends EUExBase {
      *
      * @param params
      */
+    @AppCanAPI
     public boolean createPluginViewContainer(String[] params) {
 
         if (params == null || params.length < 1) {
@@ -3286,7 +3342,7 @@ public class EUExWindow extends EUExBase {
 
         ContainerViewPager containerViewPager = new ContainerViewPager(mContext, inputVO);
         ContainerAdapter containerAdapter = new ContainerAdapter(new
-                Vector<FrameLayout>());
+                Vector<FrameLayout>(),inputVO.getTitles());
         containerViewPager.setAdapter(containerAdapter);
         containerViewPager.setOnPageChangeListener(new ContainerViewPager.OnPageChangeListener() {
 
@@ -3322,6 +3378,7 @@ public class EUExWindow extends EUExBase {
         return false;
     }
 
+    @AppCanAPI
     public void showPluginViewContainer(String[] parm) {
         Message msg = mHandler.obtainMessage();
         msg.what = MSG_PLUGINVIEW_CONTAINER_SHOW;
@@ -3367,6 +3424,7 @@ public class EUExWindow extends EUExBase {
         }
     }
 
+    @AppCanAPI
     public void hidePluginViewContainer(String[] parm) {
         Message msg = mHandler.obtainMessage();
         msg.what = MSG_PLUGINVIEW_CONTAINER_HIDE;
@@ -3417,6 +3475,7 @@ public class EUExWindow extends EUExBase {
      *
      * @param params
      */
+    @AppCanAPI
     public boolean closePluginViewContainer(String[] params) {
         if (params == null || params.length < 1) {
             errorCallback(0, 0, "error params!");
@@ -3459,6 +3518,7 @@ public class EUExWindow extends EUExBase {
         return false;
     }
 
+    @AppCanAPI
     public void setPageInContainer(String[] parm) {
         Message msg = mHandler.obtainMessage();
         msg.what = MSG_PLUGINVIEW_CONTAINER_SET;
@@ -3492,78 +3552,13 @@ public class EUExWindow extends EUExBase {
                 }//end instance
             }//end for
         } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    class ContainerViewPager extends ViewPager {
-        private CreateContainerVO mContainerVO;
-
-        public ContainerViewPager(Context context, CreateContainerVO containerVO) {
-            super(context);
-            this.mContainerVO = containerVO;
-        }
-
-        public CreateContainerVO getContainerVO() {
-            return mContainerVO;
-        }
-    }
-
-    class ContainerAdapter extends PagerAdapter {
-        Vector<FrameLayout> viewList;
-        int mChildCount = 0;
-
-        public ContainerAdapter(Vector<FrameLayout> viewList) {
-            this.viewList = viewList;
-        }
-
-        public Vector<FrameLayout> getViewList() {
-            return viewList;
-        }
-
-        public void setViewList(Vector<FrameLayout> viewList) {
-            this.viewList = viewList;
-        }
-
-        @Override
-        public int getCount() {
-            return viewList.size();
-        }
-
-        @Override
-        public boolean isViewFromObject(View view, Object arg1) {
-            return view == arg1;
-        }
-
-        @Override
-        public Object instantiateItem(ViewGroup container, int position) {
-            container.addView(viewList.get(position));
-            return viewList.get(position);
-        }
-
-        @Override
-        public int getItemPosition(Object object) {
-            if (mChildCount > 0) {
-                mChildCount--;
-                return POSITION_NONE;
+            if (BDebug.DEBUG) {
+                e.printStackTrace();
             }
-            return super.getItemPosition(object);
-        }
-
-        @Override
-        public void notifyDataSetChanged() {
-            mChildCount = getCount();
-            super.notifyDataSetChanged();
-        }
-
-        @Override
-        public void destroyItem(ViewGroup container, int position, Object object) {
-            View item = viewList.get(position);
-            container.removeView(item);
         }
     }
 
-
+    @AppCanAPI
     public void share(String[] params){
         String jsonStr=params[0];
         ShareInputVO inputVO=DataHelper.gson.fromJson(jsonStr,ShareInputVO.class);
