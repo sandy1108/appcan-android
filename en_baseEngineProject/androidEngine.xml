@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<info>
+    <version>sdksuit_3.4_161101_01</version>
+	<package>android_Engine_3.4_161101_01</package>
+	<kernel>腾讯X5内核</kernel>
+	<description>BUtility增加file:///sdcard/和exterbox://协议路径处理;修改子应用的res://协议路径获取不正确</description>
+</info>
