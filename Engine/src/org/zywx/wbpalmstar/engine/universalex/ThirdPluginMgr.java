@@ -264,9 +264,8 @@ public class ThirdPluginMgr {
     /**
      * 加载apk形式的动态库插件，获取classLoader
      * 
-     * @param apkPath
-     * @param context
-     * @return
+     * @param apkPath 动态加载的apk路径
+     * @return DLPluginPackage对象，包含动态加载的apk信息
      */
     private DLPluginPackage loadDynamicPluginClass(String apkPath) {
         DLPluginPackage dlPkg = DLPluginManager.getInstance(mContext).loadApk(
@@ -280,7 +279,6 @@ public class ThirdPluginMgr {
     /**
      * 拷贝并初始化所有动态库插件
      * 
-     * @param context
      * @param listenerQueue
      */
     public void loadInitAllDynamicPluginClass(

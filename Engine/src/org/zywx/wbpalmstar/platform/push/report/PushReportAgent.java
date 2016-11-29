@@ -31,7 +31,8 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
 import org.zywx.wbpalmstar.base.BUtility;
 import org.zywx.wbpalmstar.base.ResoureFinder;
-import org.zywx.wbpalmstar.engine.EBrowserView;
+import org.zywx.wbpalmstar.base.vo.PushDeviceBindUserVO;
+import org.zywx.wbpalmstar.base.vo.PushDeviceBindVO;
 import org.zywx.wbpalmstar.engine.universalex.EUExUtil;
 import org.zywx.wbpalmstar.platform.encryption.PEncryption;
 import org.zywx.wbpalmstar.platform.push.PushService;
@@ -261,42 +262,44 @@ public class PushReportAgent implements PushReportConstants {
                 TYPE_PUSH_UNBINDUSER, nameValuePairs).start();
     }
 
-    public static void deviceBind(String userId, String userNick, Context context, EBrowserView mBrwView) {
+    public static void deviceBind(String userId, String userName, Context context) {
         try {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put(PUSH_DEVICEBIND_KEY_DEVICENAME, Build.MODEL);
-            jsonObject.put(PUSH_DEVICEBIND_KEY_DEVICEVERSION, Build.VERSION.RELEASE);
-            jsonObject.put(PUSH_DEVICEBIND_KEY_DEVICETYPE, "android");
-            jsonObject.put(PUSH_DEVICEBIND_KEY_VALID, "true");
-            jsonObject.put(PUSH_DEVICEBIND_KEY_TIMEZONE, TimeZone.getDefault().getDisplayName());
             String softToken = BUtility.getSoftToken(context, mCurWgt.m_appkey);
-            jsonObject.put(PUSH_DEVICEBIND_KEY_DEVICETOKEN, softToken);
-            jsonObject.put(PUSH_DEVICEBIND_KEY_SOFTTOKEN, softToken);
-            JSONObject userObject = new JSONObject();
-            userObject.put(PUSH_DEVICEBIND_KEY_USERID, userId);
-            userObject.put(PUSH_DEVICEBIND_KEY_USERNAME, userNick);
-            userObject.put(PUSH_DEVICEBIND_KEY_TAGS, "");
-            userObject.put(PUSH_DEVICEBIND_KEY_SESSIONSTATUS, "");
-            jsonObject.put(PUSH_DEVICEBIND_KEY_USER, userObject);
-            jsonObject.put(PUSH_DEVICEBIND_KEY_DEVICEOWNER, "");
-            jsonObject.put(PUSH_DEVICEBIND_KEY_TAGS, "");
-            jsonObject.put(PUSH_DEVICEBIND_KEY_CLIENTID, "");
-            jsonObject.put(PUSH_DEVICEBIND_KEY_CHANNELID, "");
-            jsonObject.put(PUSH_DEVICEBIND_KEY_VERSIONID, "");
-            jsonObject.put(PUSH_DEVICEBIND_KEY_ORG, "");
-            PushReportThread.getDeviceBindThread(context, TYPE_PUSH_DEVICEBIND, mBrwView, jsonObject).start();
+            PushDeviceBindVO pushDeviceBind = new PushDeviceBindVO();
+            pushDeviceBind.setDeviceName(Build.MODEL);
+            pushDeviceBind.setDeviceVersion(Build.VERSION.RELEASE);
+            pushDeviceBind.setDeviceType("android");
+            pushDeviceBind.setValid(true);
+            pushDeviceBind.setTimeZone(TimeZone.getDefault().getDisplayName());
+            pushDeviceBind.setDeviceToken(softToken);
+            pushDeviceBind.setSoftToken(softToken);
+            pushDeviceBind.setDeviceOwner("");
+            pushDeviceBind.setTags("");
+            pushDeviceBind.setClientId("");
+            pushDeviceBind.setChannelId("");
+            pushDeviceBind.setVersionId("");
+            pushDeviceBind.setOrg("");
+
+            PushDeviceBindUserVO pushDeviceBindUser = new PushDeviceBindUserVO();
+            pushDeviceBindUser.setUserId(userId);
+            pushDeviceBindUser.setUsername(userName);
+            pushDeviceBindUser.setTags("");
+            pushDeviceBindUser.setSessionStatus("");
+            pushDeviceBind.setUser(pushDeviceBindUser);
+            PushReportThread.getDeviceBindThread(context, TYPE_PUSH_DEVICEBIND, pushDeviceBind).start();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public static void deviceUnBind(Context context, EBrowserView mBrwView) {
+    public static void deviceUnBind(Context context) {
         try {
             String softToken = BUtility.getSoftToken(context, mCurWgt.m_appkey);
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put(PUSH_DEVICEBIND_KEY_SOFTTOKEN, softToken);
-            jsonObject.put(PUSH_DEVICEBIND_KEY_USER, new JSONObject());
-            PushReportThread.getDeviceBindThread(context, TYPE_PUSH_DEVICEUNBIND, mBrwView, jsonObject).start();
+            PushDeviceBindVO pushDeviceBind = new PushDeviceBindVO();
+            pushDeviceBind.setSoftToken(softToken);
+            PushDeviceBindUserVO pushDeviceBindUser = new PushDeviceBindUserVO();
+            pushDeviceBind.setUser(pushDeviceBindUser);
+            PushReportThread.getDeviceBindThread(context, TYPE_PUSH_DEVICEUNBIND, pushDeviceBind).start();
         } catch (Exception e) {
             e.printStackTrace();
         }

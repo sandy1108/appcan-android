@@ -124,6 +124,7 @@ public class PushService extends Service implements PushDataCallback {
     }
 
     private void start() {
+        EUExUtil.init(this.getApplicationContext());
         String appKey = EUExUtil.getString("appkey");
         appKey = BUtility.decodeStr(appKey);
         softToken = BUtility.getSoftToken(this, appKey);

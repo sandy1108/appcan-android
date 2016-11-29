@@ -47,6 +47,7 @@ import org.zywx.wbpalmstar.acedes.ACEDes;
 import org.zywx.wbpalmstar.base.BDebug;
 import org.zywx.wbpalmstar.base.BUtility;
 import org.zywx.wbpalmstar.base.view.SwipeView;
+import org.zywx.wbpalmstar.base.vo.DownloadCallbackInfoVO;
 import org.zywx.wbpalmstar.engine.EBrowserHistory.EHistoryEntry;
 import org.zywx.wbpalmstar.engine.external.Compat;
 import org.zywx.wbpalmstar.engine.universalex.EUExCallback;
@@ -194,6 +195,10 @@ public class EBrowserWindow extends SwipeView implements AnimationListener {
                 /**wanglei add 20151124*/
                 mBounceView.setBounceViewBackground(inEntry.mOpaque,
                         inEntry.mBgColor, inEntry.mData, mMainView);
+            }
+            if (inEntry.mWindName.equals(EBrowserWindow.rootLeftSlidingWinName)
+                    || inEntry.mWindName.equals(EBrowserWindow.rootRightSlidingWinName)) {
+                mMainView.getSettings().setUseWideViewPort(false);
             }
         }
     }
@@ -2984,27 +2989,27 @@ public class EBrowserWindow extends SwipeView implements AnimationListener {
     }
 
     public void executeCbDownloadCallbackJs(EBrowserView eBrwView, int callbackType, String url, String userAgent,
-            String contentDisposition, String mimetype, long contentLength) {
+                                            String contentDisposition, String mimetype, long contentLength) {
         try {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("url", url);
-            jsonObject.put("userAgent", userAgent);
-            jsonObject.put("contentDisposition", contentDisposition);
-            jsonObject.put("mimetype", mimetype);
-            jsonObject.put("contentLength", contentLength);
+            DownloadCallbackInfoVO info = new DownloadCallbackInfoVO();
+            info.setUrl(url);
+            info.setUserAgent(userAgent);
+            info.setContentDisposition(contentDisposition);
+            info.setMimetype(mimetype);
+            info.setContentLength(contentLength);
             if (callbackType == 1) {  // 1 下载回调给主窗口，前端自己下载
                 String name = eBrwView.checkType(EBrwViewEntry.VIEW_TYPE_MAIN) ? "" : eBrwView.getName();
-                jsonObject.put("windowName", name);
+                info.setWindowName(name);
                 String js = EUExWindow.SCRIPT_HEADER + "if("
                         + EUExWindow.function_cbDownloadCallback + "){"
                         + EUExWindow.function_cbDownloadCallback + "("
-                        + jsonObject.toString() + ");}";
+                        + DataHelper.gson.toJson(info) + ");}";
                 mMainView.loadUrl(js);
             } else if (callbackType == 2) {  // 2 下载回调给当前窗口，前端自己下载;
                 String js = EUExWindow.SCRIPT_HEADER + "if("
                         + EUExWindow.function_cbDownloadCallback + "){"
                         + EUExWindow.function_cbDownloadCallback + "("
-                        + jsonObject.toString() + ");}";
+                        + DataHelper.gson.toJson(info) + ");}";
                 eBrwView.loadUrl(js);
             }
         } catch (Exception e) {

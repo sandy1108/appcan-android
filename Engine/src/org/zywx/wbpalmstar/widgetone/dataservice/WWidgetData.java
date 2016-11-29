@@ -114,7 +114,7 @@ public class WWidgetData implements Parcelable {
     public ArrayList<String> noHardwareList = new ArrayList<String>();
     public String m_appkey;
 
-    public int m_appdebug = 0;
+    public int m_appdebug = 0;//是否开启debug模式，0：关闭，1：开启
 
     public String m_opaque = "";
 
@@ -158,7 +158,8 @@ public class WWidgetData implements Parcelable {
             widget.m_opaque = source.readString();
             widget.m_bgColor = source.readString();
             widget.m_appkey = source.readString();
-            widget.mErrorPath = source.readString();
+            widget.mErrorPath=source.readString();
+            widget.m_appdebug=source.readInt();
             widget.m_widgetOneLocation = source.readInt();
             if (widget.disablePluginsList != null) {
                 source.readStringList(widget.disablePluginsList);
@@ -238,6 +239,7 @@ public class WWidgetData implements Parcelable {
         parcel.writeString(m_bgColor);
         parcel.writeString(m_appkey);
         parcel.writeString(mErrorPath);
+        parcel.writeInt(m_appdebug);
         parcel.writeInt(m_widgetOneLocation);
         parcel.writeStringList(disablePluginsList);
         parcel.writeStringList(disableRootWindowsList);

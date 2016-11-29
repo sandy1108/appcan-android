@@ -82,19 +82,19 @@ public class LoadingActivity extends Activity {
         }
         //初始化X5引擎SDK
         mTbsVersion = QbSdk.getTbsVersion(this);
-        if (noTencentX5 || mTbsVersion < 30000) {
+        if (noTencentX5 || (mTbsVersion > 0 && mTbsVersion < 30000)) {
             BDebug.i("AppCanTBS", "QbSdk.forceSysWebView()");
             QbSdk.forceSysWebView();
         }
-        if(!QbSdk.isTbsCoreInited() && mTbsVersion >= 30000 && !noTencentX5){//preinit只需要调用一次，如果已经完成了初始化，那么就直接构造view
+        if(!QbSdk.isTbsCoreInited() && (mTbsVersion == 0 || mTbsVersion >= 30000) && !noTencentX5){//preinit只需要调用一次，如果已经完成了初始化，那么就直接构造view
             final long timerCounter = System.currentTimeMillis();
             QbSdk.preInit(this, new PreInitCallback() {
 
                 @Override
                 public void onViewInitFinished() {
                     // TODO Auto-generated method stub
-                    float deltaTime = (System.currentTimeMillis() - timerCounter) / 1000;
-                    BDebug.i("AppCanTBS", "x5初始化使用了" + deltaTime + "秒， 但是可能还没加载完~");
+                    float deltaTime = (System.currentTimeMillis() - timerCounter);
+                    BDebug.i("AppCanTBS", "x5初始化使用了" + deltaTime + "毫秒");
                     resumeAppLoading();
                 }
 
@@ -140,7 +140,7 @@ public class LoadingActivity extends Activity {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if(noTencentX5 || QbSdk.isTbsCoreInited() || mTbsVersion < 30000){
+                if(noTencentX5 || QbSdk.isTbsCoreInited() || (mTbsVersion > 0 && mTbsVersion < 30000)){
                     BDebug.i("AppCanTBS", "QbSdk.isTbsCoreInited !!!!!!!!!!!");
                     if (!isTemp) {
                         try {
