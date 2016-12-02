@@ -43,7 +43,9 @@ import org.zywx.wbpalmstar.widgetone.dataservice.WWidgetData;
 
 import com.tencent.smtt.sdk.CookieManager;
 import com.tencent.smtt.sdk.CookieSyncManager;
+import com.tencent.smtt.sdk.QbSdk;
 
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -68,6 +70,7 @@ public class WidgetOneApplication extends Application {
         super.onCreate();
         EUExUtil.init(this);
         BDebug.init();
+        initTencentX5();
         CookieSyncManager.createInstance(this);
         CookieManager.getInstance().setAcceptCookie(true);
         CookieManager.getInstance().removeSessionCookie();
@@ -76,6 +79,48 @@ public class WidgetOneApplication extends Application {
         initPlugin();
         reflectionPluginMethod("onApplicationCreate");
         BConstant.app = this;
+    }
+
+    private final void initTencentX5() {
+        int tbsVersion = 0;
+        boolean noTencentX5 = false;
+        try {
+            String[] lists  = getAssets().list("widget");
+            for (int i = 0; i < lists.length; i++) {
+                if (lists[i].equalsIgnoreCase("notencentx5")) {
+                    noTencentX5 = true;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        //初始化X5引擎SDK
+        tbsVersion = QbSdk.getTbsVersion(getApplicationContext());
+        if (noTencentX5 || (tbsVersion > 0 && tbsVersion < 30000)) {
+            BDebug.i("AppCanTBS", "QbSdk.forceSysWebView()");
+            QbSdk.forceSysWebView();
+        }
+        if(!QbSdk.isTbsCoreInited() && (tbsVersion == 0 || tbsVersion >= 30000) && !noTencentX5){
+            final long timerCounter = System.currentTimeMillis();
+            // 如果手机没有可以共享的X5内核，会先下载并安装，首次启动不会使用X5，再次启动才会使用X5；
+            // 如果手机有可以共享的X5内核，但未安装，会先安装，首次启动不会使用X5，再次启动才会使用X5；
+            // 如果手机有可以共享的X5内核，已经安装，首次启动会使用X5；
+            QbSdk.initX5Environment(getApplicationContext(), new QbSdk.PreInitCallback(){
+
+                @Override
+                public void onViewInitFinished(boolean success) {
+                    // TODO Auto-generated method stub
+                    float deltaTime = (System.currentTimeMillis() - timerCounter);
+                    BDebug.i("AppCanTBS", "success " + success + " x5初始化使用了" + deltaTime + "毫秒");
+                }
+
+                @Override
+                public void onCoreInitFinished() {
+                    // TODO Auto-generated method stub
+                    BDebug.i("AppCanTBS", "onX5CoreInitFinished!!!!");
+                }
+            });
+        }
     }
 
     private void reflectionPluginMethod(String method) {
