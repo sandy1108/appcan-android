@@ -23,7 +23,6 @@ import android.util.Log;
 
 import org.apache.http.NameValuePair;
 import org.zywx.wbpalmstar.base.BUtility;
-import org.zywx.wbpalmstar.engine.EBrowserView;
 import org.zywx.wbpalmstar.engine.EngineEventListener;
 import org.zywx.wbpalmstar.engine.universalex.EUExUtil;
 import org.zywx.wbpalmstar.platform.push.report.PushReportAgent;
@@ -138,14 +137,12 @@ public class PushEngineEventListener implements EngineEventListener {
     }
 
     @Override
-    public void deviceBind(String userId, String userNick, Context context, EBrowserView mBrwView) {
-        Log.i("push", "deviceBind");
-        PushReportAgent.deviceBind(userId, userNick, context, mBrwView);
+    public void deviceBind(String userId, String userName, Context context) {
+        PushReportAgent.deviceBind(userId, userName, context);
     }
 
     @Override
-    public void deviceUnBind(Context context, EBrowserView mBrwView) {
-        Log.i("push", "deviceUnBind");
-        PushReportAgent.deviceUnBind(context, mBrwView);
+    public void deviceUnBind(Context context) {
+        PushReportAgent.deviceUnBind(context);
     }
 }

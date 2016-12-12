@@ -494,7 +494,9 @@ public class EBrowserWidget extends AbsoluteLayout {
     }
 
     public void onAppStop() {
-        mBroWindow.onAppStop();
+        if (mBroWindow != null) {
+            mBroWindow.onAppStop();
+        }
         EBrowserWindow root = mEWindowStack.get("root");
         if (mBroWindow != root) {
             root.onAppStop();

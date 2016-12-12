@@ -26,10 +26,9 @@ import android.os.Process;
 import android.text.TextUtils;
 import android.util.Log;
 
-import org.json.JSONObject;
 import org.zywx.wbpalmstar.base.BUtility;
 import org.zywx.wbpalmstar.base.ResoureFinder;
-import org.zywx.wbpalmstar.engine.EBrowserView;
+import org.zywx.wbpalmstar.base.vo.PushDeviceBindVO;
 import org.zywx.wbpalmstar.platform.push.PushService;
 
 import java.util.List;
@@ -46,8 +45,7 @@ public class PushReportThread extends Thread implements PushReportConstants {
     // private PushReportAgent mPushAgent = null;
     private List mNameValuePairs = null;
     private boolean mIsRun;
-    private EBrowserView mBrwView = null;
-    private JSONObject mJsonObject = null;
+    private PushDeviceBindVO mPushDeviceBind = null;
 
     public PushReportThread(Context inActivity, int threadType) {
         m_activity = inActivity;
@@ -92,12 +90,10 @@ public class PushReportThread extends Thread implements PushReportConstants {
         return pushReportThread;
     }
 
-    public static PushReportThread getDeviceBindThread(Context inActivity, int threadType, EBrowserView mBrwView,
-            JSONObject jsonObject) {
+    public static PushReportThread getDeviceBindThread(Context inActivity, int threadType, PushDeviceBindVO pushDeviceBind) {
         PushReportThread pushReportThread = new PushReportThread(inActivity,
                 threadType);
-        pushReportThread.mBrwView = mBrwView;
-        pushReportThread.mJsonObject = jsonObject;
+        pushReportThread.mPushDeviceBind = pushDeviceBind;
         return pushReportThread;
     }
 
@@ -170,9 +166,10 @@ public class PushReportThread extends Thread implements PushReportConstants {
 
     private void unBindUserInfo() {
         String softToken = BUtility.getSoftToken(m_activity, PushReportAgent.mCurWgt.m_appkey);
-        PushReportHttpClient.sendPostDataByNameValuePair(
+        String bu = PushReportHttpClient.sendPostDataByNameValuePair(
                 (host_pushBindUser + "msg/" + softToken + "/unBindUser"), mNameValuePairs,
                 m_activity);
+        Log.i("PushReportThread", "unBindUserInfo======" + bu);
     }
 
     private void initPush() {
@@ -199,15 +196,17 @@ public class PushReportThread extends Thread implements PushReportConstants {
     }
 
     private void bindUserInfo() {
-        PushReportHttpClient.sendPostDataByNameValuePair(
+        String bu = PushReportHttpClient.sendPostDataByNameValuePair(
                 (host_pushBindUser + url_push_bindUser), mNameValuePairs,
                 m_activity);
+        Log.i("PushReportThread", "bindUserInfo======" + bu);
     }
 
     private void pushReportOpen() {
-        PushReportHttpClient.sendPostDataByNameValuePair(
+        String result = PushReportHttpClient.sendPostDataByNameValuePair(
                 (host_pushReport + url_push_report), mNameValuePairs,
                 m_activity);
+        Log.i("PushReportThread", "pushReportOpen result======" + result);
     }
 
     private void newPushReportOpen() {
@@ -215,25 +214,27 @@ public class PushReportThread extends Thread implements PushReportConstants {
             host_pushBindUser = host_pushBindUser + "/";
         }
         host_pushBindUser = host_pushBindUser + "4.0/count/" + mTaskId;
-        PushReportHttpClient.newPushOpenByPostData(
+        String result = PushReportHttpClient.newPushOpenByPostData(
                 host_pushBindUser, m_activity, mTenantId, mSoftToken);
+        Log.i("PushReportThread", "newPushReportOpen result======" + result);
     }
 
     private void pushReportArrive() {
-        PushReportHttpClient.sendPostDataByNameValuePair(
+        String result = PushReportHttpClient.sendPostDataByNameValuePair(
                 (host_pushReport + url_push_report), mNameValuePairs,
                 m_activity);
+        Log.i("PushReportThread", "pushReportArrive result======" + result);
     }
 
     private void bindDeviceInfo() {
-        String result = PushReportHttpClient.bindOrUnbindDeviceInfo(
-                (host_pushBindUser + url_push_bindDevice), mJsonObject,
+        PushReportHttpClient.bindOrUnbindDeviceInfo(
+                (host_pushBindUser + url_push_bindDevice), mPushDeviceBind,
                 m_activity);
     }
 
     private void unBindDeviceInfo() {
-        String result = PushReportHttpClient.bindOrUnbindDeviceInfo(
-                (host_pushBindUser + url_push_bindDevice), mJsonObject,
+        PushReportHttpClient.bindOrUnbindDeviceInfo(
+                (host_pushBindUser + url_push_bindDevice), mPushDeviceBind,
                 m_activity);
     }
 }

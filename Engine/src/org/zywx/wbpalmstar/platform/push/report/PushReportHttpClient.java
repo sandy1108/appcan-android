@@ -42,6 +42,8 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 import org.zywx.wbpalmstar.base.BDebug;
 import org.zywx.wbpalmstar.base.BUtility;
+import org.zywx.wbpalmstar.base.vo.PushDeviceBindVO;
+import org.zywx.wbpalmstar.engine.DataHelper;
 import org.zywx.wbpalmstar.engine.universalex.EUExUtil;
 import org.zywx.wbpalmstar.platform.certificates.Http;
 
@@ -495,7 +497,7 @@ public class PushReportHttpClient {
         return data;
     }
 
-    public static String bindOrUnbindDeviceInfo(String url, JSONObject jsonObject, Context mCtx) {
+    public static String bindOrUnbindDeviceInfo(String url, PushDeviceBindVO pushDeviceBind, Context mCtx) {
         PushReportUtility.log(url);
         HttpURLConnection conn = null;
         String response = null;
@@ -517,7 +519,7 @@ public class PushReportHttpClient {
             String appid = preferences.getString("appid", null);
             String appkey = EUExUtil.getString("appkey");
             appkey = BUtility.decodeStr(appkey);
-            PushReportUtility.log("appid ==" + appid + " appkey ==" + appkey);
+            BDebug.d("appid ==" + appid + " appkey ==" + appkey);
             conn.setRequestProperty("x-mas-app-id", appid);
             conn.setRequestProperty("x-mas-verify",
                     BUtility.getAppVerifyValue(appid, appkey,
@@ -525,10 +527,11 @@ public class PushReportHttpClient {
             conn.setDoInput(true);
             conn.setDoOutput(true);
 
-            PushReportUtility.log(jsonObject.toString());
+            String param = DataHelper.gson.toJson(pushDeviceBind);
+            BDebug.d(param);
             OutputStream outputStream = conn.getOutputStream();
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream, "UTF-8"));
-            writer.write(jsonObject.toString());
+            writer.write(param);
             writer.flush();
             writer.close();
             outputStream.close();
@@ -554,12 +557,13 @@ public class PushReportHttpClient {
                 }
             }
             PushReportUtility.log("responseCode ==" + responseCode);
-            PushReportUtility.log("response ==" + response);
+            BDebug.d("response ==" + response);
             return response;
 
         } catch (Exception e) {
-            e.printStackTrace();
-            PushReportUtility.oe("bindDeviceInfo: " + url, e);
+            if (BDebug.DEBUG) {
+                e.printStackTrace();
+            }
         } finally {
             if (conn != null) {
                 conn.disconnect();

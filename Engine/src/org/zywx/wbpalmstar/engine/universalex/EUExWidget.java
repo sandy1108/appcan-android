@@ -71,7 +71,7 @@ import java.util.Set;
 public class EUExWidget extends EUExBase {
     public static final String tag = "uexWidget";
 
-    public static final short LOADAPP_RQ_CODE = 10001;
+    public static final int LOADAPP_RQ_CODE = 1000001;
 
     public static final String function_getOpenerInfo = "uexWidget.cbGetOpenerInfo";
     public static final String function_checkUpdate = "uexWidget.cbCheckUpdate";
