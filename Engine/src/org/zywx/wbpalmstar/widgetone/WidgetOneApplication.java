@@ -290,13 +290,13 @@ public class WidgetOneApplication extends Application {
 
     public final void deviceBind(String userId, String userNick, Context mContext, EBrowserView mBrwView) {
         for (EngineEventListener Listener : mListenerQueue) {
-            Listener.deviceBind(userId, userNick, mContext, mBrwView);
+            Listener.deviceBind(userId, userNick, mContext);
         }
     }
 
     public final void deviceUnBind(Context mContext, EBrowserView mBrwView) {
         for (EngineEventListener Listener : mListenerQueue) {
-            Listener.deviceUnBind(mContext, mBrwView);
+            Listener.deviceUnBind(mContext);
         }
     }
 

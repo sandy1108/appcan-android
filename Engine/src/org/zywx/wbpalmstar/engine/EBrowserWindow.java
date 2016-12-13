@@ -47,6 +47,7 @@ import org.zywx.wbpalmstar.acedes.ACEDes;
 import org.zywx.wbpalmstar.base.BDebug;
 import org.zywx.wbpalmstar.base.BUtility;
 import org.zywx.wbpalmstar.base.view.SwipeView;
+import org.zywx.wbpalmstar.base.vo.DownloadCallbackInfoVO;
 import org.zywx.wbpalmstar.engine.EBrowserHistory.EHistoryEntry;
 import org.zywx.wbpalmstar.engine.external.Compat;
 import org.zywx.wbpalmstar.engine.universalex.EUExCallback;
@@ -129,6 +130,7 @@ public class EBrowserWindow extends SwipeView implements AnimationListener {
 
     public static String rootLeftSlidingWinName = "rootLeftSlidingWinName";
     public static String rootRightSlidingWinName = "rootRightSlidingWinName";
+    private List<View> viewList = new ArrayList<View>();
 
     public EBrowserWindow(Context context, EBrowserWidget inParent) {
         super(context);
@@ -216,6 +218,7 @@ public class EBrowserWindow extends SwipeView implements AnimationListener {
         //msg.what = F_WHANDLER_ADD_VIEW;
         //msg.obj = child;
         //mWindLoop.sendMessage(msg);
+        viewList.add(child);
         child.setTag(EViewEntry.F_PLUGIN_VIEW_TAG);
         Animation anim = child.getAnimation();
         addView(child);
@@ -226,15 +229,15 @@ public class EBrowserWindow extends SwipeView implements AnimationListener {
     }
 
     public void removeViewFromCurrentWindow(View child) {
-        //Message msg = mWindLoop.obtainMessage();
-        //msg.what = F_WHANDLER_REMOVE_VIEW;
-        //msg.obj = child;
-        //mWindLoop.sendMessage(msg);
-        Animation removeAnim = child.getAnimation();
-        if (null != removeAnim) {
-            removeAnim.start();
-        }
-        removeView(child);
+        Message msg = mWindLoop.obtainMessage();
+        msg.what = F_WHANDLER_REMOVE_VIEW;
+        msg.obj = child;
+        mWindLoop.sendMessage(msg);
+        // Animation removeAnim = child.getAnimation();
+        // if (null != removeAnim) {
+        // removeAnim.start();
+        // }
+        // removeView(child);
     }
 
 
@@ -1598,6 +1601,21 @@ public class EBrowserWindow extends SwipeView implements AnimationListener {
             mResumeJs.clear();
             mResumeJs = null;
         }
+        clearViewList();
+    }
+
+    private void clearViewList() {
+        for (View view : viewList) {
+            if (view != null) {
+                removeViewList(view);
+            }
+        }
+        viewList.clear();
+    }
+
+    private void removeViewList(View view) {
+        viewList.remove(view);
+        removeView(view);
     }
 
     public void destory() {
@@ -2177,12 +2195,12 @@ public class EBrowserWindow extends SwipeView implements AnimationListener {
                     bringChildToFront(childAdd);
                     break;
                 case F_WHANDLER_REMOVE_VIEW:
-                    View childrem = (View) msg.obj;
-                    Animation removeAnim = childrem.getAnimation();
+                    View children = (View) msg.obj;
+                    Animation removeAnim = children.getAnimation();
                     if (null != removeAnim) {
                         removeAnim.start();
                     }
-                    removeView(childrem);
+                    removeViewList(children);
                     msg.obj = null;
                     break;
                 case F_WHANDLER_BOUNCE_TASK:
@@ -2984,27 +3002,27 @@ public class EBrowserWindow extends SwipeView implements AnimationListener {
     }
 
     public void executeCbDownloadCallbackJs(EBrowserView eBrwView, int callbackType, String url, String userAgent,
-            String contentDisposition, String mimetype, long contentLength) {
+                                            String contentDisposition, String mimetype, long contentLength) {
         try {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("url", url);
-            jsonObject.put("userAgent", userAgent);
-            jsonObject.put("contentDisposition", contentDisposition);
-            jsonObject.put("mimetype", mimetype);
-            jsonObject.put("contentLength", contentLength);
+            DownloadCallbackInfoVO info = new DownloadCallbackInfoVO();
+            info.setUrl(url);
+            info.setUserAgent(userAgent);
+            info.setContentDisposition(contentDisposition);
+            info.setMimetype(mimetype);
+            info.setContentLength(contentLength);
             if (callbackType == 1) {  // 1 下载回调给主窗口，前端自己下载
                 String name = eBrwView.checkType(EBrwViewEntry.VIEW_TYPE_MAIN) ? "" : eBrwView.getName();
-                jsonObject.put("windowName", name);
+                info.setWindowName(name);
                 String js = EUExWindow.SCRIPT_HEADER + "if("
                         + EUExWindow.function_cbDownloadCallback + "){"
                         + EUExWindow.function_cbDownloadCallback + "("
-                        + jsonObject.toString() + ");}";
+                        + DataHelper.gson.toJson(info) + ");}";
                 mMainView.loadUrl(js);
             } else if (callbackType == 2) {  // 2 下载回调给当前窗口，前端自己下载;
                 String js = EUExWindow.SCRIPT_HEADER + "if("
                         + EUExWindow.function_cbDownloadCallback + "){"
                         + EUExWindow.function_cbDownloadCallback + "("
-                        + jsonObject.toString() + ");}";
+                        + DataHelper.gson.toJson(info) + ");}";
                 eBrwView.loadUrl(js);
             }
         } catch (Exception e) {
