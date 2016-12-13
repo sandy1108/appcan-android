@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <info>
-    <version>sdksuit_3.4_161101_01</version>
-	<package>android_Engine_3.4_161101_01</package>
+    <version>sdksuit_3.4_x5_161213_01_e</version>
+	<package>android_Engine_3.4_161213_01</package>
 	<kernel>腾讯X5内核</kernel>
-	<description>BUtility增加file:///sdcard/和exterbox://协议路径处理;修改子应用的res://协议路径获取不正确</description>
+	<description>修复插件更新包更新失败问题;修复复制插件补丁包逻辑错误的问题;uexWidget增加setPushHost、getPushHost接口;</description>
+    <dssVersion>3.2.2</dssVersion>
 </info>
