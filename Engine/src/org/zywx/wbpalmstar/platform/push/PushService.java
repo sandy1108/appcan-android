@@ -104,6 +104,7 @@ public class PushService extends Service implements PushDataCallback {
         // }
         // }.start();
         // start(intent,startId);
+        type = intent.getIntExtra("type", type);
         start();
         // flags = START_REDELIVER_INTENT;
         // super.onStartCommand(intent, flags, startId);
@@ -130,7 +131,7 @@ public class PushService extends Service implements PushDataCallback {
         softToken = BUtility.getSoftToken(this, appKey);
         preferences = this.getSharedPreferences(PushReportConstants.SP_APP,
                 Context.MODE_PRIVATE);
-        url_push = ResoureFinder.getInstance().getString(this, "push_host");
+        url_push = BUtility.getPushHost(this);
         if (TextUtils.isEmpty(url_push)) {
             Log.w("PushService", "push_host is empty");
             return;
@@ -141,15 +142,6 @@ public class PushService extends Service implements PushDataCallback {
         // mamPush_ip = host_and_port.split(":")[0];
         // mamPush_port = host_and_port.split(":")[1];
         // }
-        SharedPreferences sp = this.getSharedPreferences("saveData",
-                Context.MODE_MULTI_PROCESS);
-        String pushMes = sp.getString("pushMes", "0");
-        String localPushMes = sp.getString("localPushMes", pushMes);
-        if ("1".equals(localPushMes) && "1".equals(pushMes)) {
-            type = 1;
-        } else {
-            type = 0;
-        }
         PushReportUtility.log("start--" + type);
         try {
             // type = intent.getIntExtra("type", 0);
