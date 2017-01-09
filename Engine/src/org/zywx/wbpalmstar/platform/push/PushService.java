@@ -104,7 +104,9 @@ public class PushService extends Service implements PushDataCallback {
         // }
         // }.start();
         // start(intent,startId);
-        type = intent.getIntExtra("type", type);
+        if (null != intent) {
+            type = intent.getIntExtra("type", type);
+        }
         start();
         // flags = START_REDELIVER_INTENT;
         // super.onStartCommand(intent, flags, startId);
