@@ -1,6 +1,3 @@
--libraryjars 'platform\android.jar'
--libraryjars 'platform\rt.jar'
-
 -keepattributes SourceFile,LineNumberTable
 
 -optimizationpasses 5
@@ -18,7 +15,8 @@
 -libraryjars libs/commons-io-2.4.jar
 -libraryjars libs/aceimageloader.jar
 -libraryjars libs/gson-2.2.4.jar
--libraryjars libs/tbs_sdk_v1.5.1.1067_25450_obfs_20160510_160207.jar
+-libraryjars libs/dynamicLoadLib.jar
+-libraryjars libs/tbs_sdk_thirdapp_v2.6.0.1024_36950_sharewithdownload_withoutGame_obfs_20161130_143558.jar
 
 -keep public class * extends android.app.Activity
 -keep public class * extends android.app.Application
@@ -93,10 +91,6 @@
 }
 
 -keep class org.zywx.wbpalmstar.widgetone.WidgetOneApplication {
-    <fields>;
-    <methods>;
-}
--keep class org.zywx.wbpalmstar.engine.universalex.EUExDispatcher {
     <fields>;
     <methods>;
 }
@@ -181,6 +175,11 @@
 -keep class org.zywx.wbpalmstar.base.ACEImageLoader {
     <fields>;
     <methods>;
+}
+
+# Keep fields - Gson parse AppCanJsVO
+-keep public class org.zywx.wbpalmstar.base.vo.AppCanJsVO {
+    <fields>;
 }
 
 -keep class com.baidu.mapapi.** {*;}
@@ -273,6 +272,7 @@
     public int getState(java.lang.String[]);
     public java.lang.String getUrlQuery(java.lang.String[]);
     public java.lang.String getWindowName(java.lang.String[]);
+    public java.lang.String getWebViewKernelInfo(java.lang.String[]);
     public void actionSheet(java.lang.String[]);
     public void statusBarNotification(java.lang.String[]);
     public void setWindowFrame(java.lang.String[]);
@@ -296,8 +296,6 @@
     public void destroyProgressDialog(java.lang.String[]);
     public void openPresentWindow(java.lang.String[]);
     public void setSlidingWindowEnabled(java.lang.String[]);
-    public void reload(java.lang.String[]);
-    public void reloadWidgetByAppId(java.lang.String[]);
     public void getSlidingWindowState(java.lang.String[]);
     public void dispatch(java.lang.String,java.lang.String,java.lang.String[]);
     public void setIsSupportSlideCallback(java.lang.String[]);
@@ -355,6 +353,7 @@
     public void moveToBack(java.lang.String[]);
     public void setSwipeCloseEnable(java.lang.String[]);
     public void setLoadingImagePath(java.lang.String[]);
+    public void clearPluginViewContainer(java.lang.String[]);
     public void setEvent(java.lang.String[]);
     public void beginEvent(java.lang.String[]);
     public void endEvent(java.lang.String[]);
@@ -374,32 +373,14 @@
     public void insertWindowAboveWindow(java.lang.String[]);
     public void insertWindowBelowWindow(java.lang.String[]);
     public void setWindowHidden(java.lang.String[]);
+    public void setPopoverVisibility(java.lang.String[]);
 
     public void registerAppEventListener(org.zywx.wbpalmstar.engine.universalex.EUExEventListener);
     public void unRegisterAppEventListener(org.zywx.wbpalmstar.engine.universalex.EUExEventListener);
     public void uexOnAuthorize(java.lang.String);
-
+    public void setPushHost(java.lang.String[]);
+    public void getPushHost(java.lang.String[]);
     public void setWindowScrollbarVisible(java.lang.String[]);
-    public void setKeyboardMode(java.lang.String[]);
-    public void hideSoftKeyboard(java.lang.String[]);
-    public void setIsSupportSlideCallback(java.lang.String[]);
-    public void topBounceViewRefresh(java.lang.String[]);
-    public void setPageInContainer(java.lang.String[]);
-    public void closePluginViewContainer(java.lang.String[]);
-    public void createPluginViewContainer(java.lang.String[]);
-    public void getMBaaSHost(java.lang.String[]);
-    public void setHardwareEnable(java.lang.String[]);
-    public void setPopHardwareEnable(java.lang.String[]);
-    public void setIsSupportSwipeCallback(java.lang.String[]);
-    public void disturbLongPressGesture(java.lang.String[]);
-    public void closeLoading(java.lang.String[]);
-    public void moveToBack(java.lang.String[]);
-    public void getHeight(java.lang.String[]);
-    public void getWidth(java.lang.String[]);
-    public void setSwipeCloseEnable(java.lang.String[]);
-    public void share(java.lang.String[]);
-    public void putLocalData(java.lang.String[]);
-    public void getLocalData(java.lang.String[]);
     protected boolean clean();
 }
 
