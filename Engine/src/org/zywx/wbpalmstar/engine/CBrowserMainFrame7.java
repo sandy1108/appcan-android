@@ -146,7 +146,7 @@ public class CBrowserMainFrame7 extends CBrowserMainFrame {
     @Override
     public void onGeolocationPermissionsShowPrompt(final String origin, final GeolocationPermissions.Callback callback) {
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-        builder.setMessage("是否允许获取您的位置信息?");
+        builder.setMessage("鏄惁鍏佽鑾峰彇鎮ㄧ殑浣嶇疆淇℃伅?");
         DialogInterface.OnClickListener dialogButtonOnClickListener = new DialogInterface.OnClickListener() {
 
             @Override
@@ -158,8 +158,8 @@ public class CBrowserMainFrame7 extends CBrowserMainFrame {
                 }
             }
         };
-        builder.setPositiveButton("允许", dialogButtonOnClickListener);
-        builder.setNegativeButton("拒绝", dialogButtonOnClickListener);
+        builder.setPositiveButton("鍏佽", dialogButtonOnClickListener);
+        builder.setNegativeButton("鎷掔粷", dialogButtonOnClickListener);
         builder.show();
         super.onGeolocationPermissionsShowPrompt(origin, callback);
     }

@@ -4,6 +4,7 @@
 -dontusemixedcaseclassnames
 -dontskipnonpubliclibraryclasses
 -dontpreverify
+-dontshrink
 -verbose
 -ignorewarnings
 -optimizations !code/simplification/arithmetic,!field/*,!class/merging/*
@@ -15,6 +16,7 @@
 -libraryjars libs/commons-io-2.4.jar
 -libraryjars libs/aceimageloader.jar
 -libraryjars libs/gson-2.2.4.jar
+-libraryjars libs/dynamicLoadLib.jar
 
 -keep public class * extends android.app.Activity
 -keep public class * extends android.app.Application
@@ -32,7 +34,7 @@
 -keep public class * extends android.support.v4.**
 -keep public class * extends android.app.Fragment
 -keep public class * extends android.support.v4.app.FragmentActivity
-
+-keep public class * extends org.xwalk.core.XWalkView
 -dontwarn org.chromium.**
 -dontwarn javax.annotation.**
 
@@ -47,11 +49,11 @@
     native <methods>;
 }
 
--keepclasseswithmembers class * {
+-keepclasseswithmembernames class * {
     public <init>(android.content.Context, android.util.AttributeSet);
 }
 
--keepclasseswithmembers class * {
+-keepclasseswithmembernames class * {
     public <init>(android.content.Context, android.util.AttributeSet, int);
 }
 
@@ -92,10 +94,6 @@
     <fields>;
     <methods>;
 }
--keep class org.zywx.wbpalmstar.engine.universalex.EUExDispatcher {
-    <fields>;
-    <methods>;
-}
 -keep class org.zywx.wbpalmstar.widgetone.dataservice.WWidgetData {
     <fields>;
     <methods>;
@@ -116,7 +114,7 @@
     <methods>;
 }
 
--keep class org.zywx.wbpalmstar.engine.universalex.EUExUtil{
+-keep class org.zywx.wbpalmstar.engine.universalex.EUExUtil {
     <fields>;
     <methods>;
 }
@@ -179,6 +177,11 @@
     <methods>;
 }
 
+# Keep fields - Gson parse AppCanJsVO
+-keep public class org.zywx.wbpalmstar.base.vo.AppCanJsVO {
+    <fields>;
+}
+
 -keep class com.baidu.mapapi.** {*;}
 -keep class com.baidu.mobads.** {*;}
 -keep class com.baidu.location.** {*;}
@@ -210,6 +213,10 @@
 # Application classes that will be serialized/deserialized over Gson
 
 ##---------------End: proguard configuration for Gson  ----------
+
+-keepclassmembers class * {
+    @org.zywx.wbpalmstar.base.util.AppCanAPI *;
+}
 
 -keepclassmembers public class * {
     public void open(java.lang.String[]);
@@ -269,6 +276,7 @@
     public int getState(java.lang.String[]);
     public java.lang.String getUrlQuery(java.lang.String[]);
     public java.lang.String getWindowName(java.lang.String[]);
+    public java.lang.String getWebViewKernelInfo(java.lang.String[]);
     public void actionSheet(java.lang.String[]);
     public void statusBarNotification(java.lang.String[]);
     public void setWindowFrame(java.lang.String[]);
@@ -276,6 +284,7 @@
     public void postGlobalNotification(java.lang.String[]);
     public void subscribeChannelNotification(java.lang.String[]);
     public void publishChannelNotification(java.lang.String[]);
+    public void publishChannelNotificationForJson(java.lang.String[]);
     public void showSoftKeyboard(java.lang.String[]);
     public void hideSoftKeyboard(java.lang.String[]);
     public void closeAboveWndByName(java.lang.String[]);
@@ -309,7 +318,6 @@
     public java.lang.String getLocalData(java.lang.String[]);
     public void disturbLongPressGesture(java.lang.String[]);
     public void setIsSupportSwipeCallback(java.lang.String[]);
-    public void publishChannelNotificationForJson(java.lang.String[]);
     public void getMBaaSHost(java.lang.String[]);
     public void topBounceViewRefresh(java.lang.String[]);
     public void setAutorotateEnable(java.lang.String[]);
@@ -349,10 +357,11 @@
     public void moveToBack(java.lang.String[]);
     public void setSwipeCloseEnable(java.lang.String[]);
     public void setLoadingImagePath(java.lang.String[]);
+    public void clearPluginViewContainer(java.lang.String[]);
     public void setEvent(java.lang.String[]);
     public void beginEvent(java.lang.String[]);
     public void endEvent(java.lang.String[]);
-    public void updateParams(java.lang.String[]); 
+    public void updateParams(java.lang.String[]);
     public void setErrorReport(java.lang.String[]);
     public void refreshGetAuthorizeID(java.lang.String[]);
     public void getAuthorizeID(java.lang.String[]);
@@ -368,11 +377,13 @@
     public void insertWindowAboveWindow(java.lang.String[]);
     public void insertWindowBelowWindow(java.lang.String[]);
     public void setWindowHidden(java.lang.String[]);
+    public void setPopoverVisibility(java.lang.String[]);
 
     public void registerAppEventListener(org.zywx.wbpalmstar.engine.universalex.EUExEventListener);
     public void unRegisterAppEventListener(org.zywx.wbpalmstar.engine.universalex.EUExEventListener);
     public void uexOnAuthorize(java.lang.String);
-
+    public void setPushHost(java.lang.String[]);
+    public void getPushHost(java.lang.String[]);
     public void setWindowScrollbarVisible(java.lang.String[]);
     protected boolean clean();
 }
