@@ -40,6 +40,7 @@ import org.zywx.wbpalmstar.acedes.ACEDESBrowserWindow7;
 import org.zywx.wbpalmstar.base.BDebug;
 import org.zywx.wbpalmstar.engine.universalex.EUExScript;
 import org.zywx.wbpalmstar.engine.universalex.EUExUtil;
+import org.zywx.wbpalmstar.platform.certificates.Http;
 import org.zywx.wbpalmstar.widgetone.dataservice.WWidgetData;
 
 import java.io.File;
@@ -339,7 +340,11 @@ public class CBrowserWindow7 extends ACEDESBrowserWindow7 {
     @Override
     public void onReceivedSslError(WebView view, SslErrorHandler handler,
                                    SslError error) {
-        super.onReceivedSslError(view,handler,error);
+        if (Http.isCheckTrustCert()) {
+            super.onReceivedSslError(view,handler,error);
+        } else {
+            handler.proceed();
+        }
     }
 
     @Override
