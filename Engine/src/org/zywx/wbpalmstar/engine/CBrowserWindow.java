@@ -32,6 +32,7 @@ import android.widget.Toast;
 import org.zywx.wbpalmstar.acedes.EXWebViewClient;
 import org.zywx.wbpalmstar.engine.universalex.EUExScript;
 import org.zywx.wbpalmstar.engine.universalex.EUExUtil;
+import org.zywx.wbpalmstar.platform.certificates.Http;
 
 import com.tencent.smtt.export.external.interfaces.SslError;
 import com.tencent.smtt.export.external.interfaces.SslErrorHandler;
@@ -256,7 +257,11 @@ public class CBrowserWindow extends EXWebViewClient {
 
     @Override
     public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
-        super.onReceivedSslError(view,handler,error);
+        if (Http.isCheckTrustCert()) {
+            super.onReceivedSslError(view,handler,error);
+        } else {
+            handler.proceed();
+        }
     }
 
 	/*
