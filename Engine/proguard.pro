@@ -4,6 +4,7 @@
 -dontusemixedcaseclassnames
 -dontskipnonpubliclibraryclasses
 -dontpreverify
+-dontshrink
 -verbose
 -ignorewarnings
 -optimizations !code/simplification/arithmetic,!field/*,!class/merging/*
@@ -29,12 +30,12 @@
 -keep public class org.zywx.wbpalmstar.platform.mam.SlidePaneLayout
 -keep public class org.zywx.wbpalmstar.platform.mam.WheelView
 
--dontwarn android.support.v4.**  
--keep class android.support.v4.** { *; }  
--keep public class * extends android.support.v4.**  
+-dontwarn android.support.v4.**
+-keep class android.support.v4.** { *; }
+-keep public class * extends android.support.v4.**
 -keep public class * extends android.app.Fragment
 -keep public class * extends android.support.v4.app.FragmentActivity
-
+-keep public class * extends org.xwalk.core.XWalkView
 -dontwarn org.chromium.**
 -dontwarn javax.annotation.**
 
@@ -49,11 +50,11 @@
     native <methods>;
 }
 
--keepclasseswithmembers class * {
+-keepclasseswithmembernames class * {
     public <init>(android.content.Context, android.util.AttributeSet);
 }
 
--keepclasseswithmembers class * {
+-keepclasseswithmembernames class * {
     public <init>(android.content.Context, android.util.AttributeSet, int);
 }
 
@@ -114,7 +115,7 @@
     <methods>;
 }
 
--keep class org.zywx.wbpalmstar.engine.universalex.EUExUtil{
+-keep class org.zywx.wbpalmstar.engine.universalex.EUExUtil {
     <fields>;
     <methods>;
 }
@@ -213,6 +214,10 @@
 # Application classes that will be serialized/deserialized over Gson
 
 ##---------------End: proguard configuration for Gson  ----------
+
+-keepclassmembers class * {
+    @org.zywx.wbpalmstar.base.util.AppCanAPI *;
+}
 
 -keepclassmembers public class * {
     public void open(java.lang.String[]);

@@ -284,7 +284,6 @@ public class EBrowserView extends WebView implements View.OnLongClickListener,
     public boolean isHardwareAccelerated() {
         //confirm view is attached to a window
         boolean isHardwareAccelerated = super.isHardwareAccelerated();
-        BDebug.v("isHardwareAccelerated", isHardwareAccelerated);
         return isHardwareAccelerated;
     }
 
@@ -295,9 +294,9 @@ public class EBrowserView extends WebView implements View.OnLongClickListener,
         }
         BDebug.i("loadUrl url " + url);
         try {
-            if (url.startsWith("javascript:") && Build.VERSION.SDK_INT >= 19) {
-                evaluateJavascript(url.substring("javascript:".length()), null);
-            } else {
+            if (url.startsWith("javascript:")&&Build.VERSION.SDK_INT>=19) {
+                evaluateJavascript(url, null);
+            }else {
                 super.loadUrl(url);
             }
         } catch (Exception e) {
@@ -1116,6 +1115,9 @@ public class EBrowserView extends WebView implements View.OnLongClickListener,
     public WWidgetData getCurrentWidget() {
         if (mDestroyed) {
             return new WWidgetData();
+        }
+        if (mBroWind==null){
+            return null;
         }
         return mBroWind.getWidget();
     }
