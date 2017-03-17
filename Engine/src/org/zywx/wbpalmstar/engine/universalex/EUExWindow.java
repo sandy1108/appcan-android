@@ -1457,10 +1457,12 @@ public class EUExWindow extends EUExBase {
             if (null != inY && inY.length() != 0) {
                 y = (int) (Integer.valueOf(inY) * sc);
             }
-            if (null != inWidth && inWidth.length() != 0) {
+            if (null != inWidth && inWidth.length() != 0
+                    && !"0".equals(inWidth)) {
                 w = (int) (Integer.valueOf(inWidth) * sc);
             }
-            if (null != inHeight && inHeight.length() != 0) {
+            if (null != inHeight && inHeight.length() != 0
+                    && !"0".equals(inHeight)) {
                 h = (int) (Integer.valueOf(inHeight) * sc);
             }
             if (null != inFontSize && inFontSize.length() != 0) {
