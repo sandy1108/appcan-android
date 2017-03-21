@@ -232,10 +232,10 @@ public class EUExWindow extends EUExBase {
         int hardware = -1;
         int downloadCallback = 0;
         String userAgent = "";
-        if (parm.length > 7) {
+        if (parm.length > 7&&parm[7]!=null) {
             animDuration = parm[7];
         }
-        if (parm.length > 8) {
+        if (parm.length > 8&&parm[8]!=null) {
             String jsonData = parm[8];
             try {
                 JSONObject json = new JSONObject(jsonData);
@@ -1406,7 +1406,7 @@ public class EUExWindow extends EUExBase {
         String bgColor = "#00000000";
         boolean hasExtraInfo = false;
         int mainDownloadCallback = 0;
-        if (parm.length > 10) {
+        if (parm.length > 10&&parm[10]!=null) {
             String jsonData = parm[10];
             try {
                 JSONObject json = new JSONObject(jsonData);
@@ -1457,10 +1457,12 @@ public class EUExWindow extends EUExBase {
             if (null != inY && inY.length() != 0) {
                 y = (int) (Integer.valueOf(inY) * sc);
             }
-            if (null != inWidth && inWidth.length() != 0) {
+            if (null != inWidth && inWidth.length() != 0
+                    && !"0".equals(inWidth)) {
                 w = (int) (Integer.valueOf(inWidth) * sc);
             }
-            if (null != inHeight && inHeight.length() != 0) {
+            if (null != inHeight && inHeight.length() != 0
+                    && !"0".equals(inHeight)) {
                 h = (int) (Integer.valueOf(inHeight) * sc);
             }
             if (null != inFontSize && inFontSize.length() != 0) {
