@@ -216,7 +216,7 @@ public class EUExWidget extends EUExBase {
         WidgetOneApplication app = (WidgetOneApplication) ((Activity) mContext)
                 .getApplication();
         String host_pushBindUser = BUtility.getBindUserHost(mContext);
-        if (host_pushBindUser.indexOf("push") > 0) {
+        if (host_pushBindUser.indexOf("push") > 0 || host_pushBindUser.indexOf("mms") > 0) {
             String uId = "";
             String uNickName = "";
             if (params.length > 0) {
@@ -784,7 +784,7 @@ public class EUExWidget extends EUExBase {
         WidgetOneApplication app = (WidgetOneApplication) ((Activity) mContext)
                 .getApplication();
         String host_pushBindUser = BUtility.getBindUserHost(mContext);
-        if (host_pushBindUser.indexOf("push") > 0) {
+        if (host_pushBindUser.indexOf("push") > 0 || host_pushBindUser.indexOf("mms") > 0) {
             app.setPushInfo(userId, userNick, mContext, mBrwView);
         } else {
             app.deviceBind(userId, userNick, mContext, mBrwView);
