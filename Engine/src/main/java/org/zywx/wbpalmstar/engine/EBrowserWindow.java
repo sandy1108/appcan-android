@@ -2674,12 +2674,16 @@ public class EBrowserWindow extends SwipeView implements AnimationListener {
         for (int i = 0; i < eBrwWins.size(); i++) {
             EBrowserWindow eBrwWin = eBrwWins.get(i);
             eBrwWin.addUriTask(eBrwWin.mMainView, js);
+            Collection<EBrowserView> eBrwViews = eBrwWin.mPopTable.values();
+            for (EBrowserView entry : eBrwViews) {
+                entry.addUriTask(js);
+            }
         }
 
-        Collection<EBrowserView> eBrwViews = mPopTable.values();
+        /*Collection<EBrowserView> eBrwViews = mPopTable.values();
         for (EBrowserView entry : eBrwViews) {
             entry.addUriTask(js);
-        }
+        }*/
     }
 
     public void subscribeChannelNotification(String channelId,
@@ -2864,7 +2868,7 @@ public class EBrowserWindow extends SwipeView implements AnimationListener {
         } else {
             setVisibility(GONE);
             if (null != mBroWidget) {
-                mBroWidget.putInvalid(this);
+                mBroWidget.destoryWindow(this);
             }
         }
 
@@ -2883,7 +2887,7 @@ public class EBrowserWindow extends SwipeView implements AnimationListener {
             public void run() {
                 setVisibility(GONE);
                 if (null != mBroWidget) {
-                    mBroWidget.putInvalid(EBrowserWindow.this);
+                    mBroWidget.destoryWindow(EBrowserWindow.this);
                 }
             }
         });
