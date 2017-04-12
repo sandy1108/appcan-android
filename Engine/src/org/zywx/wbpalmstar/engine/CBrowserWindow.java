@@ -19,7 +19,9 @@
 package org.zywx.wbpalmstar.engine;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -107,7 +109,7 @@ public class CBrowserWindow extends EXWebViewClient {
             }
             return true;
         }
-        boolean isUrl = url.startsWith("file") || url.startsWith("http");
+        boolean isUrl = url.startsWith("file") || url.startsWith("http") || url.startsWith("content://");
         boolean isCustomUrl = url.startsWith("alipay://") || url.startsWith("weixin://");
         if (!isUrl) {
             if (isCustomUrl) {
@@ -255,9 +257,26 @@ public class CBrowserWindow extends EXWebViewClient {
     }
 
     @Override
-    public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+    public void onReceivedSslError(WebView view, final SslErrorHandler handler, SslError error) {
         if (Http.isCheckTrustCert()) {
-            super.onReceivedSslError(view,handler,error);
+            final AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+            builder.setMessage("SSL证书错误，是否继续？");
+            builder.setPositiveButton("继续", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    handler.proceed();
+                    dialog.dismiss();
+                }
+            });
+            builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    handler.cancel();
+                    dialog.dismiss();
+                }
+            });
+            final AlertDialog dialog = builder.create();
+            dialog.show();
         } else {
             handler.proceed();
         }
