@@ -108,7 +108,7 @@ public class CBrowserWindow extends EXWebViewClient {
             }
             return true;
         }
-        boolean isUrl = url.startsWith("file") || url.startsWith("http");
+        boolean isUrl = url.startsWith("file") || url.startsWith("http") || url.startsWith("content://");
         boolean isCustomUrl = url.startsWith("alipay://") || url.startsWith("weixin://");
         if (!isUrl) {
             if (isCustomUrl) {
