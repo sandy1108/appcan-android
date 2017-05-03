@@ -510,16 +510,17 @@ public class EUExWindow extends EUExBase {
         if (null == curWind) {
             return;
         }
+        float scale = mBrwView.getCustomScale();
         String inX = parm[0];
         String inY = parm[1];
         String animDuration = parm[2];
         int x = 0, y = 0, duration = 250;
         try {
             if (null != inX && inX.length() != 0) {
-                x = Integer.parseInt(inX);
+                x = (int) (Integer.valueOf(inX) * scale);
             }
             if (null != inY && inY.length() != 0) {
-                y = Integer.parseInt(inY);
+                y = (int) (Integer.valueOf(inY) * scale);
             }
             if (null != animDuration && animDuration.length() != 0) {
                 duration = Integer.valueOf(animDuration);
@@ -1123,7 +1124,7 @@ public class EUExWindow extends EUExBase {
         int hardware = -1;
         int downloadCallback = 0;
         String userAgent = "";
-        if (parm.length > 11) {
+        if (parm.length > 11 && parm[11] != null) {
             String jsonData = parm[11];
             try {
                 JSONObject json = new JSONObject(jsonData);
@@ -3363,25 +3364,25 @@ public class EUExWindow extends EUExBase {
                 Vector<FrameLayout>());
         containerViewPager.setAdapter(containerAdapter);
         containerViewPager.setOnPageChangeListener(new ContainerViewPager.OnPageChangeListener() {
-			
-			@Override
-			public void onPageSelected(int index) {
-				String js = SCRIPT_HEADER + "if("
-						+ function_onPluginContainerPageChange + "){"
-						+ function_onPluginContainerPageChange + "(" + inputVO.getId()
-						+ "," + EUExCallback.F_C_INT + "," + index
-						+ SCRIPT_TAIL;
-				onCallback(js);
-			}
-			
-			@Override
-			public void onPageScrolled(int arg0, float arg1, int arg2) {
-			}
-			
-			@Override
-			public void onPageScrollStateChanged(int arg0) {
-			}
-		});
+
+            @Override
+            public void onPageSelected(int index) {
+                String js = SCRIPT_HEADER + "if("
+                        + function_onPluginContainerPageChange + "){"
+                        + function_onPluginContainerPageChange + "(" + inputVO.getId()
+                        + "," + EUExCallback.F_C_INT + "," + index
+                        + SCRIPT_TAIL;
+                onCallback(js);
+            }
+
+            @Override
+            public void onPageScrolled(int arg0, float arg1, int arg2) {
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int arg0) {
+            }
+        });
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams((int) inputVO.getW(), (int) inputVO.getH());
         lp.leftMargin = (int) inputVO.getX();
         lp.topMargin = (int) inputVO.getY();
