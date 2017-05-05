@@ -3,6 +3,6 @@
     <version>$version$</version>
     <package>$package$</package>
     <kernel>$kernel$</kernel>
-    <description>修复openPopover接口传入json对象调用无效的问题;修复X5内核下setWindowFrame接口异常</description>
+    <description>程序退出之后点击推送消息打开程序提示程序不完整</description>
     <dssVersion>4.0.0</dssVersion>
 </info>
