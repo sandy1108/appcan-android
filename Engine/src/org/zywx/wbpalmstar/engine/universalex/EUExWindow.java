@@ -35,7 +35,9 @@ import android.os.IBinder;
 import android.os.Message;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -2910,6 +2912,28 @@ public class EUExWindow extends EUExBase {
                     }
                 }
             });
+            mPrompt.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    onPromptContentChange("" + charSequence);
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                }
+            });
+        }
+    }
+
+    private void onPromptContentChange(String text) {
+        if (mBrwView != null) {
+            String js = "javascript:if(uexWindow.onPromptContentChange){uexWindow.onPromptContentChange('"
+                    + text + "');}";
+            mBrwView.loadUrl(js);
         }
     }
 

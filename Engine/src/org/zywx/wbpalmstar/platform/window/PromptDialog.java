@@ -22,6 +22,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.os.IBinder;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
@@ -100,4 +101,9 @@ public class PromptDialog extends AlertDialog {
         return dialog;
     }
 
+    public void addTextChangedListener(TextWatcher watcher) {
+        if (watcher != null) {
+            etInput.addTextChangedListener(watcher);
+        }
+    }
 }
