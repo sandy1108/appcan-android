@@ -2937,6 +2937,15 @@ public class EUExWindow extends EUExBase {
         }
     }
 
+    public void setPromptContent(String[] parm) {
+        if (parm.length < 1) {
+            return;
+        }
+        if (null != mPrompt) {
+            mPrompt.setInputText(parm[0]);
+        }
+    }
+
     private void hideSoftKeyboard(IBinder wToken) {
         try {
             InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
