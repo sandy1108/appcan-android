@@ -56,6 +56,7 @@ public class PromptDialog extends AlertDialog {
     public void setInputText(String text) {
         if (text != null && text.length() > 0) {
             etInput.setText(text);
+            etInput.setSelection(text.length());
         }
     }
 
