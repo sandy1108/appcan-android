@@ -3,6 +3,6 @@
     <version>$version$</version>
     <package>$package$</package>
     <kernel>$kernel$</kernel>
-    <description>修改4.0推送绑定解绑问题</description>
+    <description>修改应用Back退出再点推送消息进入type为2的问题</description>
     <dssVersion>4.0.0</dssVersion>
 </info>
