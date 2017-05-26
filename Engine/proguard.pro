@@ -386,6 +386,7 @@
     public void setPushHost(java.lang.String[]);
     public void getPushHost(java.lang.String[]);
     public void setWindowScrollbarVisible(java.lang.String[]);
+    public void setPromptContent(java.lang.String[]);
     protected boolean clean();
 }
 
@@ -569,8 +570,7 @@
 	public <fields>;
 	public <methods>;
 }
--keep public class * extends android.app.Application
-{
+-keep public class * extends android.app.Application{
 	public <fields>;
 	public <methods>;
 }
