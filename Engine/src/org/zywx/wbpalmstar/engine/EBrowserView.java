@@ -573,6 +573,12 @@ public class EBrowserView extends WebView implements View.OnLongClickListener,
     }
 
     @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        onTouchEvent(event);
+        return super.dispatchTouchEvent(event);
+    }
+
+    @Override
     public boolean onTouchEvent(MotionEvent ev) {
         if (mDestroyed) {
             return false;
