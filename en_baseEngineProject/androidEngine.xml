@@ -3,6 +3,6 @@
     <version>$version$</version>
     <package>$package$</package>
     <kernel>$kernel$</kernel>
-    <description>修改SQL语句注入风险;增加加密文件的BOM头处理</description>
+    <description>修复一个崩溃问题</description>
     <dssVersion>4.0.0</dssVersion>
 </info>
