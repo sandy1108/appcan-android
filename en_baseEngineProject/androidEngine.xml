@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <info>
-    <version>sdksuit_3.4_x5_161213_01_e</version>
-	<package>android_Engine_3.4_161213_01</package>
+    <version>sdksuit_3.4_x5_170719_01_e</version>
+	<package>android_Engine_3.4_170719_01</package>
 	<kernel>腾讯X5内核</kernel>
-	<description>修复插件更新包更新失败问题;修复复制插件补丁包逻辑错误的问题;uexWidget增加setPushHost、getPushHost接口;</description>
+	<description>多次调用alert只弹出一个</description>
     <dssVersion>3.2.2</dssVersion>
 </info>
