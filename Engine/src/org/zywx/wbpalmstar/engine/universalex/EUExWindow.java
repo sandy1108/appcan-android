@@ -2749,10 +2749,10 @@ public class EUExWindow extends EUExBase {
     public void private_alert(String inTitle, String inMessage, String inButtonLable) {
 		/*if (!((EBrowserActivity) mContext).isVisable()) {
 			return;
-		}*/
+		}
         if (null != mAlert) {
             return;
-        }
+        }*/
         try {
             AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
             builder.setTitle(inTitle);
@@ -2872,10 +2872,10 @@ public class EUExWindow extends EUExBase {
                                String hint) {
 		/*if (!((EBrowserActivity) mContext).isVisable()) {
 			return;
-		}*/
+		}
         if (null != mPrompt) {
             return;
-        }
+        }*/
         if (inButtonLables != null && inButtonLables.length == 2) {
             final JSONObject jsonObject = new JSONObject();
             mPrompt = PromptDialog.show(mContext, inTitle, inMessage, inDefaultValue,hint, inButtonLables[0], new

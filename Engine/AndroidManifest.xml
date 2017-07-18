@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.zywx.wbpalmstar.widgetone.uex"
+    package="org.zywx.wbpalmstar.widgetone.uexX5E"
     android:installLocation="internalOnly"
     android:versionCode="321"
     android:versionName="6.1.2" >
@@ -10,7 +10,6 @@
         android:allowBackup="false"
         android:allowClearUserData="false"
         android:hardwareAccelerated="true"
-        android:debuggable="true"
         android:icon="@drawable/icon"
         android:label="@string/app_name"
         android:vmSafeMode="true">
@@ -21,7 +20,7 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/browser_main_theme"
-            android:windowSoftInputMode="stateHidden|adjustPan" >
+            android:windowSoftInputMode="stateHidden|adjustResize" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -84,7 +83,7 @@
         </receiver>
         
         <provider android:name="org.zywx.wbpalmstar.base.ACEContentProvider"
-          android:authorities="org.zywx.wbpalmstar.widgetone.uex.sp" android:exported="false"/>
+          android:authorities="org.zywx.wbpalmstar.widgetone.uexX5E.sp" android:exported="false"/>
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />
