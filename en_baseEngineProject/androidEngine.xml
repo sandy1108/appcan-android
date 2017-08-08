@@ -3,6 +3,6 @@
     <version>$version$</version>
     <package>$package$</package>
     <kernel>$kernel$</kernel>
-    <description>修复uexImageBrowser崩溃问题</description>
+    <description>popover能打开popover</description>
     <dssVersion>4.0.0</dssVersion>
 </info>
