@@ -488,7 +488,7 @@ public abstract class EUExBase {
 
     private void addFragment(Fragment fragment, String tag) {
         ((FragmentActivity) mContext).getSupportFragmentManager().beginTransaction()
-                .add(fragment, tag).commit();
+                .add(fragment, tag).commitAllowingStateLoss();
     }
 
     private void removeFragment(Fragment fragment) {
@@ -496,7 +496,7 @@ public abstract class EUExBase {
             return;
         }
         ((FragmentActivity) mContext).getSupportFragmentManager().beginTransaction()
-                .remove(fragment).commit();
+                .remove(fragment).commitAllowingStateLoss();
     }
 
     private void removeFragment(String tag) {
