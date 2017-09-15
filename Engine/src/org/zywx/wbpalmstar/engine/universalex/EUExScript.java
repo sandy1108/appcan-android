@@ -127,6 +127,8 @@ public class EUExScript {
                 + "reloadWidgetByAppId:function(){uexDispatcher.dispatch('uexWidget','reloadWidgetByAppId',jo(arguments));},"
                 + "closeLoading:function(){uexDispatcher.dispatch('uexWidget','closeLoading',jo(arguments));},"
                 + "moveToBack:function(){uexDispatcher.dispatch('uexWidget','moveToBack',jo(arguments));},"
+                + "setPushConfig:function(){uexDispatcher.dispatch('uexWidget','setPushConfig',jo(arguments));},"
+                + "getPushConfig:function(){uexDispatcher.dispatch('uexWidget','getPushConfig',jo(arguments));},"
                 + "setKeyboardMode:function(){uexDispatcher.dispatch('uexWidget','setKeyboardMode',jo(arguments));}};"
                 +
                 // Window

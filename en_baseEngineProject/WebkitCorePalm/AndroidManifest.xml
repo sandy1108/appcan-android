@@ -51,6 +51,7 @@
 			android:exported="false">
             <intent-filter>
                 <action android:name="org.zywx.push.receive" />
+                <action android:name="org.zywx.push.notification.alarm" />
             </intent-filter>
         </receiver>
     </application>
