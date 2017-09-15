@@ -19,6 +19,7 @@
 package org.zywx.wbpalmstar.base;
 
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -42,6 +43,7 @@ import android.util.Xml;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.zywx.wbpalmstar.acedes.ACEDes;
+import org.zywx.wbpalmstar.base.vo.PushConfigVO;
 import org.zywx.wbpalmstar.engine.EBrowserView;
 import org.zywx.wbpalmstar.engine.universalex.EUExUtil;
 import org.zywx.wbpalmstar.platform.encryption.PEncryption;
@@ -883,6 +885,41 @@ public class BUtility {
         String pushHost = ResoureFinder.getInstance().getString(context, "push_host");
         pushHost = sp.getString(PushReportConstants.KEY_PUSH_HOST, pushHost);
         return pushHost;
+    }
+
+    /**
+     * 保存推送消息的配置信息
+     */
+    public static void setPushConfig(Context context, PushConfigVO pushConfigVO) {
+        SharedPreferences sp = context.getSharedPreferences(
+                PushReportConstants.SP_PUSH_CONFIG, Context.MODE_MULTI_PROCESS);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putBoolean(PushReportConstants.KEY_SOUND, pushConfigVO.isSound());
+        editor.putBoolean(PushReportConstants.KEY_SHAKE, pushConfigVO.isShake());
+        editor.putBoolean(PushReportConstants.KEY_BREATHE, pushConfigVO.isBreathe());
+        editor.putInt(PushReportConstants.KEY_TIMES, pushConfigVO.getTimes());
+        editor.putLong(PushReportConstants.KEY_INTERVAL, pushConfigVO.getInterval());
+        editor.commit();
+    }
+
+    /**
+     * 获取推送消息的配置信息
+     */
+    public static PushConfigVO getPushConfig(Context context) {
+        PushConfigVO pushConfigVO = new PushConfigVO();
+        SharedPreferences spPushConfig = context.getSharedPreferences(
+                PushReportConstants.SP_PUSH_CONFIG, Context.MODE_MULTI_PROCESS);
+        boolean sound = spPushConfig.getBoolean(PushReportConstants.KEY_SOUND, true);
+        pushConfigVO.setSound(sound);
+        boolean shake = spPushConfig.getBoolean(PushReportConstants.KEY_SHAKE, true);
+        pushConfigVO.setShake(shake);
+        boolean breathe = spPushConfig.getBoolean(PushReportConstants.KEY_BREATHE, true);
+        pushConfigVO.setBreathe(breathe);
+        int times = spPushConfig.getInt(PushReportConstants.KEY_TIMES, 1);
+        pushConfigVO.setTimes(times);
+        long interval = spPushConfig.getLong(PushReportConstants.KEY_INTERVAL, AlarmManager.INTERVAL_FIFTEEN_MINUTES);
+        pushConfigVO.setInterval(interval);
+        return pushConfigVO;
     }
 
     /**

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <info>
-    <version>sdksuit_3.4_170829_01_e</version>
-	<package>android_Engine_3.4_170829_01</package>
-	<description>修复addFragment崩溃问题</description>
+    <version>sdksuit_3.4_170915_01_e</version>
+	<package>android_Engine_3.4_170915_01</package>
+	<description>uexWidget增加setPushConfig()、getPushConfig();MQTTService本地广播安全修改</description>
     <dssVersion>3.2.2</dssVersion>
 </info>

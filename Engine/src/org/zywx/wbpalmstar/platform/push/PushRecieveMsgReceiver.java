@@ -35,12 +35,14 @@ import org.zywx.wbpalmstar.engine.universalex.EUExUtil;
 import org.zywx.wbpalmstar.platform.push.report.PushReportConstants;
 import org.zywx.wbpalmstar.platform.push.report.PushReportUtility;
 
+import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -55,6 +57,7 @@ import android.widget.RemoteViews;
 public class PushRecieveMsgReceiver extends BroadcastReceiver {
 
     public static final String ACTION_PUSH = "org.zywx.push.receive";
+    public static final String ACTION_PUSH_ALARM = "org.zywx.push.notification.alarm";
     private static Context mContext;
     public static final int F_TYPE_PUSH = 10;
     private static int notificationNB = 0;
@@ -72,6 +75,20 @@ public class PushRecieveMsgReceiver extends BroadcastReceiver {
             } else {
                 oldPushNotification(context, intent);
             }
+        } else if (ACTION_PUSH_ALARM.equals(intent.getAction())) {
+            int id = intent.getIntExtra(PushReportConstants.KEY_NOTIFICATIONID, -1);
+            Notification notification = intent.getParcelableExtra(String.valueOf(id));
+            int times = intent.getIntExtra(PushReportConstants.KEY_TIMES, 1);
+            if (times > 1) {
+                times--;
+                intent.putExtra(PushReportConstants.KEY_TIMES, times);
+                long interval = intent.getLongExtra(PushReportConstants.KEY_INTERVAL, AlarmManager.INTERVAL_FIFTEEN_MINUTES);
+                PendingIntent pi = PendingIntent.getBroadcast(context, id, intent, PendingIntent.FLAG_ONE_SHOT);
+                AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+                am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + interval, pi);
+            }
+            NotificationManager notifyMgr = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            notifyMgr.notify(id, notification);
         }
     }
 
@@ -104,24 +121,29 @@ public class PushRecieveMsgReceiver extends BroadcastReceiver {
         builder.setContentTitle(title); // 通知标题
         builder.setContentText(body); // 通知内容
         builder.setTicker(body); // 通知栏信息
+        SharedPreferences spPushConfig = context.getSharedPreferences(
+                PushReportConstants.SP_PUSH_CONFIG, Context.MODE_MULTI_PROCESS);
 
         String[] remindType = dataInfo.getRemindType();
         if (remindType != null) {
-            if (remindType.length == 3) {
+            boolean sound = spPushConfig.getBoolean(PushReportConstants.KEY_SOUND, true);
+            boolean shake = spPushConfig.getBoolean(PushReportConstants.KEY_SHAKE, true);
+            boolean breathe = spPushConfig.getBoolean(PushReportConstants.KEY_BREATHE, true);
+            if (remindType.length == 3 && sound && shake && breathe) {
                 builder.setDefaults(Notification.DEFAULT_ALL);
             } else {
                 int defaults = 0;
                 for (int i = 0; i < remindType.length; i++) {
-                    if ("sound".equalsIgnoreCase(remindType[i])) {
+                    if ("sound".equalsIgnoreCase(remindType[i]) && sound) {
                         defaults = Notification.DEFAULT_SOUND;
                         continue;
                     }
-                    if ("shake".equalsIgnoreCase(remindType[i])) {
+                    if ("shake".equalsIgnoreCase(remindType[i]) && shake) {
                         defaults = defaults
                                 | Notification.DEFAULT_VIBRATE;
                         continue;
                     }
-                    if ("breathe".equalsIgnoreCase(remindType[i])) {
+                    if ("breathe".equalsIgnoreCase(remindType[i]) && breathe) {
                         defaults = defaults
                                 | Notification.DEFAULT_LIGHTS;
                         continue;
@@ -202,6 +224,23 @@ public class PushRecieveMsgReceiver extends BroadcastReceiver {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB
                 && remoteViews != null) {
             notification.contentView = remoteViews;
+        }
+        int times = spPushConfig.getInt(PushReportConstants.KEY_TIMES, 1);
+        if (times > 1) {
+            times--;
+            long interval = spPushConfig.getLong(PushReportConstants.KEY_INTERVAL, AlarmManager.INTERVAL_FIFTEEN_MINUTES);
+            Intent alarmIntent = new Intent(context, PushRecieveMsgReceiver.class);
+            alarmIntent.setAction(ACTION_PUSH_ALARM);
+            alarmIntent.setPackage(context.getPackageName());
+            alarmIntent.putExtra(PushReportConstants.KEY_NOTIFICATIONID, notificationNB);
+            alarmIntent.putExtra(PushReportConstants.KEY_TIMES, times);
+            alarmIntent.putExtra(PushReportConstants.KEY_INTERVAL, interval);
+            Bundle alarmBundle = new Bundle();
+            alarmBundle.putParcelable(String.valueOf(notificationNB), notification);
+            alarmIntent.putExtras(alarmBundle);
+            PendingIntent pi = PendingIntent.getBroadcast(context, notificationNB, alarmIntent, PendingIntent.FLAG_ONE_SHOT);
+            AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+            am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + interval, pi);
         }
         manager.notify(notificationNB, notification);
         notificationNB++;
