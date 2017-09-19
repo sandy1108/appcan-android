@@ -386,5 +386,7 @@
     public void getPushHost(java.lang.String[]);
     public void setWindowScrollbarVisible(java.lang.String[]);
     public void setPromptContent(java.lang.String[]);
+    public void setPushConfig(java.lang.String[]);
+    public void getPushConfig(java.lang.String[]);
     protected boolean clean();
 }

@@ -114,6 +114,6 @@ task proguardEngineJar(type: ProGuardTask, dependsOn: ['makeJar']) {
     libraryjars(androidJarDir)
     libraryjars(rtJarDir)
     file('build/mapping').mkdirs()
-    printmapping('build/mapping/mapping_3.4_170915_01_e.txt')
+    printmapping('build/mapping/mapping_3.4_170919_01_e.txt')
     configuration 'proguard.pro'
 }

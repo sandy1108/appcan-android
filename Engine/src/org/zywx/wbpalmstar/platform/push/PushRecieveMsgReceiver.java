@@ -79,6 +79,7 @@ public class PushRecieveMsgReceiver extends BroadcastReceiver {
             int id = intent.getIntExtra(PushReportConstants.KEY_NOTIFICATIONID, -1);
             Notification notification = intent.getParcelableExtra(String.valueOf(id));
             int times = intent.getIntExtra(PushReportConstants.KEY_TIMES, 1);
+            PushReportUtility.log("ACTION_PUSH_ALARM " + times + " " + id);
             if (times > 1) {
                 times--;
                 intent.putExtra(PushReportConstants.KEY_TIMES, times);
@@ -227,6 +228,7 @@ public class PushRecieveMsgReceiver extends BroadcastReceiver {
         }
         int times = spPushConfig.getInt(PushReportConstants.KEY_TIMES, 1);
         if (times > 1) {
+            PushReportUtility.log("notify times " + times + " " + notificationNB);
             times--;
             long interval = spPushConfig.getLong(PushReportConstants.KEY_INTERVAL, AlarmManager.INTERVAL_FIFTEEN_MINUTES);
             Intent alarmIntent = new Intent(context, PushRecieveMsgReceiver.class);
