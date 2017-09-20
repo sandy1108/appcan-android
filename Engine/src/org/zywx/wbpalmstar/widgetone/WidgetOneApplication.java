@@ -71,10 +71,6 @@ public class WidgetOneApplication extends Application {
         EUExUtil.init(this);
         BDebug.init();
         initTencentX5();
-        CookieSyncManager.createInstance(this);
-        CookieManager.getInstance().setAcceptCookie(true);
-        CookieManager.getInstance().removeSessionCookie();
-        CookieManager.getInstance().removeExpiredCookie();
         mCrashReport = ECrashHandler.getInstance(this);
         initPlugin();
         reflectionPluginMethod("onApplicationCreate");
@@ -109,7 +105,10 @@ public class WidgetOneApplication extends Application {
 
                 @Override
                 public void onViewInitFinished(boolean success) {
-                    // TODO Auto-generated method stub
+                    CookieSyncManager.createInstance(WidgetOneApplication.this);
+                    CookieManager.getInstance().setAcceptCookie(true);
+                    CookieManager.getInstance().removeSessionCookie();
+                    CookieManager.getInstance().removeExpiredCookie();
                     float deltaTime = (System.currentTimeMillis() - timerCounter);
                     BDebug.i("AppCanTBS", "success " + success + " x5初始化使用了" + deltaTime + "毫秒");
                 }

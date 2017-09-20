@@ -28,6 +28,14 @@ public interface PushReportConstants {
     public static final String SP_PUSH_HOST = "spPushHost";
     public static String SP_APP = "app";
 
+    public static final String SP_PUSH_CONFIG = "spPushConfig";
+    public static final String KEY_SOUND = "sound";
+    public static final String KEY_SHAKE = "shake";
+    public static final String KEY_BREATHE = "breathe";
+    public static final String KEY_TIMES = "times";
+    public static final String KEY_INTERVAL = "interval";
+    public static final String KEY_NOTIFICATIONID = "notificationId";
+
     public static final String EVENT_TYPE_OPEN = "open";
     public static final String EVENT_TYPE_ARRIVED = "arrived";
 

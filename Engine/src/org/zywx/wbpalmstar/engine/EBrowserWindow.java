@@ -2894,7 +2894,7 @@ public class EBrowserWindow extends SwipeView implements AnimationListener {
             }
         } else {
             for (int i = 0; i <= index; i++) {
-                EBrowserWindow eBrwWin = eBrwWins.get(0);
+                EBrowserWindow eBrwWin = eBrwWins.get(i);
                 if (eBrwWin != null) {
                     mBroWidget.onCloseWindow(eBrwWin);
                 }
