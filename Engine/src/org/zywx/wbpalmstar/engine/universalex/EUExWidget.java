@@ -46,6 +46,7 @@ import org.zywx.wbpalmstar.base.BUtility;
 import org.zywx.wbpalmstar.base.JsConst;
 import org.zywx.wbpalmstar.base.ResoureFinder;
 import org.zywx.wbpalmstar.base.vo.AppInstalledVO;
+import org.zywx.wbpalmstar.base.vo.PushConfigVO;
 import org.zywx.wbpalmstar.base.vo.PushHostVO;
 import org.zywx.wbpalmstar.base.vo.StartAppVO;
 import org.zywx.wbpalmstar.engine.DataHelper;
@@ -85,6 +86,7 @@ public class EUExWidget extends EUExBase {
     public static final String function_getMBaaSHost = "uexWidget.cbGetMBaaSHost";
     public static final String function_setPushHost = "uexWidget.cbSetPushHost";
     public static final String function_getPushHost = "uexWidget.cbGetPushHost";
+    public static final String function_getPushConfig = "uexWidget.cbGetPushConfig";
     private static final String BUNDLE_DATA = "data";
     private static final String BUNDLE_MESSAGE = "message";
     private static final String PUSH_MSG_BODY = "0";
@@ -862,6 +864,21 @@ public class EUExWidget extends EUExBase {
                     userInfo, System.currentTimeMillis() + "");
             jsCallback(function_getPushInfo, 0, EUExCallback.F_C_TEXT, userInfo);
         }
+    }
+
+    public void setPushConfig(String[] param) {
+        if (param.length < 1) {
+            return;
+        }
+        PushConfigVO pushConfigVO = DataHelper.gson.fromJson(param[0], PushConfigVO.class);
+        BUtility.setPushConfig(mContext, pushConfigVO);
+    }
+
+    public void getPushConfig(String[] param) {
+        PushConfigVO pushConfigVO = BUtility.getPushConfig(mContext);
+        String js = SCRIPT_HEADER + "if(" + function_getPushConfig + "){"
+                + function_getPushConfig + "(" + DataHelper.gson.toJson(pushConfigVO) + ");}";
+        onCallback(js);
     }
 
     public void share(String inShareTitle, String inSubject, String inContent) {
