@@ -481,7 +481,7 @@ public class EUExWindow extends EUExBase {
         try {
             JSONObject jsonObject = new JSONObject(json);
             String path = jsonObject.optString(BUtility.m_loadingImagePath);
-            path = BUtility.getRealPathWithCopyRes(mBrwView,path);
+            path = BUtility.makeRealPath(path, mBrwView);
             long time = jsonObject.optLong(BUtility.m_loadingImageTime);
             SharedPreferences sp = mContext.getSharedPreferences(
                     BUtility.m_loadingImageSp, Context.MODE_PRIVATE);
