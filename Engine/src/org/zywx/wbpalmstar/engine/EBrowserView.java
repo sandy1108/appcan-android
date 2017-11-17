@@ -85,6 +85,7 @@ public class EBrowserView extends WebView implements View.OnLongClickListener,
     private EXWebViewClient mEXWebViewClient;
     private Method mDismissZoomControl;
     private int mDownloadCallback = 0;  // 0 下载不回调，使用引擎下载; 1 下载回调给主窗口，前端自己下载; 2 下载回调给当前窗口，前端自己下载;
+    private String mExeJS;//打开窗口时由前端传入想要注入的JS字符串，WebView加载完成的时候执行这段JS。
 
     // use for debug
     private Method mDumpDisplayTree;
@@ -1686,6 +1687,16 @@ public class EBrowserView extends WebView implements View.OnLongClickListener,
             return;
         }
         this.mDownloadCallback = downloadCallback;
+    }
+
+    public void setExeJS(String exeJS){
+        this.mExeJS = exeJS;
+    }
+
+    public void loadExeJS(){
+        if (!TextUtils.isEmpty(mExeJS)){
+            loadUrl("javascript:"+mExeJS+"//"+System.currentTimeMillis());
+        }
     }
 
 }

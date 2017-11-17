@@ -74,6 +74,7 @@ public class EBrwViewEntry {
     public int mHardware = -1;//硬件加速，-1不处理，0关闭，1开启
     public int mDownloadCallback = 0;// 0 下载不回调，使用引擎下载; 1 下载回调给主窗口，前端自己下载; 2 下载回调给当前窗口，前端自己下载;
     public String mUserAgent = "";
+    public String mExeJS = "";//打开窗口时由前端传入想要注入的JS字符串，WebView加载完成的时候执行这段JS。
 
     public EBrwViewEntry(int inType) {
         mType = inType;

@@ -179,6 +179,7 @@ public class CBrowserWindow7 extends ACEDESBrowserWindow7 {
             return;
         }
         EBrowserView target = (EBrowserView) view;
+        target.loadExeJS();
         target.onPageStarted(target, url);
         if (null != mParms) {
             target.setQuery(mParms);
