@@ -62,8 +62,19 @@ public class PushService extends Service implements PushDataCallback {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        PushReportUtility.log("onStartCommand: intent is null?"+(intent==null)+" type:"+type);
         if (null != intent) {
             type = intent.getIntExtra("type", type);
+        }
+        SharedPreferences sp = getSharedPreferences("saveData",
+                Context.MODE_MULTI_PROCESS);
+        String pushMes = sp.getString("pushMes", "0");
+        String localPushMes = sp.getString("localPushMes", pushMes);
+        if (!TextUtils.isEmpty(pushMes) && "1".equals(pushMes)
+                && "1".equals(localPushMes)) {
+            type = 1;
+        }else{
+            type = 0;
         }
         start();
         return START_STICKY;
@@ -72,6 +83,7 @@ public class PushService extends Service implements PushDataCallback {
     @Override
     public void onDestroy() {
         // restart Service when the Service is stopped by user.
+        PushReportUtility.log("PushService===>onDestroy, type:"+type);
         Intent localIntent = new Intent();
         localIntent.setClass(this, PushService.class);
         localIntent.putExtra("type", type);
