@@ -65,16 +65,17 @@ public class PushService extends Service implements PushDataCallback {
         PushReportUtility.log("onStartCommand: intent is null?"+(intent==null)+" type:"+type);
         if (null != intent) {
             type = intent.getIntExtra("type", type);
-        }
-        SharedPreferences sp = getSharedPreferences("saveData",
-                Context.MODE_MULTI_PROCESS);
-        String pushMes = sp.getString("pushMes", "0");
-        String localPushMes = sp.getString("localPushMes", pushMes);
-        if (!TextUtils.isEmpty(pushMes) && "1".equals(pushMes)
-                && "1".equals(localPushMes)) {
-            type = 1;
         }else{
-            type = 0;
+            SharedPreferences sp = getSharedPreferences("saveData",
+                    Context.MODE_MULTI_PROCESS);
+            String pushMes = sp.getString("pushMes", "0");
+            String localPushMes = sp.getString("localPushMes", pushMes);
+            if (!TextUtils.isEmpty(pushMes) && "1".equals(pushMes)
+                    && "1".equals(localPushMes)) {
+                type = 1;
+            }else{
+                type = 0;
+            }
         }
         start();
         return START_STICKY;
