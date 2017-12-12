@@ -114,7 +114,7 @@ public class PushService extends Service implements PushDataCallback {
                 return;
             }
             if (pushGetData == null) {
-                String softToken = preferences.getString("softToken", null);
+                String softToken = preferences.getString("mdmPushToken", null);
                 pushGetData = new MQTTService(this, url_push, this, softToken);
                 ((MQTTService) pushGetData).init();
             } else {

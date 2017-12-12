@@ -1412,27 +1412,62 @@ public class BUtility {
      * @return
      */
     public static String getSoftToken(Context context, String appKey) {
-        SharedPreferences preferences = context.getSharedPreferences(
-                PushReportConstants.SP_APP, Context.MODE_PRIVATE);
-        String softToken = preferences.getString("softToken", null);
+        return getMDMPushToken(context, appKey);
+//        SharedPreferences preferences = context.getSharedPreferences(
+//                PushReportConstants.SP_APP, Context.MODE_PRIVATE);
+//        String softToken = preferences.getString("softToken", null);
+//        if (softToken != null) {
+//            return softToken;
+//        }
+//
+//        String[] val = new String[4];
+//        try {
+//            val[0] = getMacAddress(context);
+//            TelephonyManager telephonyManager = (TelephonyManager) context
+//                    .getSystemService(Context.TELEPHONY_SERVICE);
+//            val[1] = telephonyManager.getDeviceId();
+//            val[2] = getCPUSerial();
+//            val[3] = appKey;
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        softToken = getMD5Code(val);
+//        Editor editor = preferences.edit();
+//        editor.putString("softToken", softToken);
+//        editor.commit();
+//        return softToken;
+    }
+
+    /**
+     * 为了跟主程序的推送通道标识区分，防止服务端管理推送连接错误导致无法收到指令，故生成独特的MDMPushToken用于推送标识
+     *
+     * @return
+     */
+    public static String getMDMPushToken(Context context, String appKey) {
+        SharedPreferences preferences = context.getSharedPreferences("app",
+                Context.MODE_PRIVATE);
+        String softToken = preferences.getString("mdmPushToken", null);
         if (softToken != null) {
             return softToken;
         }
-
-        String[] val = new String[4];
+        String[] val = new String[5];
         try {
             val[0] = getMacAddress(context);
             TelephonyManager telephonyManager = (TelephonyManager) context
                     .getSystemService(Context.TELEPHONY_SERVICE);
             val[1] = telephonyManager.getDeviceId();
             val[2] = getCPUSerial();
-            val[3] = appKey;
+            val[3] = decodeStr(appKey);
+            val[4] = "mdmPushToken";
         } catch (Exception e) {
             e.printStackTrace();
         }
         softToken = getMD5Code(val);
+        if (softToken == null || appKey == null) {
+            return null;
+        }
         Editor editor = preferences.edit();
-        editor.putString("softToken", softToken);
+        editor.putString("mdmPushToken", softToken);
         editor.commit();
         return softToken;
     }
