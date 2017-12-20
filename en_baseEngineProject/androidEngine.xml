@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <info>
-    <version>sdksuit_3.4_x5_170719_01_e</version>
-	<package>android_Engine_3.4_170719_01</package>
+    <version>sdksuit_3.4_x5_171116_09_e</version>
+	<package>android_Engine_x5_3.4_171116_09</package>
 	<kernel>腾讯X5内核</kernel>
-	<description>多次调用alert只弹出一个</description>
+	<description>四川航空定制，移除窗口缓存池，增加窗口和浮动窗口打开时注入JS的功能</description>
     <dssVersion>3.2.2</dssVersion>
 </info>
