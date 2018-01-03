@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <info>
-    <version>sdksuit_3.4_x5_171116_09_e</version>
-	<package>android_Engine_x5_3.4_171116_09</package>
+    <version>sdksuit_3.4_x5_171116_12_e</version>
+	<package>android_Engine_x5_3.4_171116_12</package>
 	<kernel>腾讯X5内核</kernel>
 	<description>四川航空定制，移除窗口缓存池，增加窗口和浮动窗口打开时注入JS的功能</description>
     <dssVersion>3.2.2</dssVersion>
