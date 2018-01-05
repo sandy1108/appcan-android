@@ -104,6 +104,7 @@ public class EBrowserWidget extends AbsoluteLayout {
     public void init(EBrowser eBrw) {
         mBrw = eBrw;
         mWidgetLoop = new WidgetHandler(Looper.getMainLooper());
+        //TODO 增加特殊窗口的逻辑
         EBrowserWindow rootWindow = new EBrowserWindow(mContext, this);
         AbsoluteLayout.LayoutParams parm = new AbsoluteLayout.LayoutParams(
                 Compat.FILL, Compat.FILL, 0, 0);

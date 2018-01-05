@@ -27,6 +27,24 @@ import java.util.ArrayList;
 
 public class WWidgetData implements Parcelable,Cloneable {
 
+    // m_wgtType定义widget类型
+    /**
+     * 主Widget标识
+     */
+    public static final int WGT_TYPE_MAIN = 0;
+    /**
+     * EMM应用商店下发的常规子Widget标识
+     */
+    public static final int WGT_TYPE_SUB = 2;
+    /**
+     * 预置在主widget内部的plugin子widget标识（widget/plugin/）
+     */
+    public static final int WGT_TYPE_PLUGIN = 3;
+    /**
+     * 动态配置的子widget，一般为云应用
+     */
+    public static final int WGT_TYPE_CLOUD = 4;
+
     // 表示我的空间按钮显示，单击按钮进入我的空间
     public static final int F_SPACESTATUS_OPEN = 0x1;
 

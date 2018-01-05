@@ -36,8 +36,10 @@ import org.zywx.wbpalmstar.acedes.ACEDes;
 import org.zywx.wbpalmstar.base.BDebug;
 import org.zywx.wbpalmstar.base.BUtility;
 import org.zywx.wbpalmstar.base.ResoureFinder;
+import org.zywx.wbpalmstar.base.vo.WidgetConfigVO;
 import org.zywx.wbpalmstar.base.zip.CnZipInputStream;
 import org.zywx.wbpalmstar.base.zip.ZipEntry;
+import org.zywx.wbpalmstar.engine.DataHelper;
 import org.zywx.wbpalmstar.engine.EBrowserView;
 import org.zywx.wbpalmstar.engine.ESystemInfo;
 import org.zywx.wbpalmstar.engine.universalex.EUExUtil;
@@ -962,6 +964,28 @@ public class WDataManager {
                     + "/widgets/";
 
         }
+        return widgetData;
+    }
+
+    /**
+     * 从Json配置中解析widget基本信息
+     *
+     * @return
+     */
+    public WWidgetData getWidgetDataByConfigJson(WidgetConfigVO configVO){
+        if (configVO == null){
+            return null;
+        }
+        WWidgetData widgetData = new WWidgetData();
+        widgetData.m_appId = configVO.appId;
+        widgetData.m_appkey = configVO.appkey;
+        widgetData.m_appdebug = "true".equals(configVO.debug) ? 1 : 0;
+        widgetData.m_obfuscation = "true".equals(configVO.obfuscation) ? 1 : 0;
+        widgetData.m_widgetName = configVO.widgetName;
+        widgetData.m_indexUrl = configVO.indexUrl;
+        widgetData.m_description = configVO.description;
+        widgetData.mErrorPath = configVO.errorPath;
+        widgetData.m_wgtType = WWidgetData.WGT_TYPE_CLOUD;
         return widgetData;
     }
 
