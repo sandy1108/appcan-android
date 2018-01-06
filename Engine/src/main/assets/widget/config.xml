@@ -1,20 +1,20 @@
-<?xml version="1.0" encoding="utf-8"?>
-
-<widget appId="11352882" channelCode="000" height="480" sreensize="3.5" version="00.00.0002" widgetId="" width="320">
-    <name>插件整合</name>
-    <description>管理widget应用</description>
-    <author email="3g2win@mail.com">3g2win</author>
-    <icon src="icon.png"/>
-    <license href="http://3g2win.com"/>
-    <content encoding="utf-8" src="index.html"/>
-    <logserverip>192.168.1.28</logserverip>
-    <obfuscation>false</obfuscation>
-    <updateurl>http://192.168.1.28:8080/widget/update</updateurl>
-    <showmyspace>false</showmyspace>
-    <bgcolor>#fefefe</bgcolor>
-    <widgetOne version="[widgetOneVersion]"/>
-    <orientation>15</orientation>
-    <error src="error.html"/>
-    <fullscreen>false</fullscreen>
-    <statusbar color="#00000000"/>
+<?xml version="1.0" encoding="utf-8" ?>
+<widget widgetId="" appId="EPortal" channelCode="000" version="0.1">
+	<name>测试case集合</name>
+	<description>测试case集合</description>
+	<author email="3g2win@mail.com">3g2win</author>
+	<icon src="icon.png"></icon>
+	<license href="http://3g2win.com"></license>
+	<content src="index.html" encoding="utf-8"></content>
+	<obfuscation>false</obfuscation>
+	<showmyspace>true</showmyspace>
+	<bgcolor>#fefefe</bgcolor>
+	<widgetOne version="[widgetOneVersion]" />
+	<orientation>1</orientation>
+<!--    <NbsAgentKey platform="iOS">6e79ca311b024abe8ff68e8cd0d9cfc5</NbsAgentKey>-->
+<!--    <NbsAgentKey platform="Android">ANDROID KEY VALUE</NbsAgentKey>-->
+<!--    <NbsAgentKey platform="iOS">29fc9c9b626346a2bee72034bd974cf31</NbsAgentKey>-->
+<!--    <NbsAgentKey platform="Android">4154fc6f8c2f429a9fbcf9d7aabe438b</NbsAgentKey>-->
+    <NbsAgentKey platform="iOS" ip="139.198.188.79:8081" isHttps="false">3980a2b006184601851c322b81bce022</NbsAgentKey>
+    <NbsAgentKey platform="Android" ip="192.168.1.142" isHttps="false">alksdflkasdfkja</NbsAgentKey>
 </widget>

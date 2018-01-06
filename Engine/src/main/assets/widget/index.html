@@ -1,40 +1,53 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <meta name="viewport"
-          content="target-densitydpi=device-dpi,width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="css/index.css">
-    <script type="text/javascript" src="js/main.js"></script>
-    <script type="text/javascript" src="js/index.js">
+   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="target-densitydpi=device-dpi, width=device-width, initial-scale=1.0, user-scalable=no" /><link rel="stylesheet" type="text/css" href="css/index.css">
+<title>我的插件接口测试</title>
+<script type="text/javascript">
+    window.onload = function(){
+        console.log("=====>window.onload");
+    }
+    window.uexOnload = function(){
+        console.log("=====>window.uexOnload");
+        uexWindow.onPopoverLoadFinishInRootWnd = function(name, url) {
+            alert("主应用Root窗口：uexWindow.onPopoverLoadFinishInRootWnd===>" + name + " url: " + url);
+        }
+    }
+    function openWindow(name){
+        uexWindow.open(name, '0', name, 1, '', '', 0, 500);
+    }
 
-    </script>
+</script>
 </head>
 
 <body>
-<div class="tit">引擎接口测试</div>
-<div class="conbor">
-    <div class="consj">
-
-        <!--			<div onclick="openTest('system/system')" class="testbtn">系统插件</div><br>-->
-        <!--                <div onclick="openTest('UI/UI')" class="testbtn">UI界面插件</div><br>-->
-        <!--                <div onclick="openTest('network/network')" class="testbtn">网络插件</div><br>-->
-        <!--                <div onclick="openTest('media/media')" class="testbtn">多媒体插件</div><br>-->
-        <!--                <div onclick="openTest('other/other')" class="testbtn">第三方插件</div><br>-->
-        <div onclick="openWindow('wintestNormal/uexWindow')" class="testbtn">打开普通窗口</div>
-        <br>
-        <div onclick="openWindow('wintestNormal/uexWindowFunc')" class="testbtn">window接口测试</div>
-        <br>
-        <div onclick="openLeftSlidingWin()" class="testbtn">打开侧边栏窗口</div>
-        <br>
-        <div onclick="openWindow('wintestNav/uexWindow')" class="testbtn">打开导航视图窗口(iOS)</div>
-        <br>
-        <div onclick="openWindow('uexWidget')" class="testbtn">uexWidget</div>
-        <br>
-
-        <!--                <div onclick="openTest('wintestNav/uexWindow')" class="testbtn">打开导航视图窗口</div><br>-->
-
+    
+    <div class="tit">zyp我的引擎接口测试例子</div>
+    <div class="btn">
+        <input type="button" value="测试uexWidget功能" onclick="openWindow('uexWidget.html');">
     </div>
-</div>
+	<div class="tit">zyp我的插件接口测试例子</div>
+	<div class="con">
+        <a href ="uexDataAnalysis4.0.html">数据统计4.0</a>
+        <a href ="PushDemo.html">推送测试</a>
+        <a href ="uexEMM.html">企业移动管理平台插件测试</a>
+   		<a href="uexWeiXin.html">微信分享</a>
+		<a href="uexSina.html">新浪分享</a>
+		<a href="uexVeCo.html">万科时间轴</a>
+		<a href = "uexCreditCardRec.html">uexCreditCardRec信用卡识别</a>
+		<a href = "uexTent.html">uexTent</a>
+        <a href = "uexWPSEdit.html">uexWPSEdit</a>
+        <a href = "uexWPSEdit-ios.html">uexWPSEdit-iOS</a>
+		<a href = "uexTestObject.html">uexTestObject</a>
+		<a href = "uexXiaoI.html">uexXiaoI</a>
+		<a href = "uexReportLocation.html">uexReportLocation</a>
+		<a href = "uexPDFReader.html">uexPDFReader</a>
+		<a href = "uexNBSAppAgent.html">uexNBSAppAgent听云插件测试</a>
+		<a href = "praestare_content.html">信手书插件测试</a>
+		<a href = "uexXinShouShuCA.html">信手书插件测试CA</a>
+		<a href = "uexQQ.html">qq分享</a>
+        <a href = "uexImageTag.html">图片标记</a>
+	</div>
 </body>
 </html>

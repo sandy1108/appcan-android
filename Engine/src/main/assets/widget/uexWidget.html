@@ -1,32 +1,38 @@
 <!DOCTYPE HTML>
 <html>
+
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="target-densitydpi=device-dpi, width=device-width, initial-scale=1.0, user-scalable=no" />
     <link rel="stylesheet" type="text/css" href="css/index.css">
+    <script type="text/javascript">
+        function startWidget() {
+            uexWidget.startWidget('000TestWidgetId', '1', 'widgetDidFinish', 'open a widget', 300)
+        }
 
-    <script type="text/javascript" src="js/uexWidget.js">
+        function startWidgetWithConfig() {
+            uexWidget.startWidgetWithConfig('000TestWidgetId', '1', 'widgetDidFinish', 'open a widget', 300)
+        }
 
+        window.uexOnload = function() {
+            uexWidgetOne.cbError = function(opid, type, error) {
+                alert(error);
+            }
+        }
     </script>
 </head>
 
-<body bgcolor="#03A9F4">
-<div class="tit">uexWidget</div>
-<div class="conbor">
-    <div class="consj">
-        <input class='textbox' type='text' value='com.tencent.mobileqq' id="isAppInstalled">
+<body>
+    <div class="tit">uexWidget API接口测试例子</div>
+    <div class="conbor">
+        <div class="consj">
+            <span>打开子应用</span>
+            <input class="btn" type="button" value="打开子应用" onclick="startWidget();">
 
-        <input class='btn' type='button' value='isAppInstalled' onclick='isAppInstalled()'>
-
-        <input class='btn' type='button' value='startApp' onclick='startApp()'>
-
-        <input class='btn' type='button' value='moveToBack' onclick='moveToBack()'>
-
-        <input class='btn' type='button' value='打开qq浏览器' onclick='openQQBrowser()'>
-
-        <input class='btn' type='button' value='startWidget' onclick='startWidget()'>
+            <input class="btn" type="button" value="打开云应用" onclick="startWidgetWithConfig();">
+        </div>
+        <input class="btn" type="button" value="返回" onclick="uexWindow.close();">
     </div>
-</div>
 </body>
+
 </html>
