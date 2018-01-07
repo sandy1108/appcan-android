@@ -30,12 +30,14 @@ import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -82,6 +84,7 @@ public class EBrowserWindow extends SwipeView implements AnimationListener {
     public static final String TAG_CHANNEL_WINNAME = "winName";
     public static final String WIN_TYPE_MAIN = "main";
     public static final String WIN_TYPE_POP = "pop";
+    private int mWindowStyle;
     private int mAnimId;
     private long mAnimDuration;
     private boolean mAnimFill;
@@ -148,21 +151,39 @@ public class EBrowserWindow extends SwipeView implements AnimationListener {
     public void init(EBrowser inBrw, EBrwViewEntry inEntry) {
         EUtil.viewBaseSetting(this);
         mBrw = inBrw;
+        mWindowStyle = inEntry.mWindowStyle;
         if (null == mMainView) {
-            mMainView = new EBrowserView(mContext,
-                    EBrwViewEntry.VIEW_TYPE_MAIN, this);
-            mMainView.setVisibility(VISIBLE);
-            mMainView.setName("main");
-            mBounceView = new EBounceView(mContext);
-            EUtil.viewBaseSetting(mBounceView);
-            mBounceView.setId(VIEW_MID);
-            LayoutParams bParm = new LayoutParams(Compat.FILL, Compat.FILL);
-            mBounceView.setLayoutParams(bParm);
-            mBounceView.addView(mMainView);
-            addView(mBounceView);
+            if (mWindowStyle == EBrwViewEntry.WINDOW_SYTLE_MEDIA_PLATFORM){
+                mMainView = new EBrowserView(mContext,
+                        EBrwViewEntry.VIEW_TYPE_MAIN, this);
+                mMainView.setVisibility(VISIBLE);
+                mMainView.setName("main");
+                LayoutInflater layoutInflater = LayoutInflater.from(mContext);
+                //外面套了一层wrapLayout，便于头部和底部布局
+                RelativeLayout wrapLayout = (RelativeLayout) layoutInflater.inflate(EUExUtil.getResLayoutID(""), this);
+                mBounceView = (EBounceView) wrapLayout.findViewById(EUExUtil.getResLayoutID("platform_mp_window_bounceview"));
+                EUtil.viewBaseSetting(mBounceView);
+                mBounceView.setId(VIEW_MID);
+                RelativeLayout.LayoutParams bounceViewParams = new RelativeLayout.LayoutParams(Compat.FILL, Compat.FILL);
+                mBounceView.setLayoutParams(bounceViewParams);
+                mBounceView.addView(mMainView);
+                addView(wrapLayout);
+            }else{
+                mMainView = new EBrowserView(mContext,
+                        EBrwViewEntry.VIEW_TYPE_MAIN, this);
+                mMainView.setVisibility(VISIBLE);
+                mMainView.setName("main");
+                mBounceView = new EBounceView(mContext);
+                EUtil.viewBaseSetting(mBounceView);
+                mBounceView.setId(VIEW_MID);
+                LayoutParams bParm = new LayoutParams(Compat.FILL, Compat.FILL);
+                mBounceView.setLayoutParams(bParm);
+                mBounceView.addView(mMainView);
+                addView(mBounceView);
+            }
         }
         mMainView.init();
-        if (null == inEntry) {
+        if (inEntry.isRootWindow()) {
             setName("root");
             mMainView.setRelativeUrl(mBroWidget.getWidget().m_indexUrl);
 
@@ -198,6 +219,17 @@ public class EBrowserWindow extends SwipeView implements AnimationListener {
                     || inEntry.mWindName.equals(EBrowserWindow.rootRightSlidingWinName)) {
                 mMainView.getSettings().setUseWideViewPort(false);
             }
+        }
+    }
+
+    /**
+     * 用于特殊样式的窗口（如公众号窗口）进行功能性交互回调
+     *
+     * @param js
+     */
+    private void callbackToMainWebView(String js){
+        if (null != mMainView) {
+            mMainView.addUriTask(js);
         }
     }
 

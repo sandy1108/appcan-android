@@ -20,11 +20,16 @@ package org.zywx.wbpalmstar.engine;
 
 
 public class EBrwViewEntry {
+
+    public static final int VIEW_TYPE_ROOT = -1;//标识此窗口为本widget中的root窗口（首页）
     public static final int VIEW_TYPE_MAIN = 0;
     public static final int VIEW_TYPE_TOP = 1;
     public static final int VIEW_TYPE_BOTTOM = 2;
     public static final int VIEW_TYPE_POP = 3;
     public static final int VIEW_TYPE_ADD = 4;
+
+    public static final int WINDOW_SYTLE_NORMAL = 0;//默认值，标准样式
+    public static final int WINDOW_SYTLE_MEDIA_PLATFORM = 1; //仿微信公众号样式
 
     public static final int WINDOW_DATA_TYPE_URL = 0;
     public static final int WINDOW_DATA_TYPE_DATA = 1;
@@ -47,6 +52,7 @@ public class EBrwViewEntry {
 
 
     public int mType;
+    public int mWindowStyle;//窗口样式
 
     public int mX;
     public int mY;
@@ -77,6 +83,10 @@ public class EBrwViewEntry {
 
     public EBrwViewEntry(int inType) {
         mType = inType;
+    }
+
+    public boolean isRootWindow(){
+        return mType == VIEW_TYPE_ROOT;
     }
 
     public boolean checkData() {

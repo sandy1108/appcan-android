@@ -78,6 +78,7 @@ public class EUExWidget extends EUExBase {
     public static final String function_getOpenerInfo = "uexWidget.cbGetOpenerInfo";
     public static final String function_checkUpdate = "uexWidget.cbCheckUpdate";
     public static final String function_startWidget = "uexWidget.cbStartWidget";
+    public static final String function_startWidgetWithConfig = "uexWidget.cbStartWidgetWithConfig";
     public static final String function_removeWidget = "uexWidget.cbRemoveWidget";
     public static final String function_getPushInfo = "uexWidget.cbGetPushInfo";
     public static final String function_getPushState = "uexWidget.cbGetPushState";
@@ -188,8 +189,17 @@ public class EUExWidget extends EUExBase {
         }
     }
 
+    private void resultStartWidgetWithConfig(boolean result,int callbackId){
+        if (callbackId==-1){
+            jsCallback(function_startWidgetWithConfig, 0, EUExCallback.F_C_INT,
+                    EUExCallback.F_C_FAILED);
+        }else{
+            callbackToJs(callbackId,false,result?0:1);
+        }
+    }
+
     @AppCanAPI
-    public boolean startMPWidget(String[] parm) {
+    public boolean startWidgetWithConfig(String[] parm) {
         int callbackId=-1;
         if (isJsonString(parm[0])){
             if (parm.length > 1){
@@ -198,18 +208,18 @@ public class EUExWidget extends EUExBase {
             WidgetConfigVO configVO= DataHelper.gson.fromJson(parm[0], WidgetConfigVO.class);
             EBrowserWindow curWind = mBrwView.getBrowserWindow();
             if (null == curWind) {
-                BDebug.w("curWind is null, startCloudWidget failed");
-                resultStartWidget(false,callbackId);
+                BDebug.w("curWind is null, startWidgetWithConfig failed");
+                resultStartWidgetWithConfig(false,callbackId);
                 return false;
             }
             if (null == configVO) {
-                BDebug.w("configVO is null, startCloudWidget failed");
-                resultStartWidget(false,callbackId);
+                BDebug.w("configVO is null, startWidgetWithConfig failed");
+                resultStartWidgetWithConfig(false,callbackId);
                 return false;
             }
             String inAnimiId = String.valueOf(configVO.animId);
-            String inForResult = configVO.info;
-            String inInfo = configVO.info;
+            String inForResult = configVO.cbFuncName;
+            String inInfo = configVO.startInfo;
             String animDuration = String.valueOf(configVO.animDuration);
             int animId = EBrowserAnimation.ANIM_ID_NONE;
             long duration = EBrowserAnimation.defaultDuration;
@@ -229,7 +239,7 @@ public class EUExWidget extends EUExBase {
                 WDataManager widgetData = new WDataManager(mContext);
                 WWidgetData data = widgetData.getWidgetDataByConfigJson(configVO);
                 if (data == null) {
-                    resultStartWidget(false,callbackId);
+                    resultStartWidgetWithConfig(false,callbackId);
                     return false;
                 }
                 EWgtResultInfo info = new EWgtResultInfo(inForResult, inInfo);
@@ -237,22 +247,22 @@ public class EUExWidget extends EUExBase {
                 info.setDuration(duration);
                 // 启动子应用
                 if (startWidget(data, info)) {
-                    resultStartWidget(true,callbackId);
+                    resultStartWidgetWithConfig(true,callbackId);
                     return true;
                 } else {
-                    resultStartWidget(false,callbackId);
+                    resultStartWidgetWithConfig(false,callbackId);
                     return false;
                 }
             } catch (Exception e) {
                 if (BDebug.DEBUG) {
                     e.printStackTrace();
                 }
-                resultStartWidget(false,callbackId);
+                resultStartWidgetWithConfig(false,callbackId);
                 return false;
             }
         }else{
-            BDebug.w("params error, startCloudWidget failed");
-            resultStartWidget(false, callbackId);
+            BDebug.w("params error, startWidgetWithConfig failed");
+            resultStartWidgetWithConfig(false, callbackId);
             return false;
         }
     }

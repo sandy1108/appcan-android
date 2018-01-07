@@ -28,6 +28,6 @@ public class WidgetConfigVO {
 
     public String cbFuncName;
 
-    public String info;
+    public String startInfo;
 
 }

@@ -112,7 +112,11 @@ public class EBrowserWidget extends AbsoluteLayout {
         rootWindow.setVisibility(VISIBLE);
         addView(rootWindow);
         rootWindow.setWindPoType(F_WINDOW_POOL_TYPE_ROOT);
-        rootWindow.init(eBrw, null);
+        EBrwViewEntry inEntry = new EBrwViewEntry(EBrwViewEntry.VIEW_TYPE_ROOT);
+        if (mWidgetData.m_wgtType == WWidgetData.WGT_TYPE_CLOUD){
+            inEntry.mWindowStyle = EBrwViewEntry.WINDOW_SYTLE_MEDIA_PLATFORM;
+        }
+        rootWindow.init(eBrw, inEntry);
         rootWindow.setAbleToSwipe(false);
         windowStorage(rootWindow);
         mBroWindow = rootWindow;

@@ -361,7 +361,7 @@ public class EUExWindow extends EUExBase {
      *
      * @param params
      */
-    public void openMPWindow(String[] params) {
+    public void openWithOptions(String[] params) {
         WindowOpenVO openVO=DataHelper.gson.fromJson(params[0],WindowOpenVO.class);
         EBrowserWindow curWind = mBrwView.getBrowserWindow();
         if (null == curWind) {
@@ -487,6 +487,7 @@ public class EUExWindow extends EUExBase {
         windEntry.mDownloadCallback = downloadCallback;
         windEntry.mUserAgent = userAgent;
         windEntry.hasExtraInfo = hasExtraInfo;
+        windEntry.mWindowStyle = EBrwViewEntry.WINDOW_SYTLE_MEDIA_PLATFORM;
         curWind.createWindow(mBrwView, windEntry);
     }
 
