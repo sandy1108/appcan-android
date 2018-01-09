@@ -160,8 +160,8 @@ public class EBrowserWindow extends SwipeView implements AnimationListener {
                 mMainView.setName("main");
                 LayoutInflater layoutInflater = LayoutInflater.from(mContext);
                 //外面套了一层wrapLayout，便于头部和底部布局
-                RelativeLayout wrapLayout = (RelativeLayout) layoutInflater.inflate(EUExUtil.getResLayoutID(""), this);
-                mBounceView = (EBounceView) wrapLayout.findViewById(EUExUtil.getResLayoutID("platform_mp_window_bounceview"));
+                RelativeLayout wrapLayout = (RelativeLayout) layoutInflater.inflate(EUExUtil.getResLayoutID("platform_mp_window_wrapframe"), null);
+                mBounceView = (EBounceView) wrapLayout.findViewById(EUExUtil.getResIdID("platform_mp_window_bounceview"));
                 EUtil.viewBaseSetting(mBounceView);
                 mBounceView.setId(VIEW_MID);
                 RelativeLayout.LayoutParams bounceViewParams = new RelativeLayout.LayoutParams(Compat.FILL, Compat.FILL);

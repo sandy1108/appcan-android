@@ -573,14 +573,14 @@ public class EUExWidget extends EUExBase {
             WidgetJsonWrapper.finishWidget(this,finishVO);
         }
 
-        if (parm.length < 1) {
-            return;
-        }
         EBrowserWindow curWind = mBrwView.getBrowserWindow();
         if (null == curWind) {
             return;
         }
-        String inResultInfo = parm[0];
+        String inResultInfo = "";
+        if (parm.length > 0) {
+            inResultInfo = parm[0];
+        }
         String appId = null;
         boolean isWgtBG = false;
         String inAnimiId = "";

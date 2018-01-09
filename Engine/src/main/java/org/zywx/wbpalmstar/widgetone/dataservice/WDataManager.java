@@ -976,16 +976,41 @@ public class WDataManager {
         if (configVO == null){
             return null;
         }
+        int wgtType = WWidgetData.WGT_TYPE_CLOUD;//此处目前写死，指定应用类型，不支持传入自定义。否则可能会与之前的子应用逻辑有一些冲突。
+        String widgetPath = null;
+        if (!configVO.indexUrl.startsWith("/")) {
+            if (wgtType == WWidgetData.WGT_TYPE_PLUGIN) {
+                widgetPath = BUtility.F_ASSET_PATH
+                        + configVO.indexUrl.substring(0, configVO.indexUrl.lastIndexOf('/') + 1);
+            } else {
+                widgetPath = BUtility.F_ASSET_PATH + F_ROOT_WIDGET_PATH;
+            }
+        } else {
+            File file = new File(configVO.indexUrl);
+            widgetPath = BUtility.F_FILE_SCHEMA
+                    + file.getParentFile().getAbsolutePath() + "/";
+        }
+        String indexUrl = null;
+        if ("#".equals(configVO.indexUrl)
+                || configVO.indexUrl == null
+                || configVO.indexUrl.length() == 0) {
+            indexUrl = widgetPath + "index.html";
+        } else {
+            if (!BUtility.uriHasSchema(configVO.indexUrl)) {
+                indexUrl = widgetPath + configVO.indexUrl;
+            }
+        }
         WWidgetData widgetData = new WWidgetData();
         widgetData.m_appId = configVO.appId;
         widgetData.m_appkey = configVO.appkey;
         widgetData.m_appdebug = "true".equals(configVO.debug) ? 1 : 0;
         widgetData.m_obfuscation = "true".equals(configVO.obfuscation) ? 1 : 0;
         widgetData.m_widgetName = configVO.widgetName;
-        widgetData.m_indexUrl = configVO.indexUrl;
+        widgetData.m_indexUrl = indexUrl;
+        widgetData.m_widgetPath = widgetPath;
         widgetData.m_description = configVO.description;
         widgetData.mErrorPath = configVO.errorPath;
-        widgetData.m_wgtType = WWidgetData.WGT_TYPE_CLOUD;
+        widgetData.m_wgtType = wgtType;
         return widgetData;
     }
 
