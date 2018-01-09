@@ -577,6 +577,7 @@ public class EUExWidget extends EUExBase {
         if (null == curWind) {
             return;
         }
+        //此处修改resultInfo的参数处理逻辑，不再要求必传，不传参时默认空字符串 20180109
         String inResultInfo = "";
         if (parm.length > 0) {
             inResultInfo = parm[0];

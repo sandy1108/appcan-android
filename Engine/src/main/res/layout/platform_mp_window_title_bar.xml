@@ -9,7 +9,7 @@
         android:layout_height="match_parent"
         android:orientation="horizontal"
         >
-        <ImageButton
+        <Button
             android:layout_gravity="center_vertical"
             android:id="@+id/platform_mp_window_button_back"
             android:layout_marginLeft="10dp"
@@ -20,22 +20,22 @@
             />
         <View
             android:layout_gravity="center_vertical"
-            android:id="@+id/plugin_line"
             android:layout_marginLeft="10dp"
             android:layout_width="0.5dp"
             android:layout_marginRight="10dp"
             android:layout_height="30dp"/>
         <TextView
+            android:id="@+id/platform_mp_window_text_title"
             android:gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:textColor="#fff"
-            android:text="CSDN"
+            android:text="AppCan"
             />
     </LinearLayout>
 
     <Button
-        android:id="@+id/show_meassge_info"
+        android:id="@+id/platform_mp_window_button_detail_info"
         android:layout_width="25dp"
         android:layout_height="25dp"
         android:background="@drawable/platform_mp_window_button_detail_info"

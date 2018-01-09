@@ -22,6 +22,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import org.zywx.wbpalmstar.base.BDebug;
+import org.zywx.wbpalmstar.base.vo.WindowOptionsVO;
 
 import java.util.ArrayList;
 
@@ -147,6 +148,8 @@ public class WWidgetData implements Parcelable,Cloneable {
     public String mErrorPath;//页面加载错误时的错误页面路径
 
     public static int sStatusBarColor=-1;
+
+    public WindowOptionsVO m_indexWindowOptions;
 
     public static final Parcelable.Creator<WWidgetData> CREATOR = new Creator<WWidgetData>() {
         public WWidgetData createFromParcel(Parcel source) {

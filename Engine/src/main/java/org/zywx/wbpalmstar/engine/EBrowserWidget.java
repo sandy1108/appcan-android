@@ -104,7 +104,6 @@ public class EBrowserWidget extends AbsoluteLayout {
     public void init(EBrowser eBrw) {
         mBrw = eBrw;
         mWidgetLoop = new WidgetHandler(Looper.getMainLooper());
-        //TODO 增加特殊窗口的逻辑
         EBrowserWindow rootWindow = new EBrowserWindow(mContext, this);
         AbsoluteLayout.LayoutParams parm = new AbsoluteLayout.LayoutParams(
                 Compat.FILL, Compat.FILL, 0, 0);
@@ -113,6 +112,7 @@ public class EBrowserWidget extends AbsoluteLayout {
         addView(rootWindow);
         rootWindow.setWindPoType(F_WINDOW_POOL_TYPE_ROOT);
         EBrwViewEntry inEntry = new EBrwViewEntry(EBrwViewEntry.VIEW_TYPE_ROOT);
+        //增加特殊窗口的逻辑
         if (mWidgetData.m_wgtType == WWidgetData.WGT_TYPE_CLOUD){
             inEntry.mWindowStyle = EBrwViewEntry.WINDOW_SYTLE_MEDIA_PLATFORM;
         }

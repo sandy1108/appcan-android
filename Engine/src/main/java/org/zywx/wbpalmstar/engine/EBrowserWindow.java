@@ -164,8 +164,6 @@ public class EBrowserWindow extends SwipeView implements AnimationListener {
                 mBounceView = (EBounceView) wrapLayout.findViewById(EUExUtil.getResIdID("platform_mp_window_bounceview"));
                 EUtil.viewBaseSetting(mBounceView);
                 mBounceView.setId(VIEW_MID);
-                RelativeLayout.LayoutParams bounceViewParams = new RelativeLayout.LayoutParams(Compat.FILL, Compat.FILL);
-                mBounceView.setLayoutParams(bounceViewParams);
                 mBounceView.addView(mMainView);
                 addView(wrapLayout);
             }else{

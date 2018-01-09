@@ -16,6 +16,8 @@ public class WidgetConfigVO {
 
     public String indexUrl;
 
+    public WindowOptionsVO indexWindowOptions;
+
     public String obfuscation;
 
     public String errorPath;

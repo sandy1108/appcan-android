@@ -979,10 +979,9 @@ public class WDataManager {
         int wgtType = WWidgetData.WGT_TYPE_CLOUD;//此处目前写死，指定应用类型，不支持传入自定义。否则可能会与之前的子应用逻辑有一些冲突。
         String widgetPath = null;
         if (!configVO.indexUrl.startsWith("/")) {
-            if (wgtType == WWidgetData.WGT_TYPE_PLUGIN) {
-                widgetPath = BUtility.F_ASSET_PATH
-                        + configVO.indexUrl.substring(0, configVO.indexUrl.lastIndexOf('/') + 1);
-            } else {
+            if (isUpdateWidget && isCopyAssetsFinish) {
+                widgetPath = m_sboxPath + F_ROOT_WIDGET_PATH;
+            }else{
                 widgetPath = BUtility.F_ASSET_PATH + F_ROOT_WIDGET_PATH;
             }
         } else {
@@ -1000,6 +999,16 @@ public class WDataManager {
                 indexUrl = widgetPath + configVO.indexUrl;
             }
         }
+        String errorPath = null;
+        if ("#".equals(configVO.errorPath)
+                || configVO.errorPath == null
+                || configVO.errorPath.length() == 0) {
+            indexUrl = widgetPath + "error.html";
+        } else {
+            if (!BUtility.uriHasSchema(configVO.errorPath)) {
+                indexUrl = widgetPath + configVO.errorPath;
+            }
+        }
         WWidgetData widgetData = new WWidgetData();
         widgetData.m_appId = configVO.appId;
         widgetData.m_appkey = configVO.appkey;
@@ -1009,7 +1018,7 @@ public class WDataManager {
         widgetData.m_indexUrl = indexUrl;
         widgetData.m_widgetPath = widgetPath;
         widgetData.m_description = configVO.description;
-        widgetData.mErrorPath = configVO.errorPath;
+        widgetData.mErrorPath = errorPath;
         widgetData.m_wgtType = wgtType;
         return widgetData;
     }
