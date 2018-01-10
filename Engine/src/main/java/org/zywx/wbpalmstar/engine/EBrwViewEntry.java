@@ -19,6 +19,8 @@
 package org.zywx.wbpalmstar.engine;
 
 
+import org.zywx.wbpalmstar.base.vo.WindowOptionsVO;
+
 public class EBrwViewEntry {
 
     public static final int VIEW_TYPE_ROOT = -1;//标识此窗口为本widget中的root窗口（首页）
@@ -81,6 +83,8 @@ public class EBrwViewEntry {
     public int mDownloadCallback = 0;// 0 下载不回调，使用引擎下载; 1 下载回调给主窗口，前端自己下载; 2 下载回调给当前窗口，前端自己下载;
     public String mUserAgent = "";
 
+    public WindowOptionsVO mWindowOptions;
+
     public EBrwViewEntry(int inType) {
         mType = inType;
     }
@@ -124,7 +128,7 @@ public class EBrwViewEntry {
         return mType + "," + mX + "," + mY + "," + mFontSize + "," + mViewName + "," +
                 mWidth + "," + mHeight + "," + mDataType + "," + mFlag + "," + mAnimId + "," +
                 mUrl + "," + mData + "," + mWindName + "," + mPreWindName + "," + mQuery +
-                "," + mRelativeUrl + "," + mAnimDuration + "," + mObj;
+                "," + mRelativeUrl + "," + mAnimDuration + "," + mObj + "," + mWindowOptions;
     }
 
 }

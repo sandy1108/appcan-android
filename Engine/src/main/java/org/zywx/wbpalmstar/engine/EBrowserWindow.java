@@ -37,9 +37,14 @@ import android.view.ViewParent;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.zywx.wbpalmstar.acedes.ACEDes;
@@ -47,8 +52,11 @@ import org.zywx.wbpalmstar.base.BDebug;
 import org.zywx.wbpalmstar.base.BUtility;
 import org.zywx.wbpalmstar.base.view.SwipeView;
 import org.zywx.wbpalmstar.base.vo.DownloadCallbackInfoVO;
+import org.zywx.wbpalmstar.base.vo.WindowOptionsVO;
 import org.zywx.wbpalmstar.engine.EBrowserHistory.EHistoryEntry;
 import org.zywx.wbpalmstar.engine.external.Compat;
+import org.zywx.wbpalmstar.engine.mpwindow.MPPopMenu;
+import org.zywx.wbpalmstar.engine.mpwindow.keybord.ACEChatKeyboardView;
 import org.zywx.wbpalmstar.engine.multipop.MultiPopAdapter;
 import org.zywx.wbpalmstar.engine.universalex.EUExCallback;
 import org.zywx.wbpalmstar.engine.universalex.EUExScript;
@@ -56,6 +64,7 @@ import org.zywx.wbpalmstar.engine.universalex.EUExUtil;
 import org.zywx.wbpalmstar.engine.universalex.EUExWidget.SpaceClickListener;
 import org.zywx.wbpalmstar.engine.universalex.EUExWindow;
 import org.zywx.wbpalmstar.widgetone.dataservice.WWidgetData;
+import org.zywx.wbpalmstar.widgetone.uex.R;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -75,6 +84,10 @@ public class EBrowserWindow extends SwipeView implements AnimationListener {
     public static final int F_WINDOW_FLAG_OPPOP = 0x10;
     public static final int F_WINDOW_FLAG_OPPOP_END = 0x20;
     public static final int F_WINDOW_FLAG_SLIDING_WIN = 0x40;
+    public static final String MP_WINDOW_CLICKED_TYPE_LEFT = "0";
+    public static final String MP_WINDOW_CLICKED_TYPE_RIGHT = "1";
+    public static final String MP_WINDOW_CLICKED_TYPE_MENU = "2";
+    public static final String CALLBACK_METHOD_ON_MP_WINDOW_CLICKED = "uexWindow.onMPWindowClicked";
     public static final String CALLBACK_POST_GLOBAL_NOTI = "javascript:if(uexWindow.onGlobalNotification)"
             + "{uexWindow.onGlobalNotification('";
     public static final String CALLBACK_PUBLISH_GLOBAL_NOTI = "javascript:uexWindow.";
@@ -165,6 +178,12 @@ public class EBrowserWindow extends SwipeView implements AnimationListener {
                 EUtil.viewBaseSetting(mBounceView);
                 mBounceView.setId(VIEW_MID);
                 mBounceView.addView(mMainView);
+                //初始化标题栏
+                initMPWindowTopBar(wrapLayout, inEntry.mWindowOptions);
+                if (inEntry.mWindowOptions.isBottomBarShow){
+                    //是否显示底部栏
+                    initMPWindowBottomBar(wrapLayout, inEntry.mWindowOptions);
+                }
                 addView(wrapLayout);
             }else{
                 mMainView = new EBrowserView(mContext,
@@ -221,11 +240,133 @@ public class EBrowserWindow extends SwipeView implements AnimationListener {
     }
 
     /**
+     * 初始化公众号样式的顶部标题栏
+     * @param rootView
+     */
+    private void initMPWindowTopBar(View rootView, WindowOptionsVO windowOptionsVO){
+        //右侧图标
+        Button showDetailButton=(Button) rootView.findViewById(R.id.platform_mp_window_button_detail_info);
+        //左侧图标
+        Button backButton=(Button) rootView.findViewById(R.id.platform_mp_window_button_back);
+        OnClickListener listener = new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switch (v.getId()) {
+                    case R.id.platform_mp_window_button_back:
+                        callbackOnMPWindowOnClicked(MP_WINDOW_CLICKED_TYPE_LEFT, null, null);
+                        break;
+                    case R.id.platform_mp_window_button_detail_info: // 显示个人信息页面
+                        callbackOnMPWindowOnClicked(MP_WINDOW_CLICKED_TYPE_RIGHT, null, null);
+                        break;
+                }
+            }
+        };
+        backButton.setOnClickListener(listener);
+        showDetailButton.setOnClickListener(listener);
+    }
+
+    /**
+     * 初始化公众号样式的底部菜单和键盘输入栏
+     *
+     * @param rootView
+     */
+    private void initMPWindowBottomBar(View rootView, WindowOptionsVO windowOptionsVO){
+        LinearLayout layout_bottom_container=(LinearLayout)rootView.findViewById(R.id.platform_mp_window_layout_menu_bar);
+        //底部外层
+        LinearLayout layout_bottom_menu_toolbar = (LinearLayout)rootView.findViewById(R.id.platform_mp_window_layout_custom_toolbar);
+        //菜单栏
+        LinearLayout layout_menu = (LinearLayout)rootView.findViewById(R.id.platform_mp_window_layout_custom_menu);
+        //键盘
+        LinearLayout layout_exchange=(LinearLayout)rootView.findViewById(R.id.platform_mp_window_exchange_layout);
+
+        OnClickListener listener = new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switch (v.getId()) {
+                    case R.id.platform_mp_window_exchange_layout: //显示键盘输入
+//                        layout_btn.setVisibility(GONE);
+//                        inputviews.setVisibility(VISIBLE);
+                        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
+                                RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+                        lp.bottomMargin = 0;
+//                        if(inputviews.getChildCount()<1){
+//                            inputviews.addView(aceChatKeyboardView,lp);
+//                        }
+                        break;
+                }
+            }
+        };
+
+        List<WindowOptionsVO.MPWindowMenuVO> menuList = windowOptionsVO.menuList;
+        if (menuList != null && menuList.size() > 0) {
+            layout_bottom_menu_toolbar.setVisibility(View.VISIBLE);
+            layout_menu.removeAllViews();
+            for (int i = 0; i < menuList.size(); i++) {
+                final WindowOptionsVO.MPWindowMenuVO menuVO = menuList.get(i);
+                //遍历增加菜单栏目
+                LinearLayout layout = (LinearLayout) ((LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.platform_mp_window_menu_title_item, null);
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.0f);
+                layout.setLayoutParams(lp);
+                ImageView imageTab = (ImageView)layout.findViewById(R.id.platform_mp_window_icon_tab);
+                TextView tvMenuName = (TextView) layout.findViewById(R.id.platform_mp_window_tv_menu_name);
+                tvMenuName.setText(menuVO.menuTitle);
+                if (menuVO.subItems!=null&&menuVO.subItems.size() > 0){
+                    // 有子菜单项，显示三角
+                    imageTab.setVisibility(VISIBLE);
+//                    tvMenuName.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_up_black, 0);
+                } else {
+                    // 无子菜单项，隐藏三角
+                    imageTab.setVisibility(GONE);
+//                    tv_custommenu_name.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+                }
+                layout.setOnClickListener(new OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+                        try {
+                            if (menuVO.subItems!=null && menuVO.subItems.size() > 0) {
+//                                MPPopMenu popupWindow_custommenu = new MPPopMenu(mContext, ob.getJSONArray("sub"), v.getWidth() + 10, 0,chatKeybordListerner);
+//                                popupWindow_custommenu.showAtLocation(v);
+//                                chatKeybordListerner.tabShowContent(ob.getString("title"));
+                            } else {
+                                callbackOnMPWindowOnClicked(MP_WINDOW_CLICKED_TYPE_MENU, menuVO.menuId, null);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+                layout_custommenu.addView(layout);
+            }
+        } else {
+            layout_custom_toolbar.setVisibility(View.GONE);
+        }
+    }
+
+    private void callbackOnMPWindowOnClicked(String type, String menuId, String itemId){
+        JSONObject json = new JSONObject();
+        try {
+            json.put("type", type);
+            if (menuId!=null) {
+                json.put("menuId", menuId);
+            }
+            if (itemId!=null) {
+                json.put("itemId", itemId);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        String data = json.toString();
+        callbackToMainWebView(CALLBACK_METHOD_ON_MP_WINDOW_CLICKED, data);
+    }
+
+    /**
      * 用于特殊样式的窗口（如公众号窗口）进行功能性交互回调
      *
-     * @param js
      */
-    private void callbackToMainWebView(String js){
+    private void callbackToMainWebView(String callbackFunc, String jsonObject){
+        String js = "javascript:if(" + callbackFunc + "){"
+                + callbackFunc + "(" + jsonObject + ");}else{console.log('function " + callbackFunc +" not found.')}";
         if (null != mMainView) {
             mMainView.addUriTask(js);
         }

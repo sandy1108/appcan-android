@@ -26,4 +26,5 @@
 	<color name="platform_mp_window_border_color">#cccccc</color>
 	<color name="platform_mp_window_gray_white">#f7f7f7</color>
 	<color name="platform_mp_window_white">#FFFFFFFF</color>
+	<color name="platform_mp_window_gray_black">#333333</color>
 </resources>

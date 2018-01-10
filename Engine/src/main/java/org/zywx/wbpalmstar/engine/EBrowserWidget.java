@@ -39,6 +39,7 @@ import com.slidingmenu.lib.SlidingMenu;
 
 import org.json.JSONObject;
 import org.zywx.wbpalmstar.base.BConstant;
+import org.zywx.wbpalmstar.base.BDebug;
 import org.zywx.wbpalmstar.base.view.SwipeView;
 import org.zywx.wbpalmstar.engine.external.Compat;
 import org.zywx.wbpalmstar.engine.universalex.EUExWidget.SpaceClickListener;
@@ -114,7 +115,12 @@ public class EBrowserWidget extends AbsoluteLayout {
         EBrwViewEntry inEntry = new EBrwViewEntry(EBrwViewEntry.VIEW_TYPE_ROOT);
         //增加特殊窗口的逻辑
         if (mWidgetData.m_wgtType == WWidgetData.WGT_TYPE_CLOUD){
-            inEntry.mWindowStyle = EBrwViewEntry.WINDOW_SYTLE_MEDIA_PLATFORM;
+            if (mWidgetData.m_indexWindowOptions != null) {
+                inEntry.mWindowStyle = mWidgetData.m_indexWindowOptions.windowStyle; //默认值是0，即WINDOW_SYTLE_NORMAL
+                inEntry.mWindowOptions = mWidgetData.m_indexWindowOptions.windowOptions; //窗口配置参数
+            }else{
+                BDebug.d("init WidgetAppID: "+ mWidgetData.m_appId +" m_indexWindowOptions is null");
+            }
         }
         rootWindow.init(eBrw, inEntry);
         rootWindow.setAbleToSwipe(false);

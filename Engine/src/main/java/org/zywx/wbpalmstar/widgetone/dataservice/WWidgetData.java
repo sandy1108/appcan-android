@@ -22,7 +22,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import org.zywx.wbpalmstar.base.BDebug;
-import org.zywx.wbpalmstar.base.vo.WindowOptionsVO;
+import org.zywx.wbpalmstar.base.vo.WidgetConfigVO.IndexWindowOptionsVO;
 
 import java.util.ArrayList;
 
@@ -149,7 +149,7 @@ public class WWidgetData implements Parcelable,Cloneable {
 
     public static int sStatusBarColor=-1;
 
-    public WindowOptionsVO m_indexWindowOptions;
+    public IndexWindowOptionsVO m_indexWindowOptions;//root窗口的相关配置参数，目前用于公众号样式窗口的配置
 
     public static final Parcelable.Creator<WWidgetData> CREATOR = new Creator<WWidgetData>() {
         public WWidgetData createFromParcel(Parcel source) {

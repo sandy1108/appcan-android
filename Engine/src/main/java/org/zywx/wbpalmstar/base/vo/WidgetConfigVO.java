@@ -16,7 +16,7 @@ public class WidgetConfigVO {
 
     public String indexUrl;
 
-    public WindowOptionsVO indexWindowOptions;
+    public IndexWindowOptionsVO indexWindowOptions;
 
     public String obfuscation;
 
@@ -31,5 +31,12 @@ public class WidgetConfigVO {
     public String cbFuncName;
 
     public String startInfo;
+
+    public static class IndexWindowOptionsVO {
+
+        public int windowStyle;
+        public WindowOptionsVO windowOptions;
+
+    }
 
 }

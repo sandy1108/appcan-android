@@ -1003,10 +1003,10 @@ public class WDataManager {
         if ("#".equals(configVO.errorPath)
                 || configVO.errorPath == null
                 || configVO.errorPath.length() == 0) {
-            indexUrl = widgetPath + "error.html";
+            errorPath = widgetPath + "error.html";
         } else {
             if (!BUtility.uriHasSchema(configVO.errorPath)) {
-                indexUrl = widgetPath + configVO.errorPath;
+                errorPath = widgetPath + configVO.errorPath;
             }
         }
         WWidgetData widgetData = new WWidgetData();
@@ -1020,6 +1020,7 @@ public class WDataManager {
         widgetData.m_description = configVO.description;
         widgetData.mErrorPath = errorPath;
         widgetData.m_wgtType = wgtType;
+        widgetData.m_indexWindowOptions = configVO.indexWindowOptions;
         return widgetData;
     }
 

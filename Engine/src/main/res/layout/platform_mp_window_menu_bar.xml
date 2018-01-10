@@ -14,7 +14,7 @@
         android:orientation="horizontal">
 
         <LinearLayout
-            android:id="@+id/layout_exchange"
+            android:id="@+id/platform_mp_window_exchange_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="5"
