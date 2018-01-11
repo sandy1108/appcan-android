@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<widget widgetId="" appId="000TestWidgetId" channelCode="000" version="0.1">
+	<name>测试子应用case</name>
+	<description>测试子应用case</description>
+	<author email="sandy1108@163.com">zhangyipeng</author>
+	<icon src="icon.png"></icon>
+	<license href="http://3g2win.com"></license>
+	<content src="index.html" encoding="utf-8"></content>
+	<obfuscation>false</obfuscation>
+	<showmyspace>false</showmyspace>
+	<bgcolor>#fefefe</bgcolor>
+	<widgetOne version="[widgetOneVersion]" />
+	<orientation>1</orientation>
+</widget>

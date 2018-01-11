@@ -10,13 +10,106 @@
             uexWidget.startWidget('000TestWidgetId', '1', 'widgetDidFinish', 'open a widget', 300)
         }
 
+        function widgetDidFinish(){
+            alert("widgetDidFinish")
+        }
+
+        function callbackWidgetDidFinish(){
+            alert("callbackWidgetDidFinish")
+        }
+
         function startWidgetWithConfig() {
-            uexWidget.startWidgetWithConfig('000TestWidgetId', '1', 'widgetDidFinish', 'open a widget', 300)
+            var windowOptions = {
+                windowTitle : "正益移动", //公众号窗口顶部标题
+                isBottomBarShow : true, //底部菜单和键盘输入栏是否显示
+                titleLeftIcon:"",//控制标题栏左侧的图标（比如：是叉还是返回箭头）
+                titleRightIcon:"",//控制标题栏右侧的图标（比如：是小人还是点点点）
+                menuList: [ //底部菜单列表，可选。不传则无菜单，默认是键盘输入栏。
+                    {
+                        menuId:"tech", //字符串，用于回调时携带以区分条目
+                        menuTitle:"技术支持", //字符串，必选，底部主菜单标题
+                        subItems: [ //数组，可选，内部为菜单子条目
+                            {
+                                itemId:"item1", //字符串，用于回调时携带以区分条目
+                                itemTitle:"引擎", //字符串，必选，菜单子条目标题
+                            },
+                            {
+                                itemId:"item2", //字符串，用于回调时携带以区分条目
+                                itemTitle:"插件", //字符串，必选，菜单子条目标题
+                            },
+                            {
+                                itemId:"item3", //字符串，用于回调时携带以区分条目
+                                itemTitle:"HTML+JS", //字符串，必选，菜单子条目标题
+                            }
+                        ]
+                    },
+                    {
+                        menuId:"product", //字符串，用于回调时携带以区分条目
+                        menuTitle:"产品介绍", //字符串，必选，底部主菜单标题
+                        subItems: [ //数组，可选，内部为菜单子条目
+                            {
+                                itemId:"item1", //字符串，用于回调时携带以区分条目
+                                itemTitle:"EMM管理服务", //字符串，必选，菜单子条目标题
+                            },
+                            {
+                                itemId:"item2", //字符串，用于回调时携带以区分条目
+                                itemTitle:"SDK打包服务", //字符串，必选，菜单子条目标题
+                            },
+                            {
+                                itemId:"item3", //字符串，用于回调时携带以区分条目
+                                itemTitle:"正益工作", //字符串，必选，菜单子条目标题
+                            },
+                            {
+                                itemId:"item4", //字符串，用于回调时携带以区分条目
+                                itemTitle:"协同开发", //字符串，必选，菜单子条目标题
+                            }
+                        ]
+                    },
+                    {
+                        menuId:"offcial", //字符串，用于回调时携带以区分条目
+                        menuTitle:"AppCan官网", //字符串，必选，底部主菜单标题
+                    }
+                ]
+            }
+
+            //传入配置启动云应用，则不会寻找子应用的config.xml
+            var data = {
+                appId: '000TestCloudWidgetId',
+                appkey: 'adfadfasdf',
+                widgetName: '测试云应用',
+                description: '这是一个测试startWidgetWithConfig的应用',
+                indexUrl: 'plugin/000TestWidgetId/index.html',
+                indexWindowOptions: {//窗口样式参数配置
+                    windowStyle: 1, //1代表公众号样式
+                    windowOptions: windowOptions
+                },
+                obfuscation: 'false',
+                errorPath: '',
+                debug: 'true',
+                animId: '1',
+                cbFuncName: 'callbackWidgetDidFinish',
+                startInfo: '这是传递给子应用的自定义信息',
+                animDuration: 300
+            }
+
+            //启动子应用
+            uexWidget.startWidgetWithConfig(data,
+                function(error) {
+                    if (!error) {
+                        alert("加载成功!");
+                    }else{
+                        alert("子应用加载失败！");
+                    }
+                });
         }
 
         window.uexOnload = function() {
             uexWidgetOne.cbError = function(opid, type, error) {
                 alert(error);
+            }
+
+            uexWidget.cbStartWidgetWithConfig = function(result){
+                alert("uexWidget.cbStartWidgetWithConfig: "+result);
             }
         }
     </script>
@@ -29,7 +122,7 @@
             <span>打开子应用</span>
             <input class="btn" type="button" value="打开子应用" onclick="startWidget();">
 
-            <input class="btn" type="button" value="打开云应用" onclick="startWidgetWithConfig();">
+            <input class="btn" type="button" value="打开公众号应用" onclick="startWidgetWithConfig();">
         </div>
         <input class="btn" type="button" value="返回" onclick="uexWindow.close();">
     </div>

@@ -1,0 +1,141 @@
+*{font-family: "黑体",Arial, Helvetica, sans-serif}
+.msg{width:5em}
+.icon-book1{ background:url(image/icon-book.png) no-repeat left center;background-size:1.16em 1.28em;}
+.icon-time1{ background:url(image/icon-time.png) no-repeat left center;background-size:1.26em 1.28em;}
+.umar-le3{ margin-left:3.0em;}
+.uinn-le2{ padding-left:2em;}
+.ulev3 {
+    font-size: 1.8em !important;
+	}
+.ub-f5
+{
+	position:relative;
+	-webkit-box-flex: 5;
+	box-flex: 5;
+}
+.bc-bg {
+    background-color: #FFFFFF;
+}
+.unh2-5{
+	height:2.65em;
+	}
+.above-tit-bg{ 
+	background:#f5f8fc;
+	border-top:#e6ebf0 1px solid;
+}
+.tit-bg{
+	 background:#e1eaf5;
+	 }
+.ulev2-5{
+	 font-size:1.25em;
+	 }
+.ubtop{
+	border-top: 1px solid #eeeeee;
+	}	 
+.ublef{
+	border-left: 1px solid #eeeeee;
+	}	 
+.ubrig{
+	border-right: 1px solid #eeeeee;
+	}
+.ubbot{
+	border-bottom: 1px solid #eeeeee;
+	}	
+.umhh{
+	 height:5.3em;
+	 }
+.page-c-bg{
+     background-color:#f5f9fc;
+	}
+.con-c-bg{
+     background-color:#ffffff;
+	}
+.uinn-1{
+	padding:0 1em;
+	}
+.uinn2-5{
+	padding:0 1.25em;
+	}
+.bd-bg{
+	background-image:url(image/bd_bg.png);
+	}
+.sc-text1{ 
+	color:#8b8b8b;
+	}
+.sc-text2{
+	color:#849cb8;
+	}
+.sc-text3{
+	color:#6283a4;
+	}
+.sc-text4{
+	color:#a0a0a0;
+	}
+.sc-text5{
+	color:#4b4b4b;
+	}
+.icon-dele{
+    background-image:url(image/icon-del.png);	
+	}
+.icon-delete{
+    background-image:url(image/delete.png);	
+	}
+.icon-minus{
+    background-image:url(image/minus.png);	
+	}
+.icon-plus{
+    background-image:url(image/plus.png);	
+	}
+.icon-back1{
+    background-image:url(image/icon-back1.png);	
+	}
+.icon-home1{
+    background-image:url(image/icon-home1.png);	
+	}
+.icon-camera1{
+    background-image:url(image/icon-camera1.png);	
+	}
+.icon-confirm{
+    background-image:url(image/comfirm.png);
+	}
+.icon-next1{
+    background-image:url(image/next1.png);
+	}
+.icon-pay{
+    background-image:url(image/pay.png);
+}
+.icon-sign{
+    background-image:url(image/sign.png);
+}
+.icon-enter_back{
+    background-image:url(image/enter_back.png);
+	}
+.bd_bg{
+    background-image:url(image/bd_bg.png);float:left; margin-right:2em; height:8.5em; width:7.5em; 
+	}
+.delete_icon{
+    background-image:url(image/delete_icon.png); margin:0.12em;
+	}
+.icon-upload{
+    background-image:url(image/upload.png);
+	}
+.bc-head1{
+	background-color:#2196f3;
+	}
+.bc-btn1{
+	background-color:#3985e2;
+	}
+.uinn8{
+	padding:0.5em 1.2em;
+	}
+.umar-r1{
+	margin-right:1em;
+	}
+.icon-house{
+    background-image:url(image/icon-house.png);
+	}
+.icon-arrow-r{
+    background-image:url(image/icon-arrowR.png);
+	}
+	
+	

@@ -11,6 +11,7 @@
 	<bgcolor>#fefefe</bgcolor>
 	<widgetOne version="[widgetOneVersion]" />
 	<orientation>1</orientation>
+	<debug>true</debug>
 <!--    <NbsAgentKey platform="iOS">6e79ca311b024abe8ff68e8cd0d9cfc5</NbsAgentKey>-->
 <!--    <NbsAgentKey platform="Android">ANDROID KEY VALUE</NbsAgentKey>-->
 <!--    <NbsAgentKey platform="iOS">29fc9c9b626346a2bee72034bd974cf31</NbsAgentKey>-->

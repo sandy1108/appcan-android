@@ -1,0 +1,30 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="target-densitydpi=device-dpi, width=device-width, initial-scale=1.0, user-scalable=no" />
+    <link rel="stylesheet" type="text/css" href="css/index.css">
+    <title>测试子应用case</title>
+    <script type="text/javascript">
+        window.onload = function() {
+            console.log("=====>window.onload");
+        }
+        window.uexOnload = function() {
+            console.log("=====>window.uexOnload");
+        }
+
+        function closeIt() {
+            uexWindow.close();
+        }
+    </script>
+</head>
+
+<body>
+    <div class="tit">zyp测试子应用case</div>
+    <div class="con">
+        <input class="btn" type="button" value="关闭本窗口" onclick="closeIt();">
+    </div>
+</body>
+
+</html>

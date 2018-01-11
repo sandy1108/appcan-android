@@ -1,0 +1,401 @@
+.all-heigt1{
+    height: 1em;
+    -webkit-box-align:center;
+    box-align:center;
+}
+input:focus {
+    outline:none;
+}
+.all-pd-tb{
+    padding: 0.5em 0;
+}
+.all-mg-lr{
+    margin: 0 9%;
+}
+.all-mg-t{
+    margin: 1em 0;
+}
+.img-arrowR{
+    background-image: url('image/img-arrowR.png');
+}
+.tx-wight{
+    font-weight: 700;
+}
+/*头部颜色*/
+.all-head {
+    background-color: #2196f3;
+    border-bottom: #1769aa 1px solid;
+}
+.all-bg {
+    background-color: #f5f8fc;
+}
+/*
+.ulev-3 {
+font-size: 1.375em !important;
+}
+*/
+.umw1 {
+min-width: 1.375em !important;
+}
+/*————————————————————首页样式home————————————————————*/
+/*背景图*/
+.home-bg {
+    background-image: url('image/homebg.png');
+    width: 100%;
+}
+/*帮助文档图片*/
+.home-txt{
+    background-image: url('image/hometxt.png');
+    height: 4em;
+    width: 4em;
+    margin: 1.2em;
+    position: absolute;
+    right: 0;
+}
+
+/*主页logo*/
+.home-logo {
+    background-image: url('image/homelogo.png');
+    width: 14.8em;
+    height:6em;
+    margin: 1.8em;
+    position: absolute;
+    left: 0;
+}
+/*主页欢迎文字*/
+.home-wel {
+    height: 6em;
+    font-size: 1.25em;
+}
+.home-wel p:nth-child(1){
+    color: #4B4B4B;
+    margin: 0.75em 0;
+}
+.home-wel p:nth-child(2){
+    color: #FFFFFF;
+    background-color: #9bacc0;
+    height: 2.3em;
+    border-radius: 1.15em;
+    padding: 0 1.1em;
+}
+/*主页功能图片*/
+.home-fun {
+    width: 100%;
+    margin: 1em 0;
+}
+
+.home1{
+    background-image: url('image/home1.png');
+    margin: 0 4.5% 0 0;
+}
+.home2{
+    background-image: url('image/home2.png');
+    margin: 0 0 0 4.5%;
+}
+.home3{
+    background-image: url('image/home3.png');
+    margin: 0 4.5% 0 0;
+}
+.home4{
+    background-image: url('image/home4.png');
+    margin: 0 0 0 4.5%;
+    
+}
+.home-bottom {
+    height: 5em;
+    font-size: 1em;
+}
+
+.home-help{
+    background-image: url('image/homehelp.png');
+    height:4em;
+    width: 4em;
+    position: absolute;
+    right: 3.5em;
+    bottom: 0em;
+    margin:0;
+}
+/*主页版本文字*/
+.home-version {
+    color: #6e9fdb;
+    margin:0.25em 1em;
+    position: absolute;
+    right: 0em;
+    bottom: 0em;
+}
+/*————————————————————修改密码revisePw————————————————————*/
+/*头部房子icon*/
+.icon-house {
+    background-image: url('image/icon-house.png');
+}
+/*头部箭头icon*/
+.icon-arrow-r {
+    background-image: url('image/icon-arrowR.png');
+}
+/*修改密码条样式*/
+.pw-text {
+    background: #ffffff;
+    height: 2.5em;
+    width: 100%;
+    margin-top: 1em;
+}
+.pw-text li {
+    margin: 0.25em 0 0.25em 0;
+}
+.pw-text li:nth-child(1) {
+    padding: 0 1em;
+    width: 16%;
+    color: #8f8f8f;
+}
+
+.pw-text input {
+    color: #4b4b4b !important;
+}
+.pw-text li:nth-child(2) input:: -webkit-input-placeholder {
+    color: #cccccc;
+}
+
+.pw-text li:nth-child(3) {
+    width: 8%;
+}
+.pw-text li:nth-child(3) img {
+    height: 1em;
+    width: 1em;
+}
+/*按钮*/
+.pw-btn {
+    background-image: url("image/pw-comfirm.png");
+    height: 2.5em;
+    margin: 2em 3%;
+}
+/*————————————————————理赔轨迹payTrack————————————————————*/
+.pt-text1 {
+    background-color: #e1eaf5;
+    color: #849cb8;
+    padding: 0.5em 0 0.5em 1em;
+    margin-top: 1em;
+    font-size: 1.25em;
+}
+
+.pt-horizontal {
+    background-image: url('image/pt-horizontal.png');
+    width: 10%;
+    height: 1.5em;
+    top: 1em;
+    left: 21%;
+    position: absolute;
+    z-index: 888;
+}
+.pt-track {
+    left: 26%;
+    top: 2.1em;
+    position: absolute;
+    z-index: 3;
+}
+/*竖线*/
+.pt-line {
+    width: 2%;
+    height: 100%;
+    border-left: #dfe6f1 3px solid;
+    left: 5.9em;
+    top: 0em;
+    position: absolute;
+    z-index: -2;
+}
+.pt-content{
+    width: 200%;
+    left: -6em;
+    position: absolute;
+    padding-top: 0.6em;
+}
+.pt-track ul {
+    height: 6.625em;
+    padding-top: 1.0em;
+    display: -webkit-box !important;
+    display: box !important;
+}
+
+.pt-track ul li:nth-child(1) {
+    width: 5em;
+    padding-top: 0.5em;
+    padding-right: 0.45em;
+    text-align: end;
+}
+.pt-track ul li p:nth-child(1) {
+    color: #999999;
+    font-size: 0.875em;
+}
+.pt-track ul li p:nth-child(2) {
+   /* color: #333333;
+    font-size: 1.25em;*/
+   color: #999999;
+   font-size: 0.875em;
+}
+.pt-track ul li:nth-child(2) {
+    width: 1em;
+    margin: 0.3em 0 5.325em 0;
+    background-color: #ed5959;
+    border-radius: 0.5em;
+    
+}
+.pt-track ul li:nth-child(3) {
+    width: 10em;
+    color: #4e6578;
+    min-height: 1em;
+    min-width: 0.5em;
+    margin-top: -0.4em;
+    padding-left:1em; 
+    font-size: 1.25em;
+}
+/*气泡*/
+.pt-msg {
+    white-space: normal;
+    border: 8px solid rgba(0, 0, 0, 0.2);
+    /*border-right-width: 17px;*/
+    /*border-top-width: 17px;*/
+    -webkit-border-image: url('image/pt-msg.png') 17 17 17 stretch stretch;
+}
+.pt-txtarea{
+    margin:0 .6em ;
+    word-break:break-all;
+    word-wrap:break-word;
+    
+}
+/*————————————————————处理完成案件completedCase————————————————————*/
+/*头部样式*/
+.ac-tit{
+    margin: 0.8em 0;
+    -webkit-border-radius: .2em;
+    border-radius: .2em
+}
+.ac-tit .rdi{
+    padding: 0.1em 1em;
+}
+input[type=radio]+div.rdi {
+    color: #FFFFFF;
+    background-color: #2196f3;
+    font-size: 1.25em;
+}
+
+input[type=radio]:checked+div.rdi {
+    color: #2196f3;
+    background-color:#FFFFFF;
+    font-size: 1.25em;
+}
+/*输入部分样式*/
+.ac-head{
+    margin: 1em 0;
+    background: #FFFFFF;
+    border-top: #EEEEEE 1px solid;
+    border-bottom: #EEEEEE 1px solid;
+}
+.ac-text {
+    background: #ffffff;
+    height: 2.5em;
+    width: 100%;
+    border-bottom: #EEEEEE 1px solid;
+    /*font-size: 1.25em;*/
+}
+.ac-text li {
+    margin: 0.25em 0 0.25em 0;
+}
+.ac-text li:nth-child(1) {
+    padding: 0 1em;
+    width: 16%;
+    color: #8f8f8f;
+}
+.ac-text input {
+    color: #4b4b4b !important;
+}
+.ac-text li:nth-child(2) input:: -webkit-input-placeholder {
+    color: #cccccc;
+}
+
+.ac-text li:nth-child(3) {
+    width: 8%;
+}
+.ac-text li:nth-child(3) img {
+    height: 1em;
+    width: 1em;
+}
+.ac-text1 li:nth-child(3) {
+    width: auto;
+}
+.ac-text1 li:nth-child(4) {
+    width: 8%;
+}
+.ac-text1 li:nth-child(4) img {
+    height: 1em;
+    width: 1em;
+}
+/*按钮*/
+.ac-btn{
+    background-image: url("image/comfirm.png");
+    height: 2.5em;
+    width: 40%;
+    margin: 0.8em;
+}
+.ac-bloc{
+    background-color: #FFFFFF;
+    margin-bottom: 1em;
+    border-top: #EEEEEE 1px solid;
+    border-bottom: #EEEEEE 1px solid;
+}
+.ac-inbloc{
+    height: 2em;
+}
+.ac-bloctxt {
+    background-color: #e1eaf5;
+    color: #849cb8;
+    padding: 0.7em 0 0.7em 1em;
+    font-size: 1.25em;
+    border-bottom: #EEEEEE 1px solid;
+}
+.all-pd-tb1 li{
+    margin: 0.5em 0;
+}
+.ac-bloc li:nth-child(3){
+    width: 23%;
+}
+.ac-bloc li:nth-child(1) div:nth-child(1),.ac-bloc li:nth-child(2) div:nth-child(1){
+    width: 1.3em;
+    height:1.3em;
+    margin: 0.7em 0.3em 2em 10%;
+}
+.ac-bloc li p{
+    font-size: 1.25em;
+    color: #4B4B4B;
+    padding: 0.5em;
+}
+.ac-bloc li:nth-child(3) div{
+    font-size: 1.25em;
+    color: #56b6de;
+    padding: 0.5em 0;
+    text-align: right;
+}
+.ac-book{
+    background-image: url('image/icon-book.png');
+    
+}
+.ac-time{
+    background-image: url('image/icon-time.png');
+}
+/*———————————————————已受理案件acceptedCase—————————————————————*/
+.ac-case1 li{
+    width: 50%;
+    border-bottom: 1px solid #eeeeee;
+}
+.ac-case1 li:nth-child(1){
+    border-right: 1px solid #eeeeee;
+}
+.ac-case1 li p:nth-child(1){
+    width: 35%;
+}
+.ac-case2 li:nth-child(1){
+    width: 20%;
+}
+.ac-bdr{
+    border-right: 1px solid #eeeeee;
+}
+
+

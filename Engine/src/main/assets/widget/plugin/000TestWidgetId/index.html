@@ -1,0 +1,41 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="target-densitydpi=device-dpi, width=device-width, initial-scale=1.0, user-scalable=no" />
+    <link rel="stylesheet" type="text/css" href="css/index.css">
+    <title>测试子应用case</title>
+    <script type="text/javascript">
+        window.onload = function() {
+            console.log("=====>window.onload");
+        }
+        window.uexOnload = function() {
+            console.log("=====>window.uexOnload");
+            uexWindow.onPopoverLoadFinishInRootWnd = function(name, url) {
+                alert("子应用Root窗口：uexWindow.onPopoverLoadFinishInRootWnd===>" + name + " url: " + url);
+            }
+            uexWindow.onMPWindowClicked = function(data){
+                alert("uexWindow.onMPWindowClicked===>" + JSON.stringify(data));
+            }
+        }
+
+        function openPopover() {
+            uexWindow.openPopover("popWindow", 0, "index_content.html", "", 0, 0, '', '', '', 0, 100);
+        }
+
+        function closeWidget() {
+            uexWidget.finishWidget();
+        }
+    </script>
+</head>
+
+<body>
+    <div class="tit">zyp测试子应用case</div>
+    <div class="con">
+        <input class="btn" type="button" value="打开浮动窗口" onclick="openPopover();">
+        <input class="btn" type="button" value="关闭子应用" onclick="closeWidget();">
+    </div>
+</body>
+
+</html>

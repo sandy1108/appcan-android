@@ -1,0 +1,125 @@
+.morepic {
+	width: .8em;
+	height: .8em;
+	margin: .2em;
+}
+.c-month{
+	background-color: #95B3C2;
+}
+.c-week{
+	background-color: #D7E2E8;
+}
+.t-bold{
+	font-weight: bold;
+}
+.t-week{
+	color: #707070;
+}
+.t-day{
+	color: #b2b2b2;	
+}
+.t-day2{
+	color: #0c4c71;	
+}
+
+.t-day-today{
+	color: #fff;
+	background-color: #7A91AF;
+	-webkit-box-shadow: inset 0px 2px 3px rgba(0, 0, 0, .4);
+	-moz-box-shadow: inset 0px 2px 3px rgba(0, 0, 0, .4);
+	-o-box-shadow: inset 0px 2px 3px rgba(0, 0, 0, .4);
+	-ms-box-shadow: inset 0px 2px 3px rgba(0, 0, 0, .4);
+	box-shadow: inset 0px 2px 3px rgba(0, 0, 0, .4)
+}
+.t-day-act{
+	color: #fff;
+	background-color: #7BBCE6;
+	-webkit-box-shadow: inset 0px 2px 3px rgba(0, 0, 0, .4);
+	-moz-box-shadow: inset 0px 2px 3px rgba(0, 0, 0, .4);
+	-ms-box-shadow: inset 0px 2px 3px rgba(0, 0, 0, .4);
+	-o-box-shadow: inset 0px 2px 3px rgba(0, 0, 0, .4);
+	box-shadow: inset 0px 2px 3px rgba(0, 0, 0, .4)
+}
+.b-outer{
+	border-color:#B8B8B8;
+}
+.b-inner{
+	border-color:#D9D9D9;
+}
+.tri-l{
+	border-color: transparent #4B4B4B transparent transparent;
+	border-style: solid;
+	border-width:.8em .8em .8em 0;
+	width: 0;
+	height: 0;
+}
+.tri-l-a .tri-l{
+	border-color: transparent #E7E7E7 transparent transparent;
+}
+.tri-r{
+	border-color: transparent transparent transparent #4B4B4B;
+	border-style: solid;
+	border-width:.8em 0 .8em .8em;
+	width: 0;
+	height: 0;
+}
+.tri-r-a .tri-r{
+	border-color: transparent transparent transparent #E7E7E7;
+}
+.t-p{
+}
+
+.ubr-no {
+border-right: 0;
+}
+
+.ulev-3 {
+font-size: 0.9em !important;
+}
+/* 提示框*/
+.zhy_top{
+	margin-top: 43%;
+	margin-bottom: 57%;
+}
+
+.zhy_win{
+	position:relative;
+	z-index: 99999;
+	
+}
+.zhy_winss{
+	position:absolute !important;
+	z-index: 99999;
+	bottom:0;
+	width:100%;
+	
+}
+.zhy_bg {
+    background: #474747;
+	opacity:0.8;
+}
+
+.zhy_border {
+    border-color: #606060;
+}
+
+.zhy_uinn {
+    padding: 1em 0;
+}
+
+.zhy_pading {
+    padding: 0.8em 0;
+}
+.zhy_jiazai{
+	background:url(css/images/5-121204193933-51.gif);
+	min-height:2em;
+	min-width:2em;
+	background-position:center;
+	background-repeat:no-repeat;
+	background-size:100% 100%;
+}
+.zhy_loader{
+	background:url(css/images/723.GIF);
+	background-repeat:no-repeat;
+	background-position:center;
+}
