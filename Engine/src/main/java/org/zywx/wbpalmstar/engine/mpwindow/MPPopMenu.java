@@ -1,6 +1,5 @@
 package org.zywx.wbpalmstar.engine.mpwindow;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -15,16 +14,20 @@ import android.widget.PopupWindow;
 import android.widget.PopupWindow.OnDismissListener;
 import android.widget.TextView;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.zywx.wbpalmstar.base.vo.WindowOptionsVO;
+import org.zywx.wbpalmstar.base.vo.WindowOptionsVO.MPWindowMenuVO;
+import org.zywx.wbpalmstar.base.vo.WindowOptionsVO.MPWindowMenuVO.MPWindowMenuItemVO;
 import org.zywx.wbpalmstar.widgetone.uex.R;
 
-@SuppressLint({ "ResourceAsColor", "ShowToast" })
+/**
+ * 公众号样式浮动菜单控制类
+ */
 public class MPPopMenu {
 
-	public interface PopMenuClickListener {
-		public void onClick(String itemJsonData);
+    /**
+     * 浮动菜单点击的回调监听接口
+     */
+    public interface PopMenuClickListener {
+		void onClick(String itemId);
 	}
 
 	private Context mContext;
@@ -33,24 +36,19 @@ public class MPPopMenu {
 	private int mWidth, mHeight;
 	private View mContainerView;
 	private PopMenuClickListener mPopMenuClickListener;
+	private MPWindowMenuVO mMenuVO;
 
-	public MPPopMenu(Context context, WindowOptionsVO.MPWindowMenuVO menuVO, int width, int height, PopMenuClickListener popMenuClickListener) {
+	public MPPopMenu(Context context, MPWindowMenuVO menuVO, int width, int height, PopMenuClickListener popMenuClickListener) {
 		this.mContext = context;
 		this.mWidth = width;
 		this.mHeight = height;
+		mMenuVO = menuVO;
 		mPopMenuClickListener = popMenuClickListener;
-		mContainerView = LayoutInflater.from(context).inflate(R.layout.platform_mp_window_popmenu_item, null);
-		LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT, 1.0f);
-		mContainerView.setLayoutParams(lp);
-		// 设置 listview
+		mContainerView = LayoutInflater.from(context).inflate(R.layout.platform_mp_window_popmenu_layout, null);
+		//浮动菜单外层layout
 		mMenuListLayout = (LinearLayout) mContainerView.findViewById(R.id.platform_mp_window_menu_items_container);
-		try {
-			setSubMenu();
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		mMenuListLayout.setBackgroundColor(Color.parseColor("#ff646464"));
+		//初始化浮动菜单内部的子项目
+        initMenuSubItem();
 		mMenuListLayout.setFocusableInTouchMode(true);
 		mMenuListLayout.setFocusable(true);
 		mPopupWindow = new PopupWindow(mContainerView, width == 0 ? LayoutParams.WRAP_CONTENT : width, height == 0 ? LayoutParams.WRAP_CONTENT : height);
@@ -66,9 +64,7 @@ public class MPPopMenu {
 		mPopupWindow.setFocusable(true);
 		// 刷新状态
 		mPopupWindow.update();
-
 		mPopupWindow.setOnDismissListener(new OnDismissListener() {
-
 			// 在dismiss中恢复透明度
 			@Override
 			public void onDismiss() {
@@ -83,10 +79,9 @@ public class MPPopMenu {
 		int popupWidth = mContainerView.getMeasuredWidth();
 		int popupHeight =  mContainerView.getMeasuredHeight();
 		parent.getLocationOnScreen(location);
-		int x = (location[0]+parent.getWidth()/2)-popupWidth/2;
-		int y = location[1]-popupHeight;
-		mPopupWindow.showAtLocation(parent, Gravity.NO_GRAVITY,x , y);
-
+		int x = (location[0] + parent.getWidth() / 2) - popupWidth / 2;
+		int y = location[1] - popupHeight;
+		mPopupWindow.showAtLocation(parent, Gravity.NO_GRAVITY, x , y);
 		// 设置允许在外点击消失
 		mPopupWindow.setOutsideTouchable(true);
 		// 使其聚集
@@ -108,37 +103,28 @@ public class MPPopMenu {
 		mPopupWindow.dismiss();
 	}
 
-	void setSubMenu() throws JSONException {
+	public void initMenuSubItem() {
 		mMenuListLayout.removeAllViews();
-		for (int i = 0; i < jsonArray.length(); i++) {
-			final JSONObject ob = jsonArray.getJSONObject(i);
-			LinearLayout layoutItem = (LinearLayout) ((LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.platform_mp_window_popmenu_item, null);
-			LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT, 1.0f);
-			mContainerView.setLayoutParams(lp);
-			layoutItem.setFocusable(true);
-			TextView tv_funbtntitle = (TextView) layoutItem.findViewById(R.id.platform_mp_window_pop_item_title_textview);
-			View pop_item_line = layoutItem.findViewById(R.id.platform_mp_window_pop_item_line);
-			if ((i + 1) == jsonArray.length()) {
-				pop_item_line.setVisibility(View.GONE);
+		for (int i = 0; i < mMenuVO.subItems.size(); i++) {
+		    final MPWindowMenuItemVO menuItemVO = mMenuVO.subItems.get(i);
+			LinearLayout layoutMenuItem = (LinearLayout) LayoutInflater.from(mContext).inflate(R.layout.platform_mp_window_popmenu_item, null);
+			layoutMenuItem.setFocusable(true);
+			TextView tvMenuItemTitle = (TextView) layoutMenuItem.findViewById(R.id.platform_mp_window_pop_item_title_textview);
+			View menuItemDecline = layoutMenuItem.findViewById(R.id.platform_mp_window_pop_item_line);
+			if (i == mMenuVO.subItems.size()-1) {
+				//最后一个不加分割线
+				menuItemDecline.setVisibility(View.GONE);
 			}
-			tv_funbtntitle.setText(ob.getString("title"));
-			layoutItem.setOnClickListener(new OnClickListener() {
-
+			tvMenuItemTitle.setText(menuItemVO.itemTitle);
+			layoutMenuItem.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					// TODO Auto-generated method stub
-					try {
-						mchatKeybordListerner.tabShowContent(ob.getString("title"));
-					} catch (JSONException e) {
-						e.printStackTrace();
-					}
+                    mPopMenuClickListener.onClick(menuItemVO.itemId);
 					dismiss();
-
 				}
 			});
-			mMenuListLayout.addView(layoutItem);
+			mMenuListLayout.addView(layoutMenuItem);
 		}
 		mMenuListLayout.setVisibility(View.VISIBLE);
 	}
-
 }

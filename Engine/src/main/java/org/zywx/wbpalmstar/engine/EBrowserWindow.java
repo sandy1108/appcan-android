@@ -44,7 +44,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.zywx.wbpalmstar.acedes.ACEDes;
@@ -56,7 +55,6 @@ import org.zywx.wbpalmstar.base.vo.WindowOptionsVO;
 import org.zywx.wbpalmstar.engine.EBrowserHistory.EHistoryEntry;
 import org.zywx.wbpalmstar.engine.external.Compat;
 import org.zywx.wbpalmstar.engine.mpwindow.MPPopMenu;
-import org.zywx.wbpalmstar.engine.mpwindow.keybord.ACEChatKeyboardView;
 import org.zywx.wbpalmstar.engine.multipop.MultiPopAdapter;
 import org.zywx.wbpalmstar.engine.universalex.EUExCallback;
 import org.zywx.wbpalmstar.engine.universalex.EUExScript;
@@ -241,7 +239,6 @@ public class EBrowserWindow extends SwipeView implements AnimationListener {
 
     /**
      * 初始化公众号样式的顶部标题栏
-     * @param rootView
      */
     private void initMPWindowTopBar(View rootView, WindowOptionsVO windowOptionsVO){
         //右侧图标
@@ -268,7 +265,6 @@ public class EBrowserWindow extends SwipeView implements AnimationListener {
     /**
      * 初始化公众号样式的底部菜单和键盘输入栏
      *
-     * @param rootView
      */
     private void initMPWindowBottomBar(View rootView, WindowOptionsVO windowOptionsVO){
         LinearLayout layout_bottom_container=(LinearLayout)rootView.findViewById(R.id.platform_mp_window_layout_menu_bar);
@@ -283,15 +279,8 @@ public class EBrowserWindow extends SwipeView implements AnimationListener {
             @Override
             public void onClick(View v) {
                 switch (v.getId()) {
-                    case R.id.platform_mp_window_exchange_layout: //显示键盘输入
-//                        layout_btn.setVisibility(GONE);
-//                        inputviews.setVisibility(VISIBLE);
-                        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
-                                RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-                        lp.bottomMargin = 0;
-//                        if(inputviews.getChildCount()<1){
-//                            inputviews.addView(aceChatKeyboardView,lp);
-//                        }
+                    case R.id.platform_mp_window_exchange_layout:
+                        //TODO 显示键盘输入
                         break;
                 }
             }
@@ -304,20 +293,16 @@ public class EBrowserWindow extends SwipeView implements AnimationListener {
             for (int i = 0; i < menuList.size(); i++) {
                 final WindowOptionsVO.MPWindowMenuVO menuVO = menuList.get(i);
                 //遍历增加菜单栏目
-                LinearLayout layout = (LinearLayout) ((LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.platform_mp_window_menu_title_item, null);
-                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1.0f);
-                layout.setLayoutParams(lp);
+                LinearLayout layout = (LinearLayout) LayoutInflater.from(mContext).inflate(R.layout.platform_mp_window_menu_title_item, null);
                 ImageView imageTab = (ImageView)layout.findViewById(R.id.platform_mp_window_icon_tab);
                 TextView tvMenuName = (TextView) layout.findViewById(R.id.platform_mp_window_tv_menu_name);
                 tvMenuName.setText(menuVO.menuTitle);
                 if (menuVO.subItems!=null&&menuVO.subItems.size() > 0){
                     // 有子菜单项，显示三角
                     imageTab.setVisibility(VISIBLE);
-//                    tvMenuName.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_up_black, 0);
                 } else {
                     // 无子菜单项，隐藏三角
                     imageTab.setVisibility(GONE);
-//                    tv_custommenu_name.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
                 }
                 layout.setOnClickListener(new OnClickListener() {
 
@@ -325,9 +310,13 @@ public class EBrowserWindow extends SwipeView implements AnimationListener {
                     public void onClick(View v) {
                         try {
                             if (menuVO.subItems!=null && menuVO.subItems.size() > 0) {
-//                                MPPopMenu popupWindow_custommenu = new MPPopMenu(mContext, ob.getJSONArray("sub"), v.getWidth() + 10, 0,chatKeybordListerner);
-//                                popupWindow_custommenu.showAtLocation(v);
-//                                chatKeybordListerner.tabShowContent(ob.getString("title"));
+                                MPPopMenu popupWindowMenu = new MPPopMenu(mContext, menuVO, 0, 0, new MPPopMenu.PopMenuClickListener() {
+                                    @Override
+                                    public void onClick(String itemId) {
+                                        callbackOnMPWindowOnClicked(MP_WINDOW_CLICKED_TYPE_MENU, menuVO.menuId, itemId);
+                                    }
+                                });
+                                popupWindowMenu.showAtLocation(v);
                             } else {
                                 callbackOnMPWindowOnClicked(MP_WINDOW_CLICKED_TYPE_MENU, menuVO.menuId, null);
                             }
@@ -336,10 +325,10 @@ public class EBrowserWindow extends SwipeView implements AnimationListener {
                         }
                     }
                 });
-                layout_custommenu.addView(layout);
+                layout_menu.addView(layout);
             }
         } else {
-            layout_custom_toolbar.setVisibility(View.GONE);
+            layout_bottom_menu_toolbar.setVisibility(View.GONE);
         }
     }
 
