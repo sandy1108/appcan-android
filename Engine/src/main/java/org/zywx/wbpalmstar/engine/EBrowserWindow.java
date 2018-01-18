@@ -1669,6 +1669,9 @@ public class EBrowserWindow extends SwipeView implements AnimationListener {
     }
 
     protected void stopLoad() {
+        if (mMainView==null){
+            return;
+        }
         mMainView.stopLoading();
         for (Map.Entry<String, EBrowserView> entry : mPopTable.entrySet()) {
             EBrowserView temp = entry.getValue();
@@ -1695,6 +1698,9 @@ public class EBrowserWindow extends SwipeView implements AnimationListener {
     }
 
     public void reset() {
+        if (mMainView==null){
+            return;
+        }
         mMainView.reset();
         if (null != mTopView) {
             mTopView.reset();
@@ -1771,6 +1777,9 @@ public class EBrowserWindow extends SwipeView implements AnimationListener {
     public void destory() {
         stopLoop();
         stopLoad();
+        if (mMainView==null){
+            return;
+        }
         mMainView.clearCache(false);
         mMainView.destroy();
         if (null != mTopView) {
@@ -2037,6 +2046,7 @@ public class EBrowserWindow extends SwipeView implements AnimationListener {
         eView.init();
         eView.setDownloadCallback(entity.mDownloadCallback);
         eView.setUserAgent(entity.mUserAgent);
+        eView.setExeJS(entity.mExeJS);
         if (entity.checkFlag(EBrwViewEntry.F_FLAG_GESTURE)) {
             eView.setSupportZoom();
         }
@@ -3059,7 +3069,9 @@ public class EBrowserWindow extends SwipeView implements AnimationListener {
         }
         return -1;
     }
-
+    public void setExeJS(String exeJS){
+        mMainView.setExeJS(exeJS);
+    }
     public void closeWindowByAnimation(Animation anim) {
 
         if (anim != null) {
