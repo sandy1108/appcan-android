@@ -18,10 +18,14 @@
 
 package org.zywx.wbpalmstar.engine;
 
+import android.annotation.TargetApi;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -146,8 +150,10 @@ public class EBrowserWindow extends SwipeView implements AnimationListener {
 
     private RelativeLayout mMPWrapLayout;//公众号样式外层layout
     private LinearLayout bounceViewWrapper;
-    private LinearLayout bounceViewMenu;//公众号菜单布局
+    private LinearLayout bounceViewMenu;//公众号菜单布局inputviews
+    private LinearLayout inputviews;//公众号菜单布局inputviews
     private LinearLayout platform_mp_window_bottom_bar; //整个底部布局
+    private RelativeLayout platform_mp_window_title_bar; //titleBar 布局
     public EBrowserWindow(Context context, EBrowserWidget inParent) {
         super(context);
         mContext = context;
@@ -179,9 +185,10 @@ public class EBrowserWindow extends SwipeView implements AnimationListener {
 
                 bounceViewWrapper = (LinearLayout) mMPWrapLayout.findViewById(EUExUtil.getResIdID("platform_mp_window_bounceview_wrapper"));
                 //公众号的菜单根布局
-                bounceViewMenu = (LinearLayout) mMPWrapLayout.findViewById(EUExUtil.getResIdID("platform_mp_window_layout_custom_toolbar"));
+                bounceViewMenu = (LinearLayout) mMPWrapLayout.findViewById(EUExUtil.getResIdID("platform_mp_window_layout_menu_bar"));
+                inputviews = (LinearLayout) mMPWrapLayout.findViewById(EUExUtil.getResIdID("inputviews"));
                 platform_mp_window_bottom_bar = (LinearLayout) mMPWrapLayout.findViewById(EUExUtil.getResIdID("platform_mp_window_bottom_bar"));
-
+                platform_mp_window_title_bar=(RelativeLayout) mMPWrapLayout.findViewById(EUExUtil.getResIdID("platform_mp_window_title_bar"));
                 //防止混淆导致布局文件出错，不在布局中直接引用EBounceView了
                 mBounceView = new EBounceView(mContext);
                 LayoutParams bParm = new LayoutParams(Compat.FILL, Compat.FILL);
@@ -254,6 +261,7 @@ public class EBrowserWindow extends SwipeView implements AnimationListener {
                 initMPWindowTopBar(mMPWrapLayout, windowOptionsVO);
                 if (windowOptionsVO.isBottomBarShow){
                     //是否显示底部栏
+                    platform_mp_window_bottom_bar.setVisibility(VISIBLE);
                     initMPWindowBottomBar(mMPWrapLayout, windowOptionsVO);
                 }else{
                     TranslateAnimation animation = new TranslateAnimation(0.0f, 0.0f, 0.0f, 300.0f);
@@ -279,10 +287,16 @@ public class EBrowserWindow extends SwipeView implements AnimationListener {
         //设置标题
         TextView windowTitle = (TextView)rootView.findViewById(EUExUtil.getResIdID("platform_mp_window_text_title"));
         windowTitle.setText(windowOptionsVO.windowTitle);
+        //设置标题栏的颜色
+        if(""!=windowOptionsVO.titleBarBgColor&&null!=windowOptionsVO.titleBarBgColor){
+            platform_mp_window_title_bar.setBackgroundColor(Color.parseColor(windowOptionsVO.titleBarBgColor));
+        }
         //右侧图标
         Button showDetailButton=(Button) rootView.findViewById(EUExUtil.getResIdID("platform_mp_window_button_detail_info"));
+        showButtonIcon(showDetailButton,windowOptionsVO.titleRightIcon);
         //左侧图标
         Button backButton=(Button) rootView.findViewById(EUExUtil.getResIdID("platform_mp_window_button_back"));
+        showButtonIcon(backButton,windowOptionsVO.titleLeftIcon);
         OnClickListener listener = new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -295,6 +309,33 @@ public class EBrowserWindow extends SwipeView implements AnimationListener {
         };
         backButton.setOnClickListener(listener);
         showDetailButton.setOnClickListener(listener);
+    }
+
+    public void setMpWindowStatus(boolean flag) {
+        if(flag){
+            platform_mp_window_bottom_bar.setVisibility(VISIBLE);
+        }else {
+            platform_mp_window_bottom_bar.setVisibility(GONE);
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    private void showButtonIcon(Button backButton,  String iconPath) {
+        if(""!=iconPath && null!=iconPath){
+            String IconImg=iconPath;
+            IconImg=IconImg.substring(BUtility.F_Widget_RES_SCHEMA
+                    .length());
+            IconImg = BUtility.F_Widget_RES_path + IconImg;
+            Bitmap leftIconImgBitmap =((EBrowserActivity)mContext).getImage(IconImg);
+            if(null!=IconImg){
+                BitmapDrawable bitmapDrawable = new BitmapDrawable(getResources(),
+                        leftIconImgBitmap);
+                if(null!=bitmapDrawable){
+                    backButton.setBackground(bitmapDrawable);
+                }
+            }
+        }
+
     }
 
     /**
@@ -413,9 +454,6 @@ public class EBrowserWindow extends SwipeView implements AnimationListener {
         mflag &= F_WINDOW_FLAG_NONE;
     }
 
-    public void addViewToCurrentWindowBottom(View child){
-
-    }
 
     public void addViewToCurrentWindow(View child) {
         //Message msg = mWindLoop.obtainMessage();
@@ -2278,6 +2316,9 @@ public class EBrowserWindow extends SwipeView implements AnimationListener {
     public static final int F_WHANDLER_MULTIPOP_SET = 32;
 
     public static final int TOTAL = F_WHANDLER_SET_VISIBLE + 1;
+
+
+
 
     public class WindowHander extends Handler {
 

@@ -392,12 +392,14 @@ public class EUExWindow extends EUExBase {
         WindowOptionsVO windowOptionsVO = openVO.windowOptions;
 
         boolean opaque = false;
-        /**赋初值，避免不传bgColor崩溃*/
+        /**赋初值，避免
+         * 不传bgColor崩溃*/
         String bgColor = "#00000000";
         boolean hasExtraInfo = false;
         int hardware = -1;
         int downloadCallback = 0;
         String userAgent = "";
+        String exeJS = "";
         String jsonData = openVO.extras == null ? null : DataHelper.gson.toJson(openVO.extras);
         if (jsonData != null){
             try {
@@ -418,6 +420,9 @@ public class EUExWindow extends EUExBase {
                 }
                 downloadCallback = data.optInt(KEY_DOWNLOAD_CALLBACK, 0);
                 userAgent = data.optString(KEY_USER_AGENT, "");
+                if (data.has(KEY_EXE_JS)){
+                    exeJS = data.getString(KEY_EXE_JS);
+                }
             } catch (JSONException ignored) {
             }
         }
@@ -502,18 +507,38 @@ public class EUExWindow extends EUExBase {
         //处理窗口样式参数
         windEntry.mWindowStyle = windowStyle;
         windEntry.mWindowOptions = windowOptionsVO;
+        windEntry.mExeJS = exeJS;
         curWind.createWindow(mBrwView, windEntry);
     }
     @AppCanAPI
     public void setWindowOptions(String[] params){
         try {
-//            String windowOptionsStr = new JSONObject(params[0]).getString("windowOptions");
-            WindowOptionsVO windowOptionsVO = DataHelper.gson.fromJson(params[0], WindowOptionsVO.class);
+            String windowOptionsStr = new JSONObject(params[0]).getString("windowOptions");
+            WindowOptionsVO windowOptionsVO = DataHelper.gson.fromJson(windowOptionsStr, WindowOptionsVO.class);
             mBrwView.getBrowserWindow().setWindowOptions(windowOptionsVO);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
+    @AppCanAPI
+    public void setMpWindowStatus(String[] params){
+        try {
+            if(params.length<1){
+                return;
+            }
+            int marginString=Integer.parseInt(params[0]);
+            if(marginString==1){
+                mBrwView.getBrowserWindow().setMpWindowStatus(true);
+            }else {
+                mBrwView.getBrowserWindow().setMpWindowStatus(false);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     public void openPresentWindow(String[] params){//与iOS保持一致添加的接口
         open(params);
