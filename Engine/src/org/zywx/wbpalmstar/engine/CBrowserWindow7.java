@@ -127,7 +127,7 @@ public class CBrowserWindow7 extends ACEDESBrowserWindow7 {
         }
         boolean isUrl = url.startsWith("file") || url.startsWith("http")
                 || url.startsWith("content://");
-        boolean isCustomUrl = url.startsWith("alipay://") || url.startsWith("weixin://");
+        boolean isCustomUrl = url.startsWith("alipay://") || url.startsWith("weixin://")|| url.startsWith("alipays://");
         if (!isUrl) {
             if (isCustomUrl) {  //打开外部页面无法通过UrlScheme调用微信、支付宝
                 Intent intent = new Intent(Intent.ACTION_VIEW);
