@@ -1,9 +1,13 @@
 buildscript {
     repositories {
         jcenter()
+        maven {
+            url 'https://raw.githubusercontent.com/android-plugin/mvn-repo/master/'
+        }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.2.2'
+        classpath 'org.appcan.gradle.plugins:appcan-gradle-plugin:2.1.2'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -12,6 +16,8 @@ buildscript {
 import proguard.gradle.ProGuardTask
 
 apply plugin: 'com.android.application'
+
+apply plugin: 'appcan'
 
 dependencies {
     compile fileTree(dir: 'libs', include: '*.jar',exclude:'android-support-v4.jar')
@@ -59,6 +65,9 @@ android {
         targetSdkVersion 14 //
     }
     productFlavors {
+        x5 {
+            //声明是X5引擎flavor，配合出包插件的逻辑
+        }
     }
     buildTypes {
         debug {

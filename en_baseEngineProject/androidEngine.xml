@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <info>
-    <version>sdksuit_3.4_x5_170719_01_e</version>
-	<package>android_Engine_3.4_170719_01</package>
-	<kernel>腾讯X5内核</kernel>
+    <version>$version$</version>
+    <package>$package$</package>
+    <kernel>$kernel$</kernel>
 	<description>多次调用alert只弹出一个</description>
     <dssVersion>3.2.2</dssVersion>
 </info>
