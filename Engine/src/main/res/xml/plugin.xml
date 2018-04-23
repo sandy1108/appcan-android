@@ -16,4 +16,19 @@
         <method name="clearCookie"/>
         <method name="create"/>
     </plugin>
+
+    <plugin
+        className="org.zywx.wbpalmstar.plugin.chatkeyboard.EUExChatKeyboard" uexName="uexChatKeyboard" >
+        <method name="open" />
+        <method name="close" />
+        <method name="onCommit" />
+        <method name="onShareMenuItem" />
+        <method name="onVoiceAction" />
+        <method name="getInputBarHeight"/>
+        <method name="hideKeyboard"/>
+        <method name="insertTextByKeyword"/>
+        <method name="setPlaceholder"/>
+        <method name="setText"/>
+        <method name="getText"/>
+    </plugin>
 </uexplugins>
