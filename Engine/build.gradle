@@ -77,4 +77,6 @@ dependencies {
     compile files('libs/wmqtt.jar')
     x5Compile fileTree(dir: 'src/x5/libs', include: '*.jar')
     compile files('libs/dynamicLoadLib.jar')
+    compile files('libs/plugin_uexXmlHttpMgr.jar')
+    compile files('libs/plugin_uexChatKeyboard.jar')
 }

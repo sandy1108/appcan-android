@@ -35,6 +35,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
@@ -43,6 +44,7 @@ import android.view.animation.Animation.AnimationListener;
 import android.view.animation.TranslateAnimation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -89,6 +91,7 @@ public class EBrowserWindow extends SwipeView implements AnimationListener {
     public static final String MP_WINDOW_CLICKED_TYPE_RIGHT = "1";
     public static final String MP_WINDOW_CLICKED_TYPE_MENU = "2";
     public static final String MP_WINDOW_CLICKED_TYPE_BOTTOM_LEFT = "3";
+    public static final String MP_WINDOW_CLICKED_TYPE_CLOSE = "4";
     public static final String CALLBACK_METHOD_ON_MP_WINDOW_CLICKED = "uexWindow.onMPWindowClicked";
     public static final String CALLBACK_POST_GLOBAL_NOTI = "javascript:if(uexWindow.onGlobalNotification)"
             + "{uexWindow.onGlobalNotification('";
@@ -322,15 +325,28 @@ public class EBrowserWindow extends SwipeView implements AnimationListener {
         TextView windowTitle = (TextView)rootView.findViewById(EUExUtil.getResIdID("platform_mp_window_text_title"));
         windowTitle.setText(windowOptionsVO.windowTitle);
         //设置标题栏的颜色
+        if(""!=windowOptionsVO.titleTextColor&&null!=windowOptionsVO.titleTextColor){
+            windowTitle.setTextColor(Color.parseColor(windowOptionsVO.titleTextColor));
+        }
+        //设置标题栏的颜色
         if(""!=windowOptionsVO.titleBarBgColor&&null!=windowOptionsVO.titleBarBgColor){
             platform_mp_window_title_bar.setBackgroundColor(Color.parseColor(windowOptionsVO.titleBarBgColor));
         }
+        platform_mp_window_title_bar.setOnTouchListener(new OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return true;
+            }
+        });
         //右侧图标
         Button showDetailButton=(Button) rootView.findViewById(EUExUtil.getResIdID("platform_mp_window_button_detail_info"));
         showButtonIcon(showDetailButton,windowOptionsVO.titleRightIcon);
         //左侧图标
         Button backButton=(Button) rootView.findViewById(EUExUtil.getResIdID("platform_mp_window_button_back"));
         showButtonIcon(backButton,windowOptionsVO.titleLeftIcon);
+        //关闭图标
+        Button  closeButton= (Button) rootView.findViewById(EUExUtil.getResIdID("platform_mp_window_button_close"));
+        showButtonIcon(closeButton,windowOptionsVO.titleCloseIcon);
         OnClickListener listener = new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -338,11 +354,14 @@ public class EBrowserWindow extends SwipeView implements AnimationListener {
                     callbackOnMPWindowOnClicked(MP_WINDOW_CLICKED_TYPE_LEFT, null, null);
                 }else if(v.getId()==EUExUtil.getResIdID("platform_mp_window_button_detail_info")){
                     callbackOnMPWindowOnClicked(MP_WINDOW_CLICKED_TYPE_RIGHT, null, null);// 显示个人信息页面
+                }else if(v.getId()==EUExUtil.getResIdID("platform_mp_window_button_close")){
+                    callbackOnMPWindowOnClicked(MP_WINDOW_CLICKED_TYPE_CLOSE,null,null);
                 }
             }
         };
         backButton.setOnClickListener(listener);
         showDetailButton.setOnClickListener(listener);
+        closeButton.setOnClickListener(listener);
     }
 
     public void setMpWindowStatus(boolean flag) {
@@ -354,7 +373,27 @@ public class EBrowserWindow extends SwipeView implements AnimationListener {
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    private void showButtonIcon(Button backButton,  String iconPath) {
+    public void showButtonIcon(ImageButton Image, String iconPath) {
+        if(""!=iconPath && null!=iconPath){
+            String IconImg=iconPath;
+            IconImg=IconImg.substring(BUtility.F_Widget_RES_SCHEMA
+                    .length());
+            IconImg = BUtility.F_Widget_RES_path + IconImg;
+            Bitmap leftIconImgBitmap =((EBrowserActivity)mContext).getImage(IconImg);
+            if(null!=IconImg){
+                BitmapDrawable bitmapDrawable = new BitmapDrawable(getResources(),
+                        leftIconImgBitmap);
+                if(null!=bitmapDrawable){
+                    Image.setBackground(bitmapDrawable);
+                }
+            }
+        }else{
+            Image.setVisibility(GONE);
+        }
+
+    }
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    public void showButtonIcon(Button backButton,  String iconPath) {
         if(""!=iconPath && null!=iconPath){
             String IconImg=iconPath;
             IconImg=IconImg.substring(BUtility.F_Widget_RES_SCHEMA
@@ -368,10 +407,11 @@ public class EBrowserWindow extends SwipeView implements AnimationListener {
                     backButton.setBackground(bitmapDrawable);
                 }
             }
+        }else{
+            backButton.setVisibility(GONE);
         }
 
     }
-
     /**
      * 初始化公众号样式的底部菜单和键盘输入栏
      *
@@ -1646,6 +1686,8 @@ public class EBrowserWindow extends SwipeView implements AnimationListener {
     }
 
     protected void onPageFinished(EBrowserView target, String url) {
+
+
         int type = target.getType();
         switch (type) {
             case EBrwViewEntry.VIEW_TYPE_TOP:
