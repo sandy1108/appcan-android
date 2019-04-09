@@ -173,27 +173,27 @@ public class ACEContentProvider extends ContentProvider {
 
     @Override
     public int delete(Uri uri, String s, String[] as) {
-        throw new UnsupportedOperationException("Not supported by this provider");
+        throw new UnsupportedOperationException("delete, Not supported by this provider: " + uri);
     }
 
     @Override
     public String getType(Uri uri) {
-        throw new UnsupportedOperationException("Not supported by this provider");
+        throw new UnsupportedOperationException("getType, Not supported by this provider: " + uri);
     }
 
     @Override
     public Uri insert(Uri uri, ContentValues contentvalues) {
-        throw new UnsupportedOperationException("Not supported by this provider");
+        throw new UnsupportedOperationException("insert, Not supported by this provider: " + uri);
     }
 
     @Override
     public Cursor query(Uri uri, String[] as, String s, String[] as1, String s1) {
-        throw new UnsupportedOperationException("Not supported by this provider");
+        throw new UnsupportedOperationException("query, Not supported by this provider: " + uri);
     }
 
     @Override
     public int update(Uri uri, ContentValues contentvalues, String s, String[] as) {
-        throw new UnsupportedOperationException("Not supported by this provider");
+        throw new UnsupportedOperationException("update, Not supported by this provider: " + uri);
     }
 
 }

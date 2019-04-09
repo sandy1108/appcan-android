@@ -22,6 +22,8 @@ import android.os.Build;
 import android.webkit.WebSettings;
 import android.webkit.WebSettings.PluginState;
 
+import org.zywx.wbpalmstar.base.BDebug;
+
 import java.lang.reflect.Method;
 
 
@@ -44,7 +46,9 @@ public class EBrowserSetting7 extends EBrowserSetting {
             mWebSetting.setAllowUniversalAccessFromFileURLs(true);
         }
 
-        mWebSetting.setDatabasePath(mBrwView.getContext().getDir("database", 0).getPath());
+        String databasePath = mBrwView.getContext().getDir("database", 0).getPath();
+        BDebug.d("setDatabasePath : " + databasePath);
+        mWebSetting.setDatabasePath(databasePath);
         if (Build.VERSION.SDK_INT >= 8) {
             try {
                 mWebSetting.setPluginState(PluginState.ON);
